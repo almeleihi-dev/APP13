@@ -1,0 +1,80 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Desktop.ini
+
+# IDE and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Test and coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+
+# Database (local dev)
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploads and local storage (runtime)
+uploads/
+storage/local/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Certificates and keys
+*.pem
+*.key
+*.p12
+*.crt
+
+# Package manager locks (keep one when project starts — uncomment preference)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
