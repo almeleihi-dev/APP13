@@ -13,7 +13,7 @@
     "dev": "tsx watch src/index.ts",
     "migrate": "tsx scripts/migrate.ts",
     "lint:imports": "dependency-cruiser src --config .dependency-cruiser.cjs",
-    "test": "node --import tsx --test test/b1-kernel.test.ts test/b2-identity.test.ts test/b4-contract.test.ts",
+    "test": "node --import tsx --test test/b1-kernel.test.ts test/b2-identity.test.ts test/b4-contract.test.ts test/b5-execution.test.ts",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
     "verify:b4": "bash scripts/verify-b4-docker.sh"
   },

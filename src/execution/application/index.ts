@@ -1,1 +1,1 @@
-export const EXECUTION_APPLICATION = "execution.application" as const;
+export { ExecutionService, createExecutionService } from "./execution-service.js";

@@ -1,13 +1,12 @@
 import type { Queryable } from "../../shared/db/index.js";
+import type {
+  EvidenceRecord,
+  EvidenceType,
+  EvidenceUploadIntent,
+} from "../domain/evidence.js";
+import type { MilestoneStatus } from "../domain/milestone.js";
 
-export type MilestoneStatus =
-  | "pending"
-  | "in_progress"
-  | "submitted"
-  | "accepted"
-  | "disputed"
-  | "frozen"
-  | "waived";
+export type { MilestoneStatus };
 
 export interface Milestone {
   id: string;
@@ -62,6 +61,40 @@ function mapAttestation(row: Record<string, unknown>): Attestation {
     attestedByUserId: row.attested_by_user_id as string,
     attestedAt: row.attested_at as Date,
     source: row.source as string,
+  };
+}
+
+function mapUploadIntent(row: Record<string, unknown>): EvidenceUploadIntent {
+  return {
+    id: row.id as string,
+    contractId: row.contract_id as string,
+    milestoneId: row.milestone_id as string,
+    userId: row.user_id as string,
+    storageKey: row.storage_key as string,
+    contentHash: row.content_hash as string,
+    evidenceType: row.evidence_type as EvidenceType,
+    filename: (row.filename as string | null) ?? null,
+    contentType: (row.content_type as string | null) ?? null,
+    idempotencyKey: row.idempotency_key as string,
+    status: row.status as EvidenceUploadIntent["status"],
+    expiresAt: row.expires_at as Date,
+    confirmedAt: (row.confirmed_at as Date | null) ?? null,
+    createdAt: row.created_at as Date,
+  };
+}
+
+function mapEvidence(row: Record<string, unknown>): EvidenceRecord {
+  return {
+    id: row.id as string,
+    contractId: row.contract_id as string,
+    milestoneId: row.milestone_id as string,
+    submittedByUserId: row.submitted_by_user_id as string,
+    evidenceType: row.evidence_type as EvidenceType,
+    storageKey: (row.storage_key as string | null) ?? null,
+    contentHash: (row.content_hash as string | null) ?? null,
+    metadata: row.metadata as Record<string, unknown>,
+    submittedAt: row.submitted_at as Date,
+    createdAt: row.created_at as Date,
   };
 }
 
@@ -136,6 +169,132 @@ export class ExecutionRepository {
       [contractId]
     );
     return result.rows.map(mapAttestation);
+  }
+
+  async findMilestoneById(db: Queryable, milestoneId: string): Promise<Milestone | null> {
+    const result = await db.query(
+      `SELECT * FROM execution.milestones WHERE id = $1`,
+      [milestoneId]
+    );
+    if (result.rowCount === 0) return null;
+    return mapMilestone(result.rows[0]);
+  }
+
+  async findUploadIntentById(db: Queryable, intentId: string): Promise<EvidenceUploadIntent | null> {
+    const result = await db.query(
+      `SELECT * FROM platform.upload_intents WHERE id = $1`,
+      [intentId]
+    );
+    if (result.rowCount === 0) return null;
+    return mapUploadIntent(result.rows[0]);
+  }
+
+  async findUploadIntentByIdempotencyKey(
+    db: Queryable,
+    idempotencyKey: string
+  ): Promise<EvidenceUploadIntent | null> {
+    const result = await db.query(
+      `SELECT * FROM platform.upload_intents WHERE idempotency_key = $1`,
+      [idempotencyKey]
+    );
+    if (result.rowCount === 0) return null;
+    return mapUploadIntent(result.rows[0]);
+  }
+
+  async createUploadIntent(
+    db: Queryable,
+    input: {
+      contractId: string;
+      milestoneId: string;
+      userId: string;
+      storageKey: string;
+      contentHash: string;
+      evidenceType: EvidenceType;
+      filename?: string;
+      contentType?: string;
+      idempotencyKey: string;
+      expiresAt: Date;
+    }
+  ): Promise<EvidenceUploadIntent> {
+    const result = await db.query(
+      `
+        INSERT INTO platform.upload_intents (
+          contract_id, milestone_id, user_id, storage_key, content_hash,
+          evidence_type, filename, content_type, idempotency_key, expires_at
+        )
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+        RETURNING *
+      `,
+      [
+        input.contractId,
+        input.milestoneId,
+        input.userId,
+        input.storageKey,
+        input.contentHash,
+        input.evidenceType,
+        input.filename ?? null,
+        input.contentType ?? null,
+        input.idempotencyKey,
+        input.expiresAt,
+      ]
+    );
+    return mapUploadIntent(result.rows[0]);
+  }
+
+  async confirmUploadIntent(db: Queryable, intentId: string): Promise<EvidenceUploadIntent | null> {
+    const result = await db.query(
+      `
+        UPDATE platform.upload_intents
+        SET status = 'confirmed', confirmed_at = now()
+        WHERE id = $1 AND status = 'pending'
+        RETURNING *
+      `,
+      [intentId]
+    );
+    if (result.rowCount === 0) return null;
+    return mapUploadIntent(result.rows[0]);
+  }
+
+  async insertEvidence(
+    db: Queryable,
+    input: {
+      contractId: string;
+      milestoneId: string;
+      submittedByUserId: string;
+      evidenceType: EvidenceType;
+      storageKey: string;
+      contentHash: string;
+      metadata?: Record<string, unknown>;
+    }
+  ): Promise<EvidenceRecord> {
+    const result = await db.query(
+      `
+        INSERT INTO execution.evidence (
+          contract_id, milestone_id, submitted_by_user_id,
+          evidence_type, storage_key, content_hash, metadata
+        )
+        VALUES ($1,$2,$3,$4,$5,$6,$7)
+        RETURNING *
+      `,
+      [
+        input.contractId,
+        input.milestoneId,
+        input.submittedByUserId,
+        input.evidenceType,
+        input.storageKey,
+        input.contentHash,
+        JSON.stringify(input.metadata ?? {}),
+      ]
+    );
+    return mapEvidence(result.rows[0]);
+  }
+
+  async countAttestationEvidence(db: Queryable, attestationId: string): Promise<number> {
+    const result = await db.query<{ count: string }>(
+      `SELECT COUNT(*) AS count FROM execution.attestation_evidence WHERE attestation_id = $1`,
+      [attestationId]
+    );
+    return Number(result.rows[0].count);
   }
 
   async transitionMilestone(
