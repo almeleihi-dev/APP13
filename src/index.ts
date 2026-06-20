@@ -27,6 +27,7 @@ import { createIssueService } from "./complaint/application/issue-service.js";
 import { createObjectStorage } from "./platform/storage/index.js";
 import { createActionIntelligenceService } from "./action/intelligence/action-intelligence-service.js";
 import { createRequirementIntelligenceService } from "./action/intelligence/requirement/requirement-intelligence-service.js";
+import { createContractIntelligenceService } from "./contract/intelligence/contract-intelligence-service.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -78,6 +79,10 @@ async function main(): Promise<void> {
   const issues = createIssueService(db, contractRepository);
   const actionIntelligence = createActionIntelligenceService();
   const requirementIntelligence = createRequirementIntelligenceService();
+  const contractIntelligence = createContractIntelligenceService(
+    actionIntelligence,
+    requirementIntelligence
+  );
 
   const app = await buildServer({
     config,
@@ -98,6 +103,7 @@ async function main(): Promise<void> {
     issues,
     actionIntelligence,
     requirementIntelligence,
+    contractIntelligence,
   });
 
   try {
