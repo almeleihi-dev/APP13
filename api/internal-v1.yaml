@@ -1,0 +1,920 @@
+openapi: 3.1.0
+info:
+  title: APP13 Internal API
+  version: 1.1.0
+  description: |
+    APP13 Professional Operating System — internal engine-to-engine surface (v1.1).
+
+    **Network:** Private VPC / service mesh only — never internet-routable.
+
+    **Authentication:** mTLS client certificate **and** service JWT (`service_id` claim).
+
+    **Actor impersonation (P0-S3):** Raw `X-Actor-Context` headers are forbidden.
+    Use signed `X-Actor-Context-Token` JWT when continuing a user-initiated chain.
+
+    **Trust authority (P0-T2 / ADR-003):** Trust events are ingested exclusively via
+    `POST /trust/ingest-from-outbox` by `trust-outbox-consumer`. Direct
+    `POST /trust/events` is removed.
+
+    Aligns with [API Architecture v1.1](../docs/architecture/APP13-API-Architecture-v1.1.md)
+    and PostgreSQL Schema v1.1.
+  license:
+    name: Proprietary
+  contact:
+    name: APP13 Platform Engineering
+
+servers:
+  - url: https://api.app13.internal/internal/v1
+    description: Production (private network)
+  - url: https://api.staging.app13.internal/internal/v1
+    description: Staging (private network)
+
+tags:
+  - name: Contracts
+    description: Contract materialization, activation, completion, issue-path
+  - name: Complaints
+    description: Triage validation and outcome application
+  - name: Trust
+    description: Outbox ingest and projection recompute (ADR-003)
+  - name: Platform
+    description: Outbox, audit, health
+
+paths:
+  /contracts/{contractId}/materialize:
+    post:
+      operationId: materializeContract
+      tags: [Contracts]
+      summary: Materialize milestones and attestation shells
+      description: |
+        Sets DB session `app13.contract_materialization=on`.
+        Called after contract reaches `accepted` and before activation.
+      security:
+        - serviceToken: []
+      parameters:
+        - $ref: '#/components/parameters/ContractId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/ActorContextToken'
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MaterializeContractRequest'
+      responses:
+        '202':
+          description: Materialization queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationResponse'
+        '403':
+          $ref: '#/components/responses/ServiceForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/InvalidTransition'
+      x-allowed-service-ids: [contract-worker]
+
+  /contracts/{contractId}/activate:
+    post:
+      operationId: activateContract
+      tags: [Contracts]
+      summary: Activate contract after all parties accept
+      description: |
+        Transition `accepted` → `active`. Requires verification snapshots and
+        successful materialization. Emits `contract.activated` to domain outbox.
+      security:
+        - serviceToken: []
+      parameters:
+        - $ref: '#/components/parameters/ContractId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/ActorContextToken'
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivateContractRequest'
+      responses:
+        '202':
+          description: Activation queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationResponse'
+        '403':
+          $ref: '#/components/responses/ServiceForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/InvalidTransition'
+        '422':
+          $ref: '#/components/responses/EligibilityError'
+      x-allowed-service-ids: [contract-engine]
+
+  /contracts/{contractId}/complete:
+    post:
+      operationId: completeContract
+      tags: [Contracts]
+      summary: Complete contract when execution satisfied (P0-E3)
+      description: |
+        Transition `active` → `completed` (or `resolved` → `completed` on issue path)
+        when all blocking milestones are `accepted`/`waived`, required attestations
+        resolved, and no blocking complaints exist. Emits `contract.completed`.
+      security:
+        - serviceToken: []
+      parameters:
+        - $ref: '#/components/parameters/ContractId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/ActorContextToken'
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteContractRequest'
+      responses:
+        '202':
+          description: Completion orchestration queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationResponse'
+        '403':
+          $ref: '#/components/responses/ServiceForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/InvalidTransition'
+        '422':
+          $ref: '#/components/responses/EligibilityError'
+      x-allowed-service-ids: [contract-engine]
+
+  /contracts/{contractId}/transitions/issue-path:
+    post:
+      operationId: applyIssuePathTransition
+      tags: [Contracts]
+      summary: Apply cross-engine issue-path contract transition (P0-CE2)
+      description: |
+        Orchestrated transitions driven by Issue/Complaint engines:
+        `active` → `issue_raised`, triage → `disputed`, outcome → `resolved`,
+        closure → `closed` or `completed`, informal resolve → `active`.
+      security:
+        - serviceToken: []
+      parameters:
+        - $ref: '#/components/parameters/ContractId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/ActorContextToken'
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IssuePathTransitionRequest'
+      responses:
+        '200':
+          description: Transition applied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractStatusResponse'
+        '403':
+          $ref: '#/components/responses/ServiceForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/InvalidTransition'
+      x-allowed-service-ids: [contract-engine]
+
+  /complaints/{complaintId}/validate:
+    post:
+      operationId: validateComplaint
+      tags: [Complaints]
+      summary: Run EL-1–EL-8 triage validation
+      description: |
+        Validates complaint eligibility atomically with EL-6 advisory lock.
+        On pass: `filed` → `triage_pending` or `evidence_gathering`.
+        On fail: transition to `dismissed` with `dismissed_reason_code`.
+        May trigger contract → `disputed` when triage passes.
+      security:
+        - serviceToken: []
+      parameters:
+        - $ref: '#/components/parameters/ComplaintId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/ActorContextToken'
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateComplaintRequest'
+      responses:
+        '200':
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComplaintValidationResponse'
+        '403':
+          $ref: '#/components/responses/ServiceForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-allowed-service-ids: [complaint-worker]
+
+  /complaints/{complaintId}/apply-outcome:
+    post:
+      operationId: applyComplaintOutcome
+      tags: [Complaints]
+      summary: Apply adjudication outcome to execution and trust
+      description: |
+        Sets DB session `app13.complaint_outcome_apply=on` for attestation writes.
+        Updates contract path, attestations, and emits domain events for trust ingest.
+        Triggers async trust recompute.
+      security:
+        - serviceToken: []
+      parameters:
+        - $ref: '#/components/parameters/ComplaintId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/ActorContextToken'
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyComplaintOutcomeRequest'
+      responses:
+        '202':
+          description: Outcome application queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationResponse'
+        '403':
+          $ref: '#/components/responses/ServiceForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/InvalidTransition'
+      x-allowed-service-ids: [complaint-engine]
+
+  /trust/providers/{providerId}/recompute:
+    post:
+      operationId: recomputeTrustScore
+      tags: [Trust]
+      summary: Full trust projection recompute
+      description: |
+        Recomputes `trust.trust_scores` from event-sourced `trust_score_events`.
+        Sets DB session `app13.trust_recompute=on`. Only `trust-worker` may call.
+      security:
+        - serviceToken: []
+      parameters:
+        - $ref: '#/components/parameters/ProviderId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecomputeTrustRequest'
+      responses:
+        '202':
+          description: Recompute queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationResponse'
+        '403':
+          $ref: '#/components/responses/ServiceForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-allowed-service-ids: [trust-worker]
+
+  /trust/ingest-from-outbox:
+    post:
+      operationId: ingestTrustFromOutbox
+      tags: [Trust]
+      summary: Consume domain_outbox rows into trust_score_events (P0-T2)
+      description: |
+        **Only** `trust-outbox-consumer` may append `trust_score_events` (CA-5 / ADR-003).
+        Polls unpublished outbox rows, validates payload schema and source engine,
+        inserts trust events idempotently, marks `published_at`.
+      security:
+        - serviceToken: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrustIngestBatchRequest'
+      responses:
+        '200':
+          description: Batch processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrustIngestBatchResponse'
+        '403':
+          $ref: '#/components/responses/ServiceForbidden'
+        '422':
+          $ref: '#/components/responses/EligibilityError'
+      x-allowed-service-ids: [trust-outbox-consumer]
+
+  /trust/appeals/{appealId}/resolve:
+    post:
+      operationId: resolveTrustAppeal
+      tags: [Trust]
+      summary: Resolve provider trust appeal (admin backend)
+      description: Approve correction and enqueue trust recompute.
+      security:
+        - serviceToken: []
+      parameters:
+        - $ref: '#/components/parameters/AppealId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/ActorContextToken'
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResolveTrustAppealRequest'
+      responses:
+        '202':
+          description: Appeal resolution queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncOperationResponse'
+        '403':
+          $ref: '#/components/responses/ServiceForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      x-allowed-service-ids: [admin-backend, trust-worker]
+
+  /outbox/publish-batch:
+    post:
+      operationId: publishOutboxBatch
+      tags: [Platform]
+      summary: Mark domain_outbox rows as published
+      security:
+        - serviceToken: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OutboxPublishBatchRequest'
+      responses:
+        '200':
+          description: Batch published
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutboxPublishBatchResponse'
+        '403':
+          $ref: '#/components/responses/ServiceForbidden'
+      x-allowed-service-ids: [outbox-publisher]
+
+  /audit/events:
+    post:
+      operationId: appendAuditEvent
+      tags: [Platform]
+      summary: Append platform audit event
+      security:
+        - serviceToken: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuditEventRequest'
+      responses:
+        '201':
+          description: Audit event recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditEventResponse'
+        '403':
+          $ref: '#/components/responses/ServiceForbidden'
+      x-allowed-service-ids: ['*']
+
+  /health/engines:
+    get:
+      operationId: getEngineHealth
+      tags: [Platform]
+      summary: Engine readiness probes
+      security:
+        - serviceToken: []
+      responses:
+        '200':
+          description: Engine health status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EngineHealthResponse'
+        '503':
+          description: One or more engines unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EngineHealthResponse'
+      x-allowed-service-ids: [ops-probe]
+
+components:
+  securitySchemes:
+    serviceToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Internal service JWT with required `service_id` claim.
+        Must be presented over mTLS. Each route restricts allowed `service_id` values
+        via `x-allowed-service-ids` extension.
+
+  parameters:
+    ContractId:
+      name: contractId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ComplaintId:
+      name: complaintId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ProviderId:
+      name: providerId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    AppealId:
+      name: appealId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: UUID v4; deduplicate within 24h (P0-S5)
+      schema:
+        type: string
+        format: uuid
+    ActorContextToken:
+      name: X-Actor-Context-Token
+      in: header
+      required: false
+      description: |
+        Signed JWT (P0-S3) with claims `sub`, `request_id`, `issued_by`, `exp` (≤ 5 min).
+        Required when continuing a user-initiated async chain.
+      schema:
+        type: string
+    RequestId:
+      name: X-Request-Id
+      in: header
+      required: false
+      schema:
+        type: string
+
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    ServiceForbidden:
+      description: Service not authorized for route
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+          example:
+            type: https://api.app13.example/problems/forbidden
+            title: Forbidden
+            status: 403
+            code: SERVICE_NOT_ALLOWED
+            detail: service_id not in allowlist for this route
+    InvalidTransition:
+      description: Invalid state transition
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+          example:
+            type: https://api.app13.example/problems/invalid-transition
+            title: Conflict
+            status: 409
+            code: INVALID_TRANSITION
+    EligibilityError:
+      description: Eligibility gate failed
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/EligibilityError'
+
+  schemas:
+    Problem:
+      type: object
+      required: [type, title, status]
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+        code:
+          type: string
+        engine:
+          type: string
+        request_id:
+          type: string
+
+    EligibilityError:
+      allOf:
+        - $ref: '#/components/schemas/Problem'
+        - type: object
+          properties:
+            dismissed_reason_code:
+              $ref: '#/components/schemas/DismissedReasonCode'
+
+    DismissedReasonCode:
+      type: string
+      enum:
+        - OUT_OF_WINDOW
+        - NOT_A_PARTY
+        - INVALID_DIMENSION
+        - DUPLICATE_ACTIVE
+        - CONTRACT_NOT_ACTIVE
+        - INSUFFICIENT_DETAIL
+        - TYPE_MISMATCH
+
+    ContractStatus:
+      type: string
+      enum:
+        - draft
+        - proposed
+        - accepted
+        - active
+        - completed
+        - issue_raised
+        - disputed
+        - resolved
+        - closed
+        - void
+        - cancelled
+
+    ComplaintStatus:
+      type: string
+      enum:
+        - filed
+        - triage_pending
+        - dismissed
+        - evidence_gathering
+        - mediation
+        - adjudication_pending
+        - resolved_mutual
+        - resolved_upheld
+        - resolved_dismissed
+        - resolved_shared
+        - escalated_external
+        - pending_external
+        - closed
+
+    ComplaintOutcome:
+      type: string
+      enum:
+        - upheld_provider_fault
+        - upheld_customer_fault
+        - dismissed
+        - shared_fault
+        - resolved_mutual
+        - external_referral
+
+    ComplaintSeverity:
+      type: string
+      enum: [low, medium, high, critical]
+
+    TekrrDimension:
+      type: string
+      enum: [T, E, K, R, S]
+
+    FulfillmentRating:
+      type: string
+      enum: [FUL, SUF, PAR, UNF, PEN]
+
+    ActorContextTokenClaims:
+      type: object
+      description: |
+        Claims embedded in X-Actor-Context-Token JWT (P0-S3).
+        Raw X-Actor-Context UUID headers are forbidden.
+      required: [sub, request_id, issued_by, exp]
+      properties:
+        sub:
+          type: string
+          format: uuid
+          description: Original user UUID
+        request_id:
+          type: string
+          description: Public API X-Request-Id
+        issued_by:
+          type: string
+          description: Gateway service_id that issued the token
+        exp:
+          type: integer
+          description: Expiry (≤ 5 minutes from issue)
+
+    AsyncOperationResponse:
+      type: object
+      required: [operation_id, status]
+      properties:
+        operation_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [queued, in_progress, completed, failed]
+        resource_type:
+          type: string
+        resource_id:
+          type: string
+          format: uuid
+
+    MaterializeContractRequest:
+      type: object
+      required: [idempotency_key]
+      properties:
+        idempotency_key:
+          type: string
+          format: uuid
+        triggered_by:
+          type: string
+          enum: [activation_pipeline, admin_override]
+
+    ActivateContractRequest:
+      type: object
+      required: [idempotency_key]
+      properties:
+        idempotency_key:
+          type: string
+          format: uuid
+        verification_snapshot_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    CompleteContractRequest:
+      type: object
+      required: [idempotency_key]
+      properties:
+        idempotency_key:
+          type: string
+          format: uuid
+        force:
+          type: boolean
+          default: false
+          description: Admin override only; requires audit reason in actor context
+
+    IssuePathTransitionRequest:
+      type: object
+      required: [transition, idempotency_key, trigger_source]
+      properties:
+        transition:
+          type: string
+          enum:
+            - to_issue_raised
+            - to_disputed
+            - to_resolved
+            - to_closed
+            - to_completed
+            - to_active
+        trigger_source:
+          type: string
+          enum: [issue_engine, complaint_worker, complaint_engine, contract_engine]
+        source_entity_type:
+          type: string
+          enum: [issue, complaint, case]
+        source_entity_id:
+          type: string
+          format: uuid
+        idempotency_key:
+          type: string
+          format: uuid
+
+    ContractStatusResponse:
+      type: object
+      required: [id, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/ContractStatus'
+        previous_status:
+          $ref: '#/components/schemas/ContractStatus'
+
+    ValidateComplaintRequest:
+      type: object
+      required: [idempotency_key]
+      properties:
+        idempotency_key:
+          type: string
+          format: uuid
+        triage_decision:
+          type: string
+          enum: [accept, dismiss]
+
+    ComplaintValidationResponse:
+      type: object
+      required: [complaint_id, status, validation_passed]
+      properties:
+        complaint_id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/ComplaintStatus'
+        validation_passed:
+          type: boolean
+        dismissed_reason_code:
+          $ref: '#/components/schemas/DismissedReasonCode'
+        contract_status_updated:
+          $ref: '#/components/schemas/ContractStatus'
+
+    ApplyComplaintOutcomeRequest:
+      type: object
+      required: [adjudication_id, idempotency_key]
+      properties:
+        adjudication_id:
+          type: string
+          format: uuid
+        idempotency_key:
+          type: string
+          format: uuid
+        dimension_outcomes:
+          type: array
+          items:
+            type: object
+            required: [tekrr_dimension, fulfillment_rating]
+            properties:
+              tekrr_dimension:
+                $ref: '#/components/schemas/TekrrDimension'
+              fulfillment_rating:
+                $ref: '#/components/schemas/FulfillmentRating'
+
+    RecomputeTrustRequest:
+      type: object
+      required: [idempotency_key]
+      properties:
+        idempotency_key:
+          type: string
+          format: uuid
+        trigger_event_id:
+          type: string
+          format: uuid
+
+    TrustIngestBatchRequest:
+      type: object
+      required: [idempotency_key]
+      properties:
+        idempotency_key:
+          type: string
+          format: uuid
+        max_rows:
+          type: integer
+          minimum: 1
+          maximum: 500
+          default: 100
+
+    TrustIngestBatchResponse:
+      type: object
+      required: [processed_count, skipped_count, failed_count]
+      properties:
+        processed_count:
+          type: integer
+        skipped_count:
+          type: integer
+        failed_count:
+          type: integer
+        event_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    ResolveTrustAppealRequest:
+      type: object
+      required: [decision, idempotency_key]
+      properties:
+        decision:
+          type: string
+          enum: [approved, rejected]
+        correction_notes:
+          type: string
+          maxLength: 4000
+        idempotency_key:
+          type: string
+          format: uuid
+
+    OutboxPublishBatchRequest:
+      type: object
+      required: [outbox_ids, idempotency_key]
+      properties:
+        outbox_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 500
+        idempotency_key:
+          type: string
+          format: uuid
+
+    OutboxPublishBatchResponse:
+      type: object
+      required: [published_count]
+      properties:
+        published_count:
+          type: integer
+
+    AuditEventRequest:
+      type: object
+      required: [engine, event_type, entity_type, entity_id, idempotency_key]
+      properties:
+        engine:
+          type: string
+        event_type:
+          type: string
+        entity_type:
+          type: string
+        entity_id:
+          type: string
+          format: uuid
+        actor_user_id:
+          type: [string, 'null']
+          format: uuid
+        service_id:
+          type: string
+        payload:
+          type: object
+          additionalProperties: true
+        idempotency_key:
+          type: string
+          format: uuid
+
+    AuditEventResponse:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: string
+          format: uuid
+
+    EngineHealthResponse:
+      type: object
+      required: [status, engines]
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+        engines:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              status:
+                type: string
+                enum: [up, down, degraded]
+              latency_ms:
+                type: integer

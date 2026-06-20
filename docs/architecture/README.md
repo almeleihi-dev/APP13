@@ -25,6 +25,7 @@ This architecture package defines the **core platform systems** for APP13 before
 | Document | Contents |
 |----------|----------|
 | [**Core Principles v1**](../APP13-Core-Principles-v1.md) | **Constitution — 25 non-negotiable platform laws** |
+| [**Entity Model v1**](../APP13-Entity-Model-v1.md) | **Core entities, relationships, ERD, schema draft** |
 | [**MVP Scope v1**](../APP13-MVP-Scope-v1.md) | **Strict MVP boundaries — included vs excluded** |
 | [**Roadmap v1**](../APP13-Roadmap-v1.md) | **Six-phase strategic evolution — P1 MVP through P6 AI** |
 | [**Approval Addendum v1.1**](./APPROVAL-ADDENDUM-v1.1.md) | **Approved adjustments — takes precedence over v1.0 where conflicts exist** |
