@@ -34,6 +34,7 @@ import type { ContractIntelligenceService } from "../contract/intelligence/contr
 import type { TrustIntelligenceService } from "../trust/intelligence/trust-intelligence-service.js";
 import type { MatchingIntelligenceService } from "../matching/intelligence/matching-intelligence-service.js";
 import type { PricingIntelligenceService } from "../pricing/intelligence/pricing-intelligence-service.js";
+import type { NegotiationIntelligenceService } from "../negotiation/intelligence/negotiation-intelligence-service.js";
 import { createServiceAuthMiddleware } from "./middleware/service-auth.js";
 import { createRevalidationMiddleware } from "./middleware/revalidate.js";
 import { registerActionRoutes, registerContractActionRoutes } from "./routes/actions.js";
@@ -47,6 +48,7 @@ import { registerAiContractRoutes } from "./routes/ai-contracts.js";
 import { registerAiTrustRoutes } from "./routes/ai-trust.js";
 import { registerAiMatchingRoutes } from "./routes/ai-matching.js";
 import { registerAiPricingRoutes } from "./routes/ai-pricing.js";
+import { registerAiNegotiationRoutes } from "./routes/ai-negotiation.js";
 
 export interface AppDependencies {
   config: AppConfig;
@@ -71,6 +73,7 @@ export interface AppDependencies {
   trustIntelligence: TrustIntelligenceService;
   matchingIntelligence: MatchingIntelligenceService;
   pricingIntelligence: PricingIntelligenceService;
+  negotiationIntelligence: NegotiationIntelligenceService;
 }
 
 export async function buildServer(deps: AppDependencies) {
@@ -116,6 +119,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerAiTrustRoutes(app, deps.trustIntelligence);
   await registerAiMatchingRoutes(app, deps.matchingIntelligence);
   await registerAiPricingRoutes(app, deps.pricingIntelligence);
+  await registerAiNegotiationRoutes(app, deps.negotiationIntelligence);
   await registerInternalContractRoutes(app, deps.contracts);
 
   return app;
