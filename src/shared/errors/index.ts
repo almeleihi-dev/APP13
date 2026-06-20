@@ -28,7 +28,8 @@ export type EngineName =
   | "execution"
   | "complaint"
   | "trust"
-  | "financial";
+  | "financial"
+  | "matching";
 
 export interface ProblemDetails {
   type: string;

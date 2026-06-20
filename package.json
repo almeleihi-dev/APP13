@@ -22,6 +22,8 @@
     "verify:ai3": "npm run test:ai3 && npm run build && npm run lint:imports",
     "test:ai4": "node --import tsx --test test/ai4-trust-intelligence.test.ts test/ai4-trust-tier.test.ts test/ai4-trust-penalty.test.ts test/ai4-trust-intelligence-integration.test.ts",
     "verify:ai4": "npm run test:ai4 && npm run build && npm run lint:imports",
+    "test:ai5": "node --import tsx --test test/ai5-matching-intelligence.test.ts test/ai5-matching-rules.test.ts test/ai5-matching-intelligence-integration.test.ts",
+    "verify:ai5": "npm run test:ai5 && npm run build && npm run lint:imports",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
     "test:b5": "node --import tsx --test test/b5-execution-integration.test.ts",
     "test:b6": "node --import tsx --test --test-concurrency=1 test/b6-financial-migration.test.ts test/b6-ledger-service-integration.test.ts test/b6-escrow-service-integration.test.ts",
