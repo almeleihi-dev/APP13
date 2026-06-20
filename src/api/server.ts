@@ -36,6 +36,7 @@ import type { MatchingIntelligenceService } from "../matching/intelligence/match
 import type { PricingIntelligenceService } from "../pricing/intelligence/pricing-intelligence-service.js";
 import type { NegotiationIntelligenceService } from "../negotiation/intelligence/negotiation-intelligence-service.js";
 import type { WorkflowIntelligenceService } from "../orchestrator/intelligence/workflow-intelligence-service.js";
+import type { ProviderIntelligenceService } from "../provider/intelligence/provider-intelligence-service.js";
 import { createServiceAuthMiddleware } from "./middleware/service-auth.js";
 import { createRevalidationMiddleware } from "./middleware/revalidate.js";
 import { registerActionRoutes, registerContractActionRoutes } from "./routes/actions.js";
@@ -51,6 +52,7 @@ import { registerAiMatchingRoutes } from "./routes/ai-matching.js";
 import { registerAiPricingRoutes } from "./routes/ai-pricing.js";
 import { registerAiNegotiationRoutes } from "./routes/ai-negotiation.js";
 import { registerAiWorkflowRoutes } from "./routes/ai-workflow.js";
+import { registerAiProviderRoutes } from "./routes/ai-providers.js";
 
 export interface AppDependencies {
   config: AppConfig;
@@ -77,6 +79,7 @@ export interface AppDependencies {
   pricingIntelligence: PricingIntelligenceService;
   negotiationIntelligence: NegotiationIntelligenceService;
   workflowIntelligence: WorkflowIntelligenceService;
+  providerIntelligence: ProviderIntelligenceService;
 }
 
 export async function buildServer(deps: AppDependencies) {
@@ -124,6 +127,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerAiPricingRoutes(app, deps.pricingIntelligence);
   await registerAiNegotiationRoutes(app, deps.negotiationIntelligence);
   await registerAiWorkflowRoutes(app, deps.workflowIntelligence);
+  await registerAiProviderRoutes(app, deps.providerIntelligence);
   await registerInternalContractRoutes(app, deps.contracts);
 
   return app;
