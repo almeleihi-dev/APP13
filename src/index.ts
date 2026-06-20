@@ -28,6 +28,7 @@ import { createObjectStorage } from "./platform/storage/index.js";
 import { createActionIntelligenceService } from "./action/intelligence/action-intelligence-service.js";
 import { createRequirementIntelligenceService } from "./action/intelligence/requirement/requirement-intelligence-service.js";
 import { createContractIntelligenceService } from "./contract/intelligence/contract-intelligence-service.js";
+import { createTrustIntelligenceService } from "./trust/intelligence/trust-intelligence-service.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -83,6 +84,7 @@ async function main(): Promise<void> {
     actionIntelligence,
     requirementIntelligence
   );
+  const trustIntelligence = createTrustIntelligenceService();
 
   const app = await buildServer({
     config,
@@ -104,6 +106,7 @@ async function main(): Promise<void> {
     actionIntelligence,
     requirementIntelligence,
     contractIntelligence,
+    trustIntelligence,
   });
 
   try {
