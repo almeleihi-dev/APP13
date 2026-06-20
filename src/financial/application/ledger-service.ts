@@ -117,205 +117,223 @@ export class LedgerService {
     return this.db.withTransaction((tx) => this.postJournal(tx, input));
   }
 
-  async fundEscrowHold(input: FundEscrowHoldInput): Promise<PostJournalResult> {
-    return this.db.withTransaction(async (tx) => {
-      const existing = await this.ledger.findJournalByIdempotencyKey(tx, input.idempotencyKey);
-      if (existing) {
-        const entries = await this.ledger.listEntriesByJournalId(tx, existing.id);
-        return { journal: existing, entries, idempotentReplay: true };
-      }
+  async fundEscrowHoldTx(
+    tx: DbClient,
+    input: FundEscrowHoldInput,
+    options?: { updateEscrowStatus?: boolean }
+  ): Promise<PostJournalResult> {
+    const existing = await this.ledger.findJournalByIdempotencyKey(tx, input.idempotencyKey);
+    if (existing) {
+      const entries = await this.ledger.listEntriesByJournalId(tx, existing.id);
+      return { journal: existing, entries, idempotentReplay: true };
+    }
 
-      const escrow = await this.escrow.findByIdForUpdate(tx, input.escrowId);
-      if (!escrow) {
-        throw notFound();
-      }
-      if (escrow.status !== "funded") {
-        throw new AppError(
-          problem({
-            title: "Conflict",
-            status: 409,
-            code: ErrorCodes.INVALID_TRANSITION,
-            engine: "financial",
-            detail: `escrow hold requires funded status (status=${escrow.status})`,
-          })
-        );
-      }
-      if (input.amountMinor !== escrow.grossAmountMinor) {
-        throw new AppError(
-          problem({
-            title: "Unprocessable Entity",
-            status: 422,
-            code: ErrorCodes.VALIDATION_ERROR,
-            engine: "financial",
-            detail: "hold amount must equal escrow gross amount",
-          })
-        );
-      }
+    const escrow = await this.escrow.findByIdForUpdate(tx, input.escrowId);
+    if (!escrow) {
+      throw notFound();
+    }
+    if (escrow.status !== "funded") {
+      throw new AppError(
+        problem({
+          title: "Conflict",
+          status: 409,
+          code: ErrorCodes.INVALID_TRANSITION,
+          engine: "financial",
+          detail: `escrow hold requires funded status (status=${escrow.status})`,
+        })
+      );
+    }
+    if (input.amountMinor !== escrow.grossAmountMinor) {
+      throw new AppError(
+        problem({
+          title: "Unprocessable Entity",
+          status: 422,
+          code: ErrorCodes.VALIDATION_ERROR,
+          engine: "financial",
+          detail: "hold amount must equal escrow gross amount",
+        })
+      );
+    }
 
-      const result = await this.postJournal(tx, {
-        journalType: "escrow_hold",
-        idempotencyKey: input.idempotencyKey,
-        escrowId: input.escrowId,
-        contractId: input.contractId,
-        actorUserId: input.actorUserId,
-        entries: [
-          {
-            accountId: input.customerAccountId,
-            direction: "debit",
-            amountMinor: input.amountMinor,
-            currencyCode: input.currencyCode,
-            entryType: "hold",
-            sequenceNo: 1,
-          },
-          {
-            accountId: input.escrowAccountId,
-            direction: "credit",
-            amountMinor: input.amountMinor,
-            currencyCode: input.currencyCode,
-            entryType: "hold",
-            sequenceNo: 2,
-          },
-        ],
-      });
-
-      if (!result.idempotentReplay) {
-        await this.escrow.updateStatus(tx, input.escrowId, "held");
-      }
-
-      return result;
-    });
-  }
-
-  async releaseEscrow(input: ReleaseEscrowInput): Promise<PostJournalResult> {
-    return this.db.withTransaction(async (tx) => {
-      const existing = await this.ledger.findJournalByIdempotencyKey(tx, input.idempotencyKey);
-      if (existing) {
-        const entries = await this.ledger.listEntriesByJournalId(tx, existing.id);
-        return { journal: existing, entries, idempotentReplay: true };
-      }
-
-      const escrow = await this.escrow.findByIdForUpdate(tx, input.escrowId);
-      if (!escrow) {
-        throw notFound();
-      }
-
-      const providerAmountMinor = escrow.grossAmountMinor - escrow.platformFeeMinor;
-      if (providerAmountMinor < 0) {
-        throw new AppError(
-          problem({
-            title: "Unprocessable Entity",
-            status: 422,
-            code: ErrorCodes.VALIDATION_ERROR,
-            engine: "financial",
-            detail: "platform fee exceeds escrow gross amount",
-          })
-        );
-      }
-
-      const entries: LedgerEntryDraft[] = [
+    const result = await this.postJournal(tx, {
+      journalType: "escrow_hold",
+      idempotencyKey: input.idempotencyKey,
+      escrowId: input.escrowId,
+      contractId: input.contractId,
+      actorUserId: input.actorUserId,
+      entries: [
         {
-          accountId: input.escrowAccountId,
-          direction: "credit",
-          amountMinor: escrow.grossAmountMinor,
+          accountId: input.customerAccountId,
+          direction: "debit",
+          amountMinor: input.amountMinor,
           currencyCode: input.currencyCode,
-          entryType: "release",
+          entryType: "hold",
           sequenceNo: 1,
         },
         {
-          accountId: input.providerAccountId,
-          direction: "debit",
-          amountMinor: providerAmountMinor,
+          accountId: input.escrowAccountId,
+          direction: "credit",
+          amountMinor: input.amountMinor,
           currencyCode: input.currencyCode,
-          entryType: "release",
+          entryType: "hold",
           sequenceNo: 2,
         },
-      ];
-
-      if (escrow.platformFeeMinor > 0) {
-        entries.push({
-          accountId: input.platformAccountId,
-          direction: "debit",
-          amountMinor: escrow.platformFeeMinor,
-          currencyCode: input.currencyCode,
-          entryType: "fee",
-          sequenceNo: 3,
-        });
-      }
-
-      const result = await this.postJournal(tx, {
-        journalType: "escrow_release",
-        idempotencyKey: input.idempotencyKey,
-        escrowId: input.escrowId,
-        contractId: input.contractId,
-        actorUserId: input.actorUserId,
-        entries,
-      });
-
-      if (!result.idempotentReplay) {
-        await this.escrow.updateStatus(tx, input.escrowId, "released");
-      }
-
-      return result;
+      ],
     });
+
+    if (!result.idempotentReplay && options?.updateEscrowStatus !== false) {
+      await this.escrow.updateStatus(tx, input.escrowId, "held");
+    }
+
+    return result;
+  }
+
+  async fundEscrowHold(input: FundEscrowHoldInput): Promise<PostJournalResult> {
+    return this.db.withTransaction((tx) => this.fundEscrowHoldTx(tx, input));
+  }
+
+  async releaseEscrowTx(
+    tx: DbClient,
+    input: ReleaseEscrowInput,
+    options?: { updateEscrowStatus?: boolean }
+  ): Promise<PostJournalResult> {
+    const existing = await this.ledger.findJournalByIdempotencyKey(tx, input.idempotencyKey);
+    if (existing) {
+      const entries = await this.ledger.listEntriesByJournalId(tx, existing.id);
+      return { journal: existing, entries, idempotentReplay: true };
+    }
+
+    const escrow = await this.escrow.findByIdForUpdate(tx, input.escrowId);
+    if (!escrow) {
+      throw notFound();
+    }
+
+    const providerAmountMinor = escrow.grossAmountMinor - escrow.platformFeeMinor;
+    if (providerAmountMinor < 0) {
+      throw new AppError(
+        problem({
+          title: "Unprocessable Entity",
+          status: 422,
+          code: ErrorCodes.VALIDATION_ERROR,
+          engine: "financial",
+          detail: "platform fee exceeds escrow gross amount",
+        })
+      );
+    }
+
+    const entries: LedgerEntryDraft[] = [
+      {
+        accountId: input.escrowAccountId,
+        direction: "credit",
+        amountMinor: escrow.grossAmountMinor,
+        currencyCode: input.currencyCode,
+        entryType: "release",
+        sequenceNo: 1,
+      },
+      {
+        accountId: input.providerAccountId,
+        direction: "debit",
+        amountMinor: providerAmountMinor,
+        currencyCode: input.currencyCode,
+        entryType: "release",
+        sequenceNo: 2,
+      },
+    ];
+
+    if (escrow.platformFeeMinor > 0) {
+      entries.push({
+        accountId: input.platformAccountId,
+        direction: "debit",
+        amountMinor: escrow.platformFeeMinor,
+        currencyCode: input.currencyCode,
+        entryType: "fee",
+        sequenceNo: 3,
+      });
+    }
+
+    const result = await this.postJournal(tx, {
+      journalType: "escrow_release",
+      idempotencyKey: input.idempotencyKey,
+      escrowId: input.escrowId,
+      contractId: input.contractId,
+      actorUserId: input.actorUserId,
+      entries,
+    });
+
+    if (!result.idempotentReplay && options?.updateEscrowStatus !== false) {
+      await this.escrow.updateStatus(tx, input.escrowId, "released");
+    }
+
+    return result;
+  }
+
+  async releaseEscrow(input: ReleaseEscrowInput): Promise<PostJournalResult> {
+    return this.db.withTransaction((tx) => this.releaseEscrowTx(tx, input));
+  }
+
+  async refundEscrowTx(
+    tx: DbClient,
+    input: RefundEscrowInput,
+    options?: { updateEscrowStatus?: boolean }
+  ): Promise<PostJournalResult> {
+    const existing = await this.ledger.findJournalByIdempotencyKey(tx, input.idempotencyKey);
+    if (existing) {
+      const entries = await this.ledger.listEntriesByJournalId(tx, existing.id);
+      return { journal: existing, entries, idempotentReplay: true };
+    }
+
+    const escrow = await this.escrow.findByIdForUpdate(tx, input.escrowId);
+    if (!escrow) {
+      throw notFound();
+    }
+
+    const alreadyRefundedMinor = await this.ledger.sumRefundedMinor(tx, input.escrowId);
+    assertRefundDoesNotExceedEscrow({
+      refundAmountMinor: input.refundAmountMinor,
+      escrowGrossAmountMinor: escrow.grossAmountMinor,
+      alreadyRefundedMinor,
+    });
+
+    const isFullRefund = alreadyRefundedMinor + input.refundAmountMinor >= escrow.grossAmountMinor;
+    const journalType: JournalType = isFullRefund ? "escrow_refund" : "escrow_partial_refund";
+    const entryType = isFullRefund ? "refund" : "partial_refund";
+
+    const result = await this.postJournal(tx, {
+      journalType,
+      idempotencyKey: input.idempotencyKey,
+      escrowId: input.escrowId,
+      contractId: input.contractId,
+      actorUserId: input.actorUserId,
+      entries: [
+        {
+          accountId: input.customerAccountId,
+          direction: "debit",
+          amountMinor: input.refundAmountMinor,
+          currencyCode: input.currencyCode,
+          entryType,
+          sequenceNo: 1,
+        },
+        {
+          accountId: input.escrowAccountId,
+          direction: "credit",
+          amountMinor: input.refundAmountMinor,
+          currencyCode: input.currencyCode,
+          entryType,
+          sequenceNo: 2,
+        },
+      ],
+    });
+
+    if (!result.idempotentReplay && options?.updateEscrowStatus !== false) {
+      const nextStatus: EscrowStatus = isFullRefund ? "refunded" : "partially_refunded";
+      await this.escrow.updateStatus(tx, input.escrowId, nextStatus);
+    }
+
+    return result;
   }
 
   async refundEscrow(input: RefundEscrowInput): Promise<PostJournalResult> {
-    return this.db.withTransaction(async (tx) => {
-      const existing = await this.ledger.findJournalByIdempotencyKey(tx, input.idempotencyKey);
-      if (existing) {
-        const entries = await this.ledger.listEntriesByJournalId(tx, existing.id);
-        return { journal: existing, entries, idempotentReplay: true };
-      }
-
-      const escrow = await this.escrow.findByIdForUpdate(tx, input.escrowId);
-      if (!escrow) {
-        throw notFound();
-      }
-
-      const alreadyRefundedMinor = await this.ledger.sumRefundedMinor(tx, input.escrowId);
-      assertRefundDoesNotExceedEscrow({
-        refundAmountMinor: input.refundAmountMinor,
-        escrowGrossAmountMinor: escrow.grossAmountMinor,
-        alreadyRefundedMinor,
-      });
-
-      const isFullRefund = alreadyRefundedMinor + input.refundAmountMinor >= escrow.grossAmountMinor;
-      const journalType: JournalType = isFullRefund ? "escrow_refund" : "escrow_partial_refund";
-      const entryType = isFullRefund ? "refund" : "partial_refund";
-
-      const result = await this.postJournal(tx, {
-        journalType,
-        idempotencyKey: input.idempotencyKey,
-        escrowId: input.escrowId,
-        contractId: input.contractId,
-        actorUserId: input.actorUserId,
-        entries: [
-          {
-            accountId: input.customerAccountId,
-            direction: "debit",
-            amountMinor: input.refundAmountMinor,
-            currencyCode: input.currencyCode,
-            entryType,
-            sequenceNo: 1,
-          },
-          {
-            accountId: input.escrowAccountId,
-            direction: "credit",
-            amountMinor: input.refundAmountMinor,
-            currencyCode: input.currencyCode,
-            entryType,
-            sequenceNo: 2,
-          },
-        ],
-      });
-
-      if (!result.idempotentReplay) {
-        const nextStatus: EscrowStatus = isFullRefund ? "refunded" : "partially_refunded";
-        await this.escrow.updateStatus(tx, input.escrowId, nextStatus);
-      }
-
-      return result;
-    });
+    return this.db.withTransaction((tx) => this.refundEscrowTx(tx, input));
   }
 }
 

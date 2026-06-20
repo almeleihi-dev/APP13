@@ -36,6 +36,13 @@ export const RELEASE_ELIGIBLE_ESCROW_STATUSES = new Set<EscrowStatus>([
   "awaiting_acceptance",
 ]);
 
+/** Escrow states that auto-freeze when contract enters issue_raised. */
+export const FREEZE_ELIGIBLE_ESCROW_STATUSES = new Set<EscrowStatus>([
+  "held",
+  "in_execution",
+  "awaiting_acceptance",
+]);
+
 /** Minimum funded lifecycle before hold/release operations. */
 export const HELD_OR_BEYOND_ESCROW_STATUSES = new Set<EscrowStatus>([
   "held",

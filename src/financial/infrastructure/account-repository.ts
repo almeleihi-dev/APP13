@@ -20,6 +20,14 @@ export class AccountRepository {
     return mapAccount(result.rows[0]);
   }
 
+  async findByAccountCode(db: Queryable, accountCode: string): Promise<Account | null> {
+    const result = await db.query(`SELECT * FROM financial.accounts WHERE account_code = $1`, [
+      accountCode,
+    ]);
+    if (result.rowCount === 0) return null;
+    return mapAccount(result.rows[0]);
+  }
+
   async listByIds(db: Queryable, ids: string[]): Promise<Account[]> {
     if (ids.length === 0) return [];
     const result = await db.query(
@@ -27,6 +35,35 @@ export class AccountRepository {
       [ids]
     );
     return result.rows.map(mapAccount);
+  }
+
+  async insert(
+    db: Queryable,
+    input: {
+      accountCode: string;
+      accountType: AccountType;
+      currencyCode: string;
+      ownerEntityType?: OwnerEntityType | null;
+      ownerEntityId?: string | null;
+    }
+  ): Promise<Account> {
+    const result = await db.query(
+      `
+        INSERT INTO financial.accounts (
+          account_code, account_type, currency_code, owner_entity_type, owner_entity_id
+        )
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING *
+      `,
+      [
+        input.accountCode,
+        input.accountType,
+        input.currencyCode,
+        input.ownerEntityType ?? null,
+        input.ownerEntityId ?? null,
+      ]
+    );
+    return mapAccount(result.rows[0]);
   }
 }
 

@@ -9,6 +9,7 @@ export {
   type EscrowAgreement,
   RELEASE_ELIGIBLE_ESCROW_STATUSES,
   HELD_OR_BEYOND_ESCROW_STATUSES,
+  FREEZE_ELIGIBLE_ESCROW_STATUSES,
 } from "./escrow.js";
 export {
   type JournalType,

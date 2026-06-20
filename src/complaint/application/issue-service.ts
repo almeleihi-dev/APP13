@@ -7,12 +7,14 @@ import {
   assertIssueScope,
 } from "../domain/issue.js";
 import { complaintRepository, type ComplaintRepository } from "../infrastructure/complaint-repository.js";
+import type { EscrowService } from "../../financial/application/escrow-service.js";
 
 export class IssueService {
   constructor(
     private readonly db: DbPool,
     private readonly contracts: ContractRepository,
-    private readonly complaints: ComplaintRepository = complaintRepository
+    private readonly complaints: ComplaintRepository = complaintRepository,
+    private readonly escrow?: EscrowService
   ) {}
 
   async createIssue(
@@ -65,6 +67,14 @@ export class IssueService {
         );
       }
 
+      if (this.escrow) {
+        await this.escrow.freezeOnIssueRaisedTx(tx, {
+          contractId: input.contract_id,
+          issueId: issue.id,
+          actorUserId: userId,
+        });
+      }
+
       return {
         id: issue.id,
         contract_id: issue.contractId,
@@ -97,7 +107,8 @@ export class IssueService {
 export function createIssueService(
   db: DbPool,
   contracts: ContractRepository,
-  complaints: ComplaintRepository = complaintRepository
+  complaints: ComplaintRepository = complaintRepository,
+  escrow?: EscrowService
 ): IssueService {
-  return new IssueService(db, contracts, complaints);
+  return new IssueService(db, contracts, complaints, escrow);
 }
