@@ -29,6 +29,7 @@ import type { ExecutionService } from "../execution/application/execution-servic
 import type { EvaluationService } from "../execution/application/evaluation-service.js";
 import type { IssueService } from "../complaint/application/issue-service.js";
 import type { ActionIntelligenceService } from "../action/intelligence/action-intelligence-service.js";
+import type { RequirementIntelligenceService } from "../action/intelligence/requirement/requirement-intelligence-service.js";
 import { createServiceAuthMiddleware } from "./middleware/service-auth.js";
 import { createRevalidationMiddleware } from "./middleware/revalidate.js";
 import { registerActionRoutes, registerContractActionRoutes } from "./routes/actions.js";
@@ -37,6 +38,7 @@ import { registerEvidenceRoutes } from "./routes/evidence.js";
 import { registerIssueRoutes } from "./routes/issues.js";
 import { registerInternalContractRoutes } from "./routes/internal/contracts.js";
 import { registerAiActionRoutes } from "./routes/ai-actions.js";
+import { registerAiRequirementRoutes } from "./routes/ai-requirements.js";
 
 export interface AppDependencies {
   config: AppConfig;
@@ -56,6 +58,7 @@ export interface AppDependencies {
   evaluation: EvaluationService;
   issues: IssueService;
   actionIntelligence: ActionIntelligenceService;
+  requirementIntelligence: RequirementIntelligenceService;
 }
 
 export async function buildServer(deps: AppDependencies) {
@@ -96,6 +99,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerEvidenceRoutes(app, deps.execution);
   await registerIssueRoutes(app, deps.issues);
   await registerAiActionRoutes(app, deps.actionIntelligence);
+  await registerAiRequirementRoutes(app, deps.requirementIntelligence);
   await registerInternalContractRoutes(app, deps.contracts);
 
   return app;

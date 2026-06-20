@@ -26,6 +26,7 @@ import { createEvaluationService } from "./execution/application/evaluation-serv
 import { createIssueService } from "./complaint/application/issue-service.js";
 import { createObjectStorage } from "./platform/storage/index.js";
 import { createActionIntelligenceService } from "./action/intelligence/action-intelligence-service.js";
+import { createRequirementIntelligenceService } from "./action/intelligence/requirement/requirement-intelligence-service.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -76,6 +77,7 @@ async function main(): Promise<void> {
   const evaluation = createEvaluationService(db, contractRepository);
   const issues = createIssueService(db, contractRepository);
   const actionIntelligence = createActionIntelligenceService();
+  const requirementIntelligence = createRequirementIntelligenceService();
 
   const app = await buildServer({
     config,
@@ -95,6 +97,7 @@ async function main(): Promise<void> {
     evaluation,
     issues,
     actionIntelligence,
+    requirementIntelligence,
   });
 
   try {
