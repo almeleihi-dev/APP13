@@ -35,6 +35,8 @@
     "verify:ai8": "npm run test:ai8 && npm run build && npm run lint:imports",
     "test:p1": "node --import tsx --test test/ui-request-analysis.test.ts test/ui-workflow-result.test.ts",
     "verify:p1": "npm run test:p1 && npm run build && npm run lint:imports",
+    "test:p2": "node --import tsx --test test/ui-provider-profile.test.ts test/ui-provider-dashboard.test.ts",
+    "verify:p2": "npm run test:p2 && npm run build && npm run lint:imports",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
     "test:b5": "node --import tsx --test test/b5-execution-integration.test.ts",
     "test:b6": "node --import tsx --test --test-concurrency=1 test/b6-financial-migration.test.ts test/b6-ledger-service-integration.test.ts test/b6-escrow-service-integration.test.ts",
