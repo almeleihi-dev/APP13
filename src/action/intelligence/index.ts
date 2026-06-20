@@ -14,6 +14,5 @@ export {
 export {
   ActionIntelligenceService,
   createActionIntelligenceService,
-  actionIntelligenceService,
   detectLanguage,
 } from "./action-intelligence-service.js";

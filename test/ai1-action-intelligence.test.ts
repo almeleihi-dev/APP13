@@ -9,7 +9,7 @@ import { AppError, ErrorCodes } from "../src/shared/errors/index.js";
 
 describe("AI-1 profession action library", () => {
   it("defines bilingual mappings for MVP action codes", () => {
-    assert.ok(PROFESSION_ACTION_LIBRARY.length >= 10);
+    assert.ok(PROFESSION_ACTION_LIBRARY.length >= 11);
     for (const mapping of PROFESSION_ACTION_LIBRARY) {
       assert.ok(mapping.profession.en.length > 0);
       assert.ok(mapping.profession.ar.length > 0);
@@ -93,5 +93,40 @@ describe("AI-1 ActionIntelligenceService", () => {
         error.problem.code === ErrorCodes.VALIDATION_ERROR &&
         error.problem.engine === "action"
     );
+  });
+
+  it("returns unknown profile for gibberish input with no keyword matches", () => {
+    const result = service.extract({
+      cv_text: "xyzzy qwerty foobar nonsense lorem ipsum",
+      experience_text: "zzzz 12345 !!!",
+    });
+
+    assert.equal(result.profession, "unknown");
+    assert.equal(result.confidence, 0);
+    assert.deepEqual(result.actions, []);
+    assert.deepEqual(result.skills, []);
+    assert.deepEqual(result.deliverables, []);
+  });
+
+  it("maps English cleaning keywords to A.4.2", () => {
+    const result = service.extract({
+      cv_text: "Professional cleaner with housekeeping and disinfection experience.",
+      experience_text: "Janitor services including sanitization of shared spaces.",
+    });
+
+    assert.equal(result.profession, "Cleaning & Sanitization");
+    assert.equal(result.actions[0]?.action_code, "A.4.2");
+    assert.ok(result.confidence > 0);
+  });
+
+  it("maps Arabic cleaning keywords to A.4.2", () => {
+    const result = service.extract({
+      experience_text: "عامل نظافة متخصص في تنظيف وتعقيم المساحات باستخدام مطهرات معتمدة",
+      language: "ar",
+    });
+
+    assert.equal(result.profession, "تنظيف وتعقيم");
+    assert.equal(result.actions[0]?.action_code, "A.4.2");
+    assert.ok(result.confidence > 0);
   });
 });

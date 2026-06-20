@@ -143,6 +143,17 @@ export class ActionIntelligenceService {
     ).sort((a, b) => b.score - a.score);
 
     const top = scored[0];
+    if (top.score <= 0) {
+      return {
+        profession: "unknown",
+        confidence: 0,
+        language_detected: languageDetected,
+        actions: [],
+        skills: [],
+        deliverables: [],
+      };
+    }
+
     const runnerUp = scored[1] ?? null;
     const confidence = buildConfidence(top, runnerUp);
     const professionLabel =
@@ -162,5 +173,3 @@ export class ActionIntelligenceService {
 export function createActionIntelligenceService(): ActionIntelligenceService {
   return new ActionIntelligenceService();
 }
-
-export const actionIntelligenceService = createActionIntelligenceService();

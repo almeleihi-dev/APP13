@@ -189,6 +189,33 @@ export const PROFESSION_ACTION_LIBRARY: ProfessionMapping[] = [
     ],
   },
   {
+    id: "cleaning_sanitization",
+    profession: label("Cleaning & Sanitization", "تنظيف وتعقيم"),
+    keywords: {
+      en: [
+        "cleaner",
+        "cleaning",
+        "sanitize",
+        "sanitization",
+        "janitor",
+        "housekeeping",
+        "disinfection",
+      ],
+      ar: ["تنظيف", "منظف", "تعقيم", "مطهر", "عامل نظافة", "نظافة", "تدبير منزلي"],
+    },
+    actionCodes: ["A.4.2"],
+    skills: [
+      label("Surface sanitization", "تعقيم الأسطح"),
+      label("Housekeeping routines", "إجراءات التدبير المنزلي"),
+      label("Disinfection protocols", "بروتوكولات التطهير"),
+    ],
+    deliverables: [
+      label("Sanitized space", "مساحة معقمة"),
+      label("Cleaning checklist", "قائمة تنظيف"),
+      label("Disinfection report", "تقرير تعقيم"),
+    ],
+  },
+  {
     id: "property_inspector",
     profession: label("Property Inspector", "مفتش عقارات"),
     keywords: {

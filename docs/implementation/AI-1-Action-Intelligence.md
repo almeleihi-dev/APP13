@@ -1,7 +1,7 @@
 # AI-1 — Action Intelligence Implementation Notes
 
 **Phase:** AI-1 (Action Intelligence — deterministic extraction)  
-**Status:** Implemented — no external AI providers  
+**Status:** Hardened — no external AI providers  
 **Date:** 2026-06-19
 
 ---
@@ -9,6 +9,8 @@
 ## Summary
 
 AI-1 converts profession labels, CV text, and experience descriptions into structured **Actions**, **Skills**, and **Deliverables** using a **deterministic mapping engine**. The module lives under the Action Engine and exposes `POST /ai/actions/extract` for authenticated clients.
+
+**Route namespace (MVP):** The endpoint remains at `/ai/actions/extract` under the `/ai` prefix for this MVP slice. A future namespace move (e.g. `/action/intelligence/extract`) is deferred; clients should treat the current path as the stable AI-1 contract until a dedicated migration.
 
 **Non-binding:** Results are suggestions only. Action creation still requires an explicit `action_type_code` via `ActionService.createAction`.
 
@@ -50,8 +52,9 @@ ActionIntelligenceService.extract()
   1. Normalize + detect language (en | ar | mixed)
   2. Score PROFESSION_ACTION_LIBRARY entries by keyword hits
   3. Boost score when explicit profession matches
-  4. Compute confidence from score + separation from runner-up
-  5. Map winning profile → MVP action codes, skills, deliverables
+  4. If top score is zero → return unknown profile (no default profession)
+  5. Compute confidence from score + separation from runner-up
+  6. Map winning profile → MVP action codes, skills, deliverables
         ↓
 JSON response
   profession, confidence, language_detected, actions[], skills[], deliverables[]
@@ -65,7 +68,8 @@ JSON response
 | **No LLM** | Keyword / profession library only |
 | **Bilingual** | English and Arabic keywords per profession profile |
 | **MVP actions** | Maps to the 15 registered `MVP_ACTION_TYPES` codes |
-| **Confidence** | Normalized keyword coverage + profession hint boost + runner-up separation |
+| **Unknown input** | Zero keyword/profession score → `profession: "unknown"`, empty arrays |
+| **Confidence** | Heuristic match score (0–1), not a calibrated probability |
 
 ---
 
@@ -88,7 +92,7 @@ JSON response
 
 At least one of `profession`, `cv_text`, or `experience_text` is required.
 
-**Response**
+**Response (matched profile)**
 
 ```json
 {
@@ -103,6 +107,27 @@ At least one of `profession`, `cv_text`, or `experience_text` is required.
 }
 ```
 
+**Response (no keyword or profession match)**
+
+When the corpus matches no library keywords and the explicit `profession` hint does not align with any profile, the engine returns:
+
+```json
+{
+  "profession": "unknown",
+  "confidence": 0,
+  "language_detected": "en",
+  "actions": [],
+  "skills": [],
+  "deliverables": []
+}
+```
+
+The engine does **not** default to the first library entry (e.g. plumber) when confidence is zero.
+
+### Confidence semantics
+
+`confidence` is a **heuristic match score** derived from keyword hit count, optional profession-hint boost, and separation from the runner-up profile. It is **not** a calibrated probability or model confidence. Values range from `0` (unknown) to `1` (strong separation + coverage).
+
 ---
 
 ## Profession library
@@ -114,7 +139,16 @@ Each `ProfessionMapping` entry contains:
 - `actionCodes` — one or more MVP action codes
 - `skills` / `deliverables` — localized suggestion lists
 
-Initial profiles: plumber, electrician, software developer, graphic designer, tutor, surface repair, consultant, event coordinator, personal care, property inspector.
+Initial profiles: plumber, electrician, software developer, graphic designer, tutor, surface repair, consultant, event coordinator, personal care, cleaning & sanitization (`A.4.2`), property inspector.
+
+### Cleaning & sanitization (`cleaning_sanitization` → `A.4.2`)
+
+| Language | Keywords |
+|----------|----------|
+| English | cleaner, cleaning, sanitize, sanitization, janitor, housekeeping, disinfection |
+| Arabic | تنظيف، منظف، تعقيم، مطهر، عامل نظافة، نظافة، تدبير منزلي |
+
+Maps to MVP action code **A.4.2 Cleaning & Sanitization**.
 
 ---
 
@@ -134,6 +168,7 @@ Initial profiles: plumber, electrician, software developer, graphic designer, tu
 ```bash
 npm test                                    # includes AI-1 unit tests
 npm run test:ai1                            # unit + integration
+npm run verify:ai1                          # test:ai1 + build + lint:imports
 npm run build
 npm run lint:imports
 ```

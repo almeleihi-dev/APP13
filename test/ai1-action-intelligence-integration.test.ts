@@ -9,6 +9,7 @@ import { registerAiActionRoutes } from "../src/api/routes/ai-actions.js";
 import { errorHandler } from "../src/api/middleware/request.js";
 import { ErrorCodes } from "../src/shared/errors/index.js";
 import type { AuthContext } from "../src/shared/auth/index.js";
+import { buildAuthGuardedAiServer } from "./helpers/ai1-server-integration.js";
 
 async function buildTestAiServer(intelligence: ActionIntelligenceService) {
   const app = Fastify();
@@ -106,6 +107,29 @@ describe("AI-1 POST /ai/actions/extract integration", () => {
     assert.equal(second.statusCode, 200);
     assert.deepEqual(first.json(), second.json());
     await app.close();
+  });
+
+  it("returns 401 when unauthenticated through production auth middleware", async () => {
+    const app = await buildAuthGuardedAiServer();
+    try {
+      const response = await app.inject({
+        method: "POST",
+        url: "/ai/actions/extract",
+        headers: {
+          "idempotency-key": "ai1-unauth-test-key",
+        },
+        payload: {
+          profession: "Plumber",
+          cv_text: "Licensed plumber with pipe fitting experience.",
+        },
+      });
+
+      assert.equal(response.statusCode, 401);
+      const body = response.json<{ code?: string }>();
+      assert.equal(body.code, ErrorCodes.UNAUTHORIZED);
+    } finally {
+      await app.close();
+    }
   });
 });
 
