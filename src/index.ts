@@ -32,6 +32,7 @@ import { createTrustIntelligenceService } from "./trust/intelligence/trust-intel
 import { createMatchingIntelligenceService } from "./matching/intelligence/matching-intelligence-service.js";
 import { createPricingIntelligenceService } from "./pricing/intelligence/pricing-intelligence-service.js";
 import { createNegotiationIntelligenceService } from "./negotiation/intelligence/negotiation-intelligence-service.js";
+import { createWorkflowIntelligenceService } from "./orchestrator/intelligence/workflow-intelligence-service.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -91,6 +92,7 @@ async function main(): Promise<void> {
   const matchingIntelligence = createMatchingIntelligenceService();
   const pricingIntelligence = createPricingIntelligenceService();
   const negotiationIntelligence = createNegotiationIntelligenceService();
+  const workflowIntelligence = createWorkflowIntelligenceService();
 
   const app = await buildServer({
     config,
@@ -116,6 +118,7 @@ async function main(): Promise<void> {
     matchingIntelligence,
     pricingIntelligence,
     negotiationIntelligence,
+    workflowIntelligence,
   });
 
   try {

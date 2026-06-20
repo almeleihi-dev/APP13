@@ -31,7 +31,8 @@ export type EngineName =
   | "financial"
   | "matching"
   | "pricing"
-  | "negotiation";
+  | "negotiation"
+  | "orchestrator";
 
 export interface ProblemDetails {
   type: string;
