@@ -308,11 +308,12 @@ export class ExecutionRepository {
       submitted: "submitted_at = COALESCE(submitted_at, now())",
       accepted: "accepted_at = COALESCE(accepted_at, now())",
     };
-    const extra = timestamps[toStatus] ?? "updated_at = now()";
+    const extra = timestamps[toStatus] ?? "";
     const result = await db.query(
       `
         UPDATE execution.milestones
-        SET status = $2::execution.milestone_status, ${extra}, updated_at = now()
+        SET status = $2::execution.milestone_status,
+            ${extra}${extra ? ", " : ""}updated_at = now()
         WHERE id = $1 AND ($3::text IS NULL OR status = $3::execution.milestone_status)
         RETURNING *
       `,
@@ -377,6 +378,158 @@ export class ExecutionRepository {
     );
     return Number(result.rows[0].count);
   }
+
+  async findEvidenceById(db: Queryable, evidenceId: string): Promise<EvidenceRecord | null> {
+    const result = await db.query(`SELECT * FROM execution.evidence WHERE id = $1`, [evidenceId]);
+    if (result.rowCount === 0) return null;
+    return mapEvidence(result.rows[0]);
+  }
+
+  async listEvidenceByContract(db: Queryable, contractId: string): Promise<EvidenceRecord[]> {
+    const result = await db.query(
+      `SELECT * FROM execution.evidence WHERE contract_id = $1 ORDER BY submitted_at DESC`,
+      [contractId]
+    );
+    return result.rows.map(mapEvidence);
+  }
+
+  async listEvidenceByMilestone(
+    db: Queryable,
+    contractId: string,
+    milestoneId: string
+  ): Promise<EvidenceRecord[]> {
+    const result = await db.query(
+      `
+        SELECT * FROM execution.evidence
+        WHERE contract_id = $1 AND milestone_id = $2
+        ORDER BY submitted_at DESC
+      `,
+      [contractId, milestoneId]
+    );
+    return result.rows.map(mapEvidence);
+  }
+
+  async findAttestationById(db: Queryable, attestationId: string): Promise<Attestation | null> {
+    const result = await db.query(`SELECT * FROM execution.attestations WHERE id = $1`, [
+      attestationId,
+    ]);
+    if (result.rowCount === 0) return null;
+    return mapAttestation(result.rows[0]);
+  }
+
+  async linkAttestationEvidence(
+    db: Queryable,
+    attestationId: string,
+    evidenceIds: string[],
+    contractId: string
+  ): Promise<number> {
+    let linked = 0;
+    for (const evidenceId of evidenceIds) {
+      const result = await db.query(
+        `
+          INSERT INTO execution.attestation_evidence (attestation_id, evidence_id, contract_id)
+          VALUES ($1, $2, $3)
+          ON CONFLICT (attestation_id, evidence_id) DO NOTHING
+          RETURNING id
+        `,
+        [attestationId, evidenceId, contractId]
+      );
+      if ((result.rowCount ?? 0) > 0) linked += 1;
+    }
+    return linked;
+  }
+
+  async linkAttestationMilestones(
+    db: Queryable,
+    attestationId: string,
+    milestoneIds: string[],
+    contractId: string
+  ): Promise<number> {
+    let linked = 0;
+    for (const milestoneId of milestoneIds) {
+      const result = await db.query(
+        `
+          INSERT INTO execution.attestation_milestones (attestation_id, milestone_id, contract_id)
+          VALUES ($1, $2, $3)
+          ON CONFLICT (attestation_id, milestone_id) DO NOTHING
+          RETURNING id
+        `,
+        [attestationId, milestoneId, contractId]
+      );
+      if ((result.rowCount ?? 0) > 0) linked += 1;
+    }
+    return linked;
+  }
+
+  async findEvaluationByContract(
+    db: Queryable,
+    contractId: string
+  ): Promise<CustomerEvaluation | null> {
+    const result = await db.query(
+      `SELECT * FROM execution.customer_evaluations WHERE contract_id = $1`,
+      [contractId]
+    );
+    if (result.rowCount === 0) return null;
+    return mapEvaluation(result.rows[0]);
+  }
+
+  async insertEvaluation(
+    db: Queryable,
+    input: {
+      contractId: string;
+      submittedByUserId: string;
+      evalFormId: string;
+      dimensionScores: Record<string, unknown>;
+      compositeScore: number;
+    }
+  ): Promise<CustomerEvaluation> {
+    const result = await db.query(
+      `
+        INSERT INTO execution.customer_evaluations (
+          contract_id, submitted_by_user_id, eval_form_id,
+          dimension_scores, composite_score
+        )
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING *
+      `,
+      [
+        input.contractId,
+        input.submittedByUserId,
+        input.evalFormId,
+        JSON.stringify(input.dimensionScores),
+        input.compositeScore,
+      ]
+    );
+    return mapEvaluation(result.rows[0]);
+  }
+}
+
+export interface CustomerEvaluation {
+  id: string;
+  contractId: string;
+  submittedByUserId: string;
+  evalFormId: string;
+  dimensionScores: Record<string, unknown>;
+  compositeScore: number;
+  submittedAt: Date;
+  supersededAt: Date | null;
+  supersededByComplaintId: string | null;
+  createdAt: Date;
+}
+
+function mapEvaluation(row: Record<string, unknown>): CustomerEvaluation {
+  return {
+    id: row.id as string,
+    contractId: row.contract_id as string,
+    submittedByUserId: row.submitted_by_user_id as string,
+    evalFormId: row.eval_form_id as string,
+    dimensionScores: row.dimension_scores as Record<string, unknown>,
+    compositeScore: row.composite_score as number,
+    submittedAt: row.submitted_at as Date,
+    supersededAt: (row.superseded_at as Date | null) ?? null,
+    supersededByComplaintId: (row.superseded_by_complaint_id as string | null) ?? null,
+    createdAt: row.created_at as Date,
+  };
 }
 
 export const executionRepository = new ExecutionRepository();

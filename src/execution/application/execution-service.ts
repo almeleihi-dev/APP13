@@ -4,6 +4,7 @@ import { AppError, ErrorCodes, notFound, problem } from "../../shared/errors/ind
 import { DomainEvents } from "../../shared/events/index.js";
 import { outboxWriter } from "../../platform/outbox/index.js";
 import type { ObjectStorage } from "../../platform/storage/index.js";
+import { DOWNLOAD_URL_TTL_SECONDS } from "../../platform/storage/s3-storage.js";
 import type { ContractRepository } from "../../contract/infrastructure/contract-repository.js";
 import type { ContractParty } from "../../contract/domain/contract.js";
 import {
@@ -183,6 +184,18 @@ export class ExecutionService {
         );
       }
 
+      if (!(await this.storage.objectExists(intent.storageKey))) {
+        throw new AppError(
+          problem({
+            title: "Conflict",
+            status: 409,
+            code: ErrorCodes.VALIDATION_ERROR,
+            engine: "execution",
+            detail: "Uploaded object not found in storage",
+          })
+        );
+      }
+
       const hashOk = await this.storage.verifyObjectContentHash(
         intent.storageKey,
         input.content_hash
@@ -343,6 +356,219 @@ export class ExecutionService {
 
       return { id: updated.id, fulfillment_rating: updated.fulfillmentRating };
     });
+  }
+
+  async listContractEvidence(contractId: string, userId: string) {
+    await this.requireContractParty(contractId, userId);
+    const contract = await this.contracts.findById(this.db.pool, contractId);
+    if (!contract) throw notFound();
+    assertCa2Executable(contract.status);
+
+    const rows = await this.execution.listEvidenceByContract(this.db.pool, contractId);
+    return {
+      data: rows.map((e) => this.toEvidenceResponse(e)),
+      meta: { has_more: false },
+    };
+  }
+
+  async listMilestoneEvidence(contractId: string, milestoneId: string, userId: string) {
+    await this.requireContractParty(contractId, userId);
+    const contract = await this.contracts.findById(this.db.pool, contractId);
+    if (!contract) throw notFound();
+    assertCa2Executable(contract.status);
+
+    const milestone = await this.execution.findMilestoneById(this.db.pool, milestoneId);
+    if (!milestone || milestone.contractId !== contractId) throw notFound();
+
+    const rows = await this.execution.listEvidenceByMilestone(
+      this.db.pool,
+      contractId,
+      milestoneId
+    );
+    return {
+      data: rows.map((e) => this.toEvidenceResponse(e)),
+      meta: { has_more: false },
+    };
+  }
+
+  async getEvidence(evidenceId: string, userId: string) {
+    const evidence = await this.execution.findEvidenceById(this.db.pool, evidenceId);
+    if (!evidence) throw notFound();
+
+    await this.requireContractParty(evidence.contractId, userId);
+    return this.toEvidenceResponse(evidence);
+  }
+
+  async getEvidenceDownloadUrl(evidenceId: string, userId: string) {
+    const evidence = await this.execution.findEvidenceById(this.db.pool, evidenceId);
+    if (!evidence) throw notFound();
+
+    await this.requireContractParty(evidence.contractId, userId);
+
+    if (!evidence.storageKey) {
+      throw new AppError(
+        problem({
+          title: "Conflict",
+          status: 409,
+          code: ErrorCodes.VALIDATION_ERROR,
+          engine: "execution",
+          detail: "Evidence has no stored object",
+        })
+      );
+    }
+
+    this.assertStorageKeyTenancy(evidence.storageKey, evidence.contractId, evidence.milestoneId);
+
+    if (!(await this.storage.objectExists(evidence.storageKey))) {
+      throw new AppError(
+        problem({
+          title: "Not Found",
+          status: 404,
+          code: ErrorCodes.NOT_FOUND,
+          engine: "execution",
+          detail: "Stored object not found",
+        })
+      );
+    }
+
+    const presigned = await this.storage.createPresignedGet({
+      storageKey: evidence.storageKey,
+      expiresSeconds: DOWNLOAD_URL_TTL_SECONDS,
+    });
+
+    return {
+      url: presigned.downloadUrl,
+      expires_at: presigned.expiresAt.toISOString(),
+      document_hash: evidence.contentHash,
+    };
+  }
+
+  async linkAttestationEvidence(
+    contractId: string,
+    attestationId: string,
+    userId: string,
+    input: { evidence_ids: string[]; idempotency_key: string }
+  ) {
+    void input.idempotency_key;
+    await this.requireContractParty(contractId, userId);
+    const contract = await this.contracts.findById(this.db.pool, contractId);
+    if (!contract) throw notFound();
+    assertCa2Executable(contract.status);
+
+    const attestation = await this.execution.findAttestationById(this.db.pool, attestationId);
+    if (!attestation || attestation.contractId !== contractId) throw notFound();
+
+    if (!input.evidence_ids.length) {
+      throw new AppError(
+        problem({
+          title: "Bad Request",
+          status: 400,
+          code: ErrorCodes.VALIDATION_ERROR,
+          engine: "execution",
+          detail: "evidence_ids must not be empty",
+        })
+      );
+    }
+
+    return this.db.withTransaction(async (tx) => {
+      for (const evidenceId of input.evidence_ids) {
+        const evidence = await this.execution.findEvidenceById(tx, evidenceId);
+        if (!evidence || evidence.contractId !== contractId) throw notFound();
+        if (evidence.storageKey) {
+          this.assertStorageKeyTenancy(evidence.storageKey, contractId, evidence.milestoneId);
+        }
+      }
+
+      const linked = await this.execution.linkAttestationEvidence(
+        tx,
+        attestationId,
+        input.evidence_ids,
+        contractId
+      );
+
+      return { linked, attestation_id: attestationId };
+    });
+  }
+
+  async linkAttestationMilestones(
+    contractId: string,
+    attestationId: string,
+    userId: string,
+    input: { milestone_ids: string[]; idempotency_key: string }
+  ) {
+    void input.idempotency_key;
+    await this.requireContractParty(contractId, userId);
+    const contract = await this.contracts.findById(this.db.pool, contractId);
+    if (!contract) throw notFound();
+    assertCa2Executable(contract.status);
+
+    const attestation = await this.execution.findAttestationById(this.db.pool, attestationId);
+    if (!attestation || attestation.contractId !== contractId) throw notFound();
+
+    if (!input.milestone_ids.length) {
+      throw new AppError(
+        problem({
+          title: "Bad Request",
+          status: 400,
+          code: ErrorCodes.VALIDATION_ERROR,
+          engine: "execution",
+          detail: "milestone_ids must not be empty",
+        })
+      );
+    }
+
+    return this.db.withTransaction(async (tx) => {
+      for (const milestoneId of input.milestone_ids) {
+        const milestone = await this.execution.findMilestoneById(tx, milestoneId);
+        if (!milestone || milestone.contractId !== contractId) throw notFound();
+      }
+
+      const linked = await this.execution.linkAttestationMilestones(
+        tx,
+        attestationId,
+        input.milestone_ids,
+        contractId
+      );
+
+      return { linked, attestation_id: attestationId };
+    });
+  }
+
+  private toEvidenceResponse(evidence: {
+    id: string;
+    contractId: string;
+    milestoneId: string;
+    evidenceType: EvidenceType;
+    contentHash: string | null;
+    createdAt: Date;
+  }) {
+    return {
+      id: evidence.id,
+      contract_id: evidence.contractId,
+      milestone_id: evidence.milestoneId,
+      evidence_type: evidence.evidenceType,
+      content_hash: evidence.contentHash,
+      created_at: evidence.createdAt.toISOString(),
+    };
+  }
+
+  private assertStorageKeyTenancy(
+    storageKey: string,
+    contractId: string,
+    milestoneId: string
+  ): void {
+    const expectedPrefix = `contracts/${contractId}/milestones/${milestoneId}/`;
+    if (!storageKey.startsWith(expectedPrefix)) {
+      throw new AppError(
+        problem({
+          title: "Forbidden",
+          status: 403,
+          code: ErrorCodes.FORBIDDEN,
+          engine: "execution",
+          detail: "Storage key tenancy mismatch",
+        })
+      );
+    }
   }
 
   private toUploadIntentResponse(intent: {

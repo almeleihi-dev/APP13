@@ -20,6 +20,11 @@ import {
 import { buildServer } from "./api/server.js";
 import { createActionService } from "./action/application/action-service.js";
 import { createContractEngineService } from "./contract/application/contract-engine.service.js";
+import { contractRepository } from "./contract/infrastructure/contract-repository.js";
+import { createExecutionService } from "./execution/application/execution-service.js";
+import { createEvaluationService } from "./execution/application/evaluation-service.js";
+import { createIssueService } from "./complaint/application/issue-service.js";
+import { createObjectStorage } from "./platform/storage/index.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -65,6 +70,10 @@ async function main(): Promise<void> {
 
   const actions = createActionService(db, identityRepository);
   const contracts = createContractEngineService(db, identityRepository);
+  const storage = createObjectStorage(config);
+  const execution = createExecutionService(db, contractRepository, storage);
+  const evaluation = createEvaluationService(db, contractRepository);
+  const issues = createIssueService(db, contractRepository);
 
   const app = await buildServer({
     config,
@@ -80,6 +89,9 @@ async function main(): Promise<void> {
     revalidation,
     actions,
     contracts,
+    execution,
+    evaluation,
+    issues,
   });
 
   try {

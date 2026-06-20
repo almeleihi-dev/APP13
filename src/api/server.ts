@@ -25,10 +25,15 @@ import { registerIdentityRoutes } from "./routes/identity.js";
 import { registerVerificationRoutes } from "./routes/verification.js";
 import type { ActionService } from "../action/application/action-service.js";
 import type { ContractEngineService } from "../contract/application/contract-engine.service.js";
+import type { ExecutionService } from "../execution/application/execution-service.js";
+import type { EvaluationService } from "../execution/application/evaluation-service.js";
+import type { IssueService } from "../complaint/application/issue-service.js";
 import { createServiceAuthMiddleware } from "./middleware/service-auth.js";
 import { createRevalidationMiddleware } from "./middleware/revalidate.js";
 import { registerActionRoutes, registerContractActionRoutes } from "./routes/actions.js";
 import { registerContractRoutes } from "./routes/contracts.js";
+import { registerEvidenceRoutes } from "./routes/evidence.js";
+import { registerIssueRoutes } from "./routes/issues.js";
 import { registerInternalContractRoutes } from "./routes/internal/contracts.js";
 
 export interface AppDependencies {
@@ -45,6 +50,9 @@ export interface AppDependencies {
   revalidation: IdentityRevalidationService;
   actions: ActionService;
   contracts: ContractEngineService;
+  execution: ExecutionService;
+  evaluation: EvaluationService;
+  issues: IssueService;
 }
 
 export async function buildServer(deps: AppDependencies) {
@@ -81,7 +89,9 @@ export async function buildServer(deps: AppDependencies) {
   await registerVerificationRoutes(app, deps.verification);
   await registerActionRoutes(app, deps.actions);
   await registerContractActionRoutes(app, deps.contracts);
-  await registerContractRoutes(app, deps.contracts);
+  await registerContractRoutes(app, deps.contracts, deps.evaluation);
+  await registerEvidenceRoutes(app, deps.execution);
+  await registerIssueRoutes(app, deps.issues);
   await registerInternalContractRoutes(app, deps.contracts);
 
   return app;

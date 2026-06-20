@@ -1,9 +1,11 @@
 import type { FastifyInstance } from "fastify";
 import type { ContractEngineService } from "../../contract/application/contract-engine.service.js";
+import type { EvaluationService } from "../../execution/application/evaluation-service.js";
 
 export async function registerContractRoutes(
   app: FastifyInstance,
-  contracts: ContractEngineService
+  contracts: ContractEngineService,
+  evaluation?: EvaluationService
 ): Promise<void> {
   app.get(
     "/v1/contract-templates",
@@ -129,4 +131,40 @@ export async function registerContractRoutes(
       );
     }
   );
+
+  if (evaluation) {
+    app.get(
+      "/v1/contracts/:contractId/evaluation",
+      { config: { authRequired: true } },
+      async (request, reply) => {
+        const { contractId } = request.params as { contractId: string };
+        return reply.send(
+          await evaluation.getEvaluation(contractId, request.authContext!.userId)
+        );
+      }
+    );
+
+    app.post(
+      "/v1/contracts/:contractId/evaluation",
+      { config: { authRequired: true, revalidateIdentity: true } },
+      async (request, reply) => {
+        const { contractId } = request.params as { contractId: string };
+        const body = request.body as {
+          rating: number;
+          comment?: string;
+          idempotency_key?: string;
+        };
+        const result = await evaluation.submitEvaluation(
+          contractId,
+          request.authContext!.userId,
+          {
+            rating: body.rating,
+            comment: body.comment,
+            idempotency_key: body.idempotency_key ?? request.idempotencyKey!,
+          }
+        );
+        return reply.status(201).send(result);
+      }
+    );
+  }
 }

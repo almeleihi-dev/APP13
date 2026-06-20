@@ -28,6 +28,7 @@ const REQUIRED_MIGRATIONS = [
   "007_schema_v1_1_p0",
   "008_operations",
   "009_execution_materialization_gate",
+  "010_upload_intents",
 ];
 
 let db: DbPool;

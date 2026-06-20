@@ -1,5 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import {
   CA2_EXECUTABLE_STATUSES,
   assertCa2Executable,
@@ -285,17 +286,19 @@ describe("ExecutionService evidence flow", () => {
 
   it("confirms evidence when object hash matches intent", async () => {
     const { service, storage, intents } = createService();
+    const body = Buffer.from("evidence-bytes-for-confirm");
+    const contentHash = `sha256:${createHash("sha256").update(body).digest("hex")}`;
     const intent = await service.createEvidenceUploadIntent(
       "contract-1",
       "ms-1",
       "user-provider",
       {
         evidence_type: "EV-PHOTO",
-        content_hash: "sha256:deadbeef",
+        content_hash: contentHash,
         idempotency_key: "idem-3",
       }
     );
-    storage.seedObject(intent.storage_key, "sha256:deadbeef");
+    storage.seedObject(intent.storage_key, contentHash, body);
     intents.set(intent.intent_id, {
       id: intent.intent_id,
       contract_id: "contract-1",
@@ -316,13 +319,13 @@ describe("ExecutionService evidence flow", () => {
     const evidence = await service.confirmEvidence("contract-1", "ms-1", "user-provider", {
       intent_id: intent.intent_id,
       storage_key: intent.storage_key,
-      content_hash: "sha256:deadbeef",
+      content_hash: contentHash,
       evidence_type: "EV-PHOTO",
       idempotency_key: "confirm-1",
     });
 
     assert.equal(evidence.id, "ev-1");
-    assert.equal(evidence.content_hash, "sha256:deadbeef");
+    assert.equal(evidence.content_hash, contentHash);
   });
 
   it("rejects confirm when stored object hash mismatches (EC-B5.3)", async () => {

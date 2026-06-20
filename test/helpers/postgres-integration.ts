@@ -45,8 +45,11 @@ export async function createTestDbPool(url = DEFAULT_DATABASE_URL): Promise<DbPo
     databaseUrl: url,
     redisUrl: process.env.REDIS_URL ?? "redis://localhost:6379",
     s3: {
-      bucket: "test",
-      region: "us-east-1",
+      bucket: process.env.S3_BUCKET ?? "app13-evidence",
+      region: process.env.S3_REGION ?? "us-east-1",
+      endpoint: process.env.S3_ENDPOINT ?? "http://127.0.0.1:9000",
+      accessKey: process.env.S3_ACCESS_KEY ?? "app13",
+      secretKey: process.env.S3_SECRET_KEY ?? "app13secret",
     },
     idempotencyTtlSeconds: 86400,
     jwt: {
@@ -71,10 +74,19 @@ export async function createTestDbPool(url = DEFAULT_DATABASE_URL): Promise<DbPo
 export async function resetContractEngineData(db: DbPool): Promise<void> {
   await db.query(`
     TRUNCATE TABLE
+      platform.upload_intents,
       platform.domain_outbox,
       platform.operations,
+      execution.customer_evaluations,
+      execution.attestation_evidence,
+      execution.attestation_milestones,
+      execution.evidence,
       execution.attestations,
       execution.milestones,
+      complaint.issue_status_history,
+      complaint.issue_dimensions,
+      complaint.issue_milestones,
+      complaint.issues,
       contract.contract_status_history,
       contract.contract_parties,
       contract.contracts,
