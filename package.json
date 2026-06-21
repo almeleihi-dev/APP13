@@ -63,6 +63,8 @@
     "verify:r4": "npm run test:r4 && npm run build && npm run lint:imports",
     "test:r5": "node --import tsx --test test/r5-dispute-client-api.test.ts test/r5-trust-client-api.test.ts test/r5-platform-client-api.test.ts",
     "verify:r5": "npm run test:r5 && npm run build && npm run lint:imports",
+    "test:s1": "node --import tsx --test test/s1-system-verification.test.ts",
+    "verify:s1": "npm run test:s1 && npm run build && npm run lint:imports",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
     "test:b5": "node --import tsx --test test/b5-execution-integration.test.ts",
     "test:b6": "node --import tsx --test --test-concurrency=1 test/b6-financial-migration.test.ts test/b6-ledger-service-integration.test.ts test/b6-escrow-service-integration.test.ts",
