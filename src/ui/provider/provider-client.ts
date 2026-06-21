@@ -1,6 +1,16 @@
 import type { ProviderProfileInput, ProviderProfileResult } from "../../provider/intelligence/types.js";
+import type { ApiResult } from "../../integration/api-response.js";
 import { buildProviderProfilePayload } from "./provider-payload.js";
+import {
+  createProviderApiTransport,
+  createProviderTransportClientError,
+  executeProviderProfile,
+  unwrapProviderProfileResult,
+  type ProviderProfileApiResult,
+} from "../shared/provider-api-transport.js";
 import type { ProviderProfileExecutor, ProviderProfileFormInput, ProviderClientOptions } from "./types.js";
+
+export type { ProviderProfileApiResult };
 
 export class ProviderClientError extends Error {
   readonly status: number;
@@ -15,16 +25,20 @@ export class ProviderClientError extends Error {
 }
 
 export class ProviderClient {
-  private readonly baseUrl: string;
   private readonly authToken?: string;
-  private readonly fetchImpl: typeof fetch;
   private readonly executor?: ProviderProfileExecutor;
+  private readonly transport;
 
   constructor(options: ProviderClientOptions) {
-    this.baseUrl = options.baseUrl.replace(/\/$/, "");
     this.authToken = options.authToken;
-    this.fetchImpl = options.fetchImpl ?? fetch;
     this.executor = options.executor;
+    this.transport = createProviderApiTransport({
+      baseUrl: options.baseUrl,
+      authToken: options.authToken,
+      fetchImpl: options.fetchImpl,
+      timeoutMs: options.timeoutMs,
+      requestExecutor: options.requestExecutor,
+    });
   }
 
   async analyzeProvider(input: ProviderProfileFormInput): Promise<ProviderProfileResult> {
@@ -37,39 +51,56 @@ export class ProviderClient {
     return this.postProviderProfile(payload);
   }
 
-  async postProviderProfile(payload: ProviderProfileInput): Promise<ProviderProfileResult> {
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
+  async analyzeProviderWithApiResult(
+    input: ProviderProfileFormInput
+  ): Promise<ProviderProfileApiResult> {
+    const payload = buildProviderProfilePayload(input);
 
-    if (this.authToken) {
-      headers.Authorization = `Bearer ${this.authToken}`;
+    if (this.executor) {
+      const profile = await this.executor(payload);
+      return {
+        response: { success: true, data: profile },
+        meta: {
+          status: 200,
+          method: "POST",
+          path: "/ai/providers/profile",
+          durationMs: 0,
+        },
+      };
     }
 
-    const response = await this.fetchImpl(`${this.baseUrl}/ai/providers/profile`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify(payload),
-    });
+    return this.postProviderProfileWithApiResult(payload);
+  }
 
-    const body = (await response.json()) as ProviderProfileResult & {
-      code?: string;
-      detail?: string;
-      title?: string;
-    };
-
-    if (!response.ok) {
-      throw new ProviderClientError(
-        response.status,
-        body.detail ?? body.title ?? "Provider profile request failed",
-        body.code
+  async postProviderProfile(payload: ProviderProfileInput): Promise<ProviderProfileResult> {
+    const result = await this.postProviderProfileWithApiResult(payload);
+    if (!result.response.success) {
+      throw createProviderTransportClientError(
+        ProviderClientError,
+        result,
+        "Provider profile request failed"
       );
     }
 
-    return body;
+    return unwrapProviderProfileResult(result);
+  }
+
+  async postProviderProfileWithApiResult(
+    payload: ProviderProfileInput
+  ): Promise<ProviderProfileApiResult> {
+    return executeProviderProfile(payload, this.transport, this.authToken);
   }
 }
 
 export function createProviderClient(options: ProviderClientOptions): ProviderClient {
   return new ProviderClient(options);
+}
+
+export function isProviderProfileApiResult(value: unknown): value is ApiResult<ProviderProfileResult> {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const record = value as ApiResult<ProviderProfileResult>;
+  return typeof record.response?.success === "boolean" && typeof record.meta?.status === "number";
 }

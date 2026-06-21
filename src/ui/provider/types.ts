@@ -10,6 +10,7 @@ import type {
   ProviderRiskLevel,
   ProviderTrustInputs,
 } from "../../provider/intelligence/types.js";
+import type { RequestExecutor } from "../../integration/request-executor.js";
 
 export type { ProviderProfileInput, ProviderProfileResult, ProviderRiskLevel, LocationTier };
 
@@ -47,6 +48,8 @@ export interface ProviderClientConfig {
   baseUrl: string;
   authToken?: string;
   fetchImpl?: typeof fetch;
+  timeoutMs?: number;
+  requestExecutor?: RequestExecutor;
 }
 
 export type ProviderProfileExecutor = (input: ProviderProfileInput) => Promise<ProviderProfileResult>;
