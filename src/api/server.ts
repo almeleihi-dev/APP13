@@ -37,6 +37,13 @@ import type { PricingIntelligenceService } from "../pricing/intelligence/pricing
 import type { NegotiationIntelligenceService } from "../negotiation/intelligence/negotiation-intelligence-service.js";
 import type { WorkflowIntelligenceService } from "../orchestrator/intelligence/workflow-intelligence-service.js";
 import type { ProviderIntelligenceService } from "../provider/intelligence/provider-intelligence-service.js";
+import type { ExperienceServices } from "../experience/index.js";
+import { registerEscrowExperienceRoutes } from "./routes/escrow.js";
+import { registerExecutionExperienceRoutes } from "./routes/execution.js";
+import { registerEvidenceReadRoutes } from "./routes/evidence-read.js";
+import { registerDisputesReadRoutes } from "./routes/disputes-read.js";
+import { registerTrustExperienceRoutes } from "./routes/trust.js";
+import { registerPlatformExperienceRoutes } from "./routes/platform.js";
 import { createServiceAuthMiddleware } from "./middleware/service-auth.js";
 import { createRevalidationMiddleware } from "./middleware/revalidate.js";
 import { registerActionRoutes, registerContractActionRoutes } from "./routes/actions.js";
@@ -80,6 +87,7 @@ export interface AppDependencies {
   negotiationIntelligence: NegotiationIntelligenceService;
   workflowIntelligence: WorkflowIntelligenceService;
   providerIntelligence: ProviderIntelligenceService;
+  experience: ExperienceServices;
 }
 
 export async function buildServer(deps: AppDependencies) {
@@ -129,6 +137,12 @@ export async function buildServer(deps: AppDependencies) {
   await registerAiWorkflowRoutes(app, deps.workflowIntelligence);
   await registerAiProviderRoutes(app, deps.providerIntelligence);
   await registerInternalContractRoutes(app, deps.contracts);
+  await registerEscrowExperienceRoutes(app, deps.experience.escrow);
+  await registerExecutionExperienceRoutes(app, deps.experience.execution);
+  await registerEvidenceReadRoutes(app, deps.experience.evidence);
+  await registerDisputesReadRoutes(app, deps.experience.dispute);
+  await registerTrustExperienceRoutes(app, deps.experience.trust);
+  await registerPlatformExperienceRoutes(app, deps.experience.platform);
 
   return app;
 }

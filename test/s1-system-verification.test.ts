@@ -12,8 +12,10 @@ function readSource(relativePath: string): string {
 }
 
 function collectRoutePaths(source: string): string[] {
-  const matches = source.matchAll(/"(?:\/(?:v1|ai|health)[^"]+)"/g);
-  return [...matches].map((match) => match[0].slice(1, -1));
+  const matches = source.matchAll(
+    /"(\/(?:v1|ai|health|escrow|execution|evidence|disputes|trust|platform)[^"]+)"/g
+  );
+  return [...matches].map((match) => match[1]);
 }
 
 describe("S1 system verification", () => {
@@ -102,7 +104,7 @@ describe("S1 system verification", () => {
     assert.ok(registeredPaths.includes("/ai/providers/profile"));
   });
 
-  it("documents the R4/R5 experience-read endpoint gap on the server", () => {
+  it("implements all R4/R5 experience read endpoints on the server", () => {
     const routeSources = readdirSync(join(SRC, "api/routes"))
       .filter((file) => file.endsWith(".ts"))
       .map((file) => readSource(`src/api/routes/${file}`));
@@ -127,13 +129,9 @@ describe("S1 system verification", () => {
       "/platform/overview",
     ];
 
-    const missing = uiExperienceReadPaths.filter((uiPath) => !registeredPaths.includes(uiPath));
-
-    assert.equal(
-      missing.length,
-      uiExperienceReadPaths.length,
-      "S1 audit expects UI experience read routes to remain unimplemented until a BFF layer is added"
-    );
+    for (const uiPath of uiExperienceReadPaths) {
+      assert.ok(registeredPaths.includes(uiPath), `missing experience route ${uiPath}`);
+    }
   });
 
   it("requires typed ApiResult methods on operational and governance UI clients", () => {

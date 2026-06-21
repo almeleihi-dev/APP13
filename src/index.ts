@@ -34,6 +34,8 @@ import { createPricingIntelligenceService } from "./pricing/intelligence/pricing
 import { createNegotiationIntelligenceService } from "./negotiation/intelligence/negotiation-intelligence-service.js";
 import { createWorkflowIntelligenceService } from "./orchestrator/intelligence/workflow-intelligence-service.js";
 import { createProviderIntelligenceService } from "./provider/intelligence/provider-intelligence-service.js";
+import { createEscrowService } from "./financial/application/escrow-service.js";
+import { createExperienceServices } from "./experience/index.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -83,6 +85,7 @@ async function main(): Promise<void> {
   const execution = createExecutionService(db, contractRepository, storage);
   const evaluation = createEvaluationService(db, contractRepository);
   const issues = createIssueService(db, contractRepository);
+  const escrow = createEscrowService(db);
   const actionIntelligence = createActionIntelligenceService();
   const requirementIntelligence = createRequirementIntelligenceService();
   const contractIntelligence = createContractIntelligenceService(
@@ -95,6 +98,17 @@ async function main(): Promise<void> {
   const negotiationIntelligence = createNegotiationIntelligenceService();
   const workflowIntelligence = createWorkflowIntelligenceService();
   const providerIntelligence = createProviderIntelligenceService();
+  const experience = createExperienceServices({
+    db,
+    contracts,
+    execution,
+    evaluation,
+    issues,
+    escrow,
+    profile,
+    trustIntelligence,
+    providerIntelligence,
+  });
 
   const app = await buildServer({
     config,
@@ -122,6 +136,7 @@ async function main(): Promise<void> {
     negotiationIntelligence,
     workflowIntelligence,
     providerIntelligence,
+    experience,
   });
 
   try {
