@@ -53,6 +53,8 @@
     "verify:p9": "npm run test:p9 && npm run build && npm run lint:imports",
     "test:p10": "node --import tsx --test test/ui-platform-home.test.ts test/ui-platform-overview.test.ts",
     "verify:p10": "npm run test:p10 && npm run build && npm run lint:imports",
+    "test:r1": "node --import tsx --test test/api-client.test.ts test/request-executor.test.ts test/api-errors.test.ts",
+    "verify:r1": "npm run test:r1 && npm run build && npm run lint:imports",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
     "test:b5": "node --import tsx --test test/b5-execution-integration.test.ts",
     "test:b6": "node --import tsx --test --test-concurrency=1 test/b6-financial-migration.test.ts test/b6-ledger-service-integration.test.ts test/b6-escrow-service-integration.test.ts",
