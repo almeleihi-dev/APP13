@@ -35,6 +35,7 @@ import { createNegotiationIntelligenceService } from "./negotiation/intelligence
 import { createWorkflowIntelligenceService } from "./orchestrator/intelligence/workflow-intelligence-service.js";
 import { createProviderIntelligenceService } from "./provider/intelligence/provider-intelligence-service.js";
 import { createEscrowService } from "./financial/application/escrow-service.js";
+import { createTrustModule } from "./trust/module.js";
 import { createExperienceServices } from "./experience/index.js";
 import {
   AuditLogRepository,
@@ -86,12 +87,13 @@ async function main(): Promise<void> {
   const revalidation = createIdentityRevalidationService(db, identityRepository);
 
   const actions = createActionService(db, identityRepository);
-  const contracts = createContractEngineService(db, identityRepository);
+  const { trust } = createTrustModule(db);
+  const contracts = createContractEngineService(db, identityRepository, trust);
   const storage = createObjectStorage(config);
   const execution = createExecutionService(db, contractRepository, storage);
-  const evaluation = createEvaluationService(db, contractRepository);
-  const issues = createIssueService(db, contractRepository);
-  const escrow = createEscrowService(db);
+  const evaluation = createEvaluationService(db, contractRepository, undefined, trust);
+  const escrow = createEscrowService(db, undefined, contractRepository, trust);
+  const issues = createIssueService(db, contractRepository, undefined, escrow, trust);
   const actionIntelligence = createActionIntelligenceService();
   const requirementIntelligence = createRequirementIntelligenceService();
   const contractIntelligence = createContractIntelligenceService(

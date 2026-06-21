@@ -14,6 +14,11 @@ import type { PostJournalResult } from "./ledger-service.js";
 import { LedgerService, createLedgerService } from "./ledger-service.js";
 import { AccountRepository, accountRepository } from "../infrastructure/account-repository.js";
 import { EscrowRepository, escrowRepository } from "../infrastructure/escrow-repository.js";
+import type { TrustService } from "../../trust/application/trust-service.js";
+import {
+  observeEscrowRefunded,
+  observeEscrowReleased,
+} from "../../trust/application/trust-service.js";
 
 export interface EscrowAccountSet {
   customerAccountId: string;
@@ -50,7 +55,8 @@ export class EscrowService {
     private readonly ledger: LedgerService,
     private readonly escrow: EscrowRepository = escrowRepository,
     private readonly accounts: AccountRepository = accountRepository,
-    private readonly contracts: ContractRepository = contractRepository
+    private readonly contracts: ContractRepository = contractRepository,
+    private readonly trust?: TrustService
   ) {}
 
   async createForContract(input: CreateEscrowInput): Promise<EscrowAgreement> {
@@ -184,6 +190,14 @@ export class EscrowService {
           reason: input.idempotencyKey,
           journalId: result.journal.id,
         });
+
+        const contract = await this.contracts.findById(tx, input.contractId);
+        await observeEscrowReleased(this.trust, tx, {
+          providerId: contract?.providerId ?? null,
+          contractId: input.contractId,
+          escrowId: escrow.id,
+          idempotencyKey: input.idempotencyKey,
+        });
       }
 
       return result;
@@ -233,6 +247,15 @@ export class EscrowService {
           actorUserId: input.actorUserId,
           reason: input.idempotencyKey,
           journalId: result.journal.id,
+        });
+
+        const contract = await this.contracts.findById(tx, input.contractId);
+        await observeEscrowRefunded(this.trust, tx, {
+          providerId: contract?.providerId ?? null,
+          contractId: input.contractId,
+          escrowId: escrow.id,
+          idempotencyKey: input.idempotencyKey,
+          refundAmountMinor: input.refundAmountMinor,
         });
       }
 
@@ -457,7 +480,8 @@ function invalidEscrowTransition(from: EscrowStatus, to: EscrowStatus): AppError
 export function createEscrowService(
   db: DbPool,
   ledger: LedgerService = createLedgerService(db),
-  contracts: ContractRepository = contractRepository
+  contracts: ContractRepository = contractRepository,
+  trust?: TrustService
 ): EscrowService {
-  return new EscrowService(db, ledger, escrowRepository, accountRepository, contracts);
+  return new EscrowService(db, ledger, escrowRepository, accountRepository, contracts, trust);
 }

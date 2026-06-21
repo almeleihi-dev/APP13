@@ -8,13 +8,16 @@ import {
 } from "../domain/issue.js";
 import { complaintRepository, type ComplaintRepository } from "../infrastructure/complaint-repository.js";
 import type { EscrowService } from "../../financial/application/escrow-service.js";
+import type { TrustService } from "../../trust/application/trust-service.js";
+import { observeIssueRaised } from "../../trust/application/trust-service.js";
 
 export class IssueService {
   constructor(
     private readonly db: DbPool,
     private readonly contracts: ContractRepository,
     private readonly complaints: ComplaintRepository = complaintRepository,
-    private readonly escrow?: EscrowService
+    private readonly escrow?: EscrowService,
+    private readonly trust?: TrustService
   ) {}
 
   async createIssue(
@@ -75,6 +78,13 @@ export class IssueService {
         });
       }
 
+      await observeIssueRaised(this.trust, tx, {
+        providerId: contract.providerId,
+        contractId: input.contract_id,
+        issueId: issue.id,
+        confirmed: true,
+      });
+
       return {
         id: issue.id,
         contract_id: issue.contractId,
@@ -108,7 +118,8 @@ export function createIssueService(
   db: DbPool,
   contracts: ContractRepository,
   complaints: ComplaintRepository = complaintRepository,
-  escrow?: EscrowService
+  escrow?: EscrowService,
+  trust?: TrustService
 ): IssueService {
-  return new IssueService(db, contracts, complaints, escrow);
+  return new IssueService(db, contracts, complaints, escrow, trust);
 }
