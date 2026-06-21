@@ -85,6 +85,8 @@
     "verify:s3-action": "bash scripts/verify-s3-action.sh",
     "test:s3-marketplace": "node --import tsx --test --test-concurrency=1 test/s3-marketplace-integration.test.ts",
     "verify:s3-marketplace": "bash scripts/verify-s3-marketplace.sh",
+    "test:s4-marketplace": "node --import tsx --test --test-concurrency=1 test/s4-marketplace-experience.test.ts",
+    "verify:s4-marketplace": "bash scripts/verify-s4-marketplace.sh",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
     "test:b5": "node --import tsx --test test/b5-execution-integration.test.ts",
     "test:b6": "node --import tsx --test --test-concurrency=1 test/b6-financial-migration.test.ts test/b6-ledger-service-integration.test.ts test/b6-escrow-service-integration.test.ts",

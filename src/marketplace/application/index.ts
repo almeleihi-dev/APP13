@@ -8,3 +8,10 @@ export {
   type MarketplaceServiceDependencies,
   type MarketplaceModule,
 } from "./marketplace-service.js";
+export {
+  MarketplaceExperienceService,
+  createMarketplaceExperienceService,
+  createMarketplaceExperienceModule,
+  type MarketplaceExperienceServiceDependencies,
+  type MarketplaceExperienceModule,
+} from "./marketplace-experience-service.js";
