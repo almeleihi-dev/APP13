@@ -8,3 +8,12 @@ export {
   type ContractInitiationServiceDependencies,
   type ContractInitiationModule,
 } from "./contract-initiation-service.js";
+export {
+  ContractCreationBridgeService,
+  createContractCreationBridgeService,
+  createContractsExperienceModule,
+  type CreateContractFromDraftInput,
+  type CreateContractFromDraftOutcome,
+  type ContractCreationBridgeServiceDependencies,
+  type ContractsExperienceModule,
+} from "./contract-creation-bridge-service.js";

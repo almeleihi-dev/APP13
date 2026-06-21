@@ -17,3 +17,15 @@ export {
   buildRecommendationReason,
   getCategoryLabel,
 } from "./contract-initiation.js";
+export {
+  type ContractCreationRequest,
+  type ContractCreationResult,
+  type DraftValidationResult,
+  MARKETPLACE_TO_ENGINE_ACTION_CODE,
+  DEFAULT_BRIDGE_TEKRR_PROFILE,
+  resolveEngineActionCode,
+  mapDraftToCreationRequest,
+  validateDraftForCreation,
+  buildCommercialTermsFromRequest,
+  buildContractCreationResult,
+} from "./contract-creation-bridge.js";
