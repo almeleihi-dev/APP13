@@ -1,10 +1,18 @@
 import type { WorkflowAnalyzeInput, WorkflowAnalyzeResult } from "../../orchestrator/intelligence/types.js";
+import type { ApiResult } from "../../integration/api-response.js";
 import {
   buildContractReviewContext,
   buildContractWorkflowPayload,
   validateContractReviewInput,
 } from "./contract-payload.js";
 import { buildContractSummaryView } from "../pages/contract-summary.js";
+import {
+  createTransportClientError,
+  createWorkflowApiTransport,
+  executeWorkflowAnalyze,
+  unwrapWorkflowAnalyzeResult,
+  type WorkflowAnalyzeApiResult,
+} from "../shared/workflow-api-transport.js";
 import type {
   AnalyzeContractReviewResult,
   ContractClientOptions,
@@ -13,6 +21,8 @@ import type {
   ContractWorkflowExecutor,
   ContractWorkflowInput,
 } from "./types.js";
+
+export type { WorkflowAnalyzeApiResult };
 
 export class ContractClientError extends Error {
   readonly status: number;
@@ -27,16 +37,20 @@ export class ContractClientError extends Error {
 }
 
 export class ContractClient {
-  private readonly baseUrl: string;
   private readonly authToken?: string;
-  private readonly fetchImpl: typeof fetch;
   private readonly executor?: ContractWorkflowExecutor;
+  private readonly transport;
 
   constructor(options: ContractClientOptions) {
-    this.baseUrl = options.baseUrl.replace(/\/$/, "");
     this.authToken = options.authToken;
-    this.fetchImpl = options.fetchImpl ?? fetch;
     this.executor = options.executor;
+    this.transport = createWorkflowApiTransport({
+      baseUrl: options.baseUrl,
+      authToken: options.authToken,
+      fetchImpl: options.fetchImpl,
+      timeoutMs: options.timeoutMs,
+      requestExecutor: options.requestExecutor,
+    });
   }
 
   reviewWorkflow(input: ContractReviewInput): ContractReviewResult {
@@ -83,39 +97,86 @@ export class ContractClient {
     };
   }
 
-  async postWorkflowAnalyze(payload: WorkflowAnalyzeInput): Promise<WorkflowAnalyzeResult> {
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
+  async analyzeContractReviewWithApiResult(
+    input: ContractWorkflowInput
+  ): Promise<{ api: WorkflowAnalyzeApiResult; review?: AnalyzeContractReviewResult }> {
+    const payload = buildContractWorkflowPayload(input);
 
-    if (this.authToken) {
-      headers.Authorization = `Bearer ${this.authToken}`;
+    if (this.executor) {
+      const workflow = await this.executor(payload);
+      const review = await this.analyzeContractReviewFromWorkflow(input, workflow);
+      return {
+        api: {
+          response: { success: true, data: workflow },
+          meta: {
+            status: 200,
+            method: "POST",
+            path: "/ai/workflow/analyze",
+            durationMs: 0,
+          },
+        },
+        review,
+      };
     }
 
-    const response = await this.fetchImpl(`${this.baseUrl}/ai/workflow/analyze`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify(payload),
-    });
+    const api = await this.postWorkflowAnalyzeWithApiResult(payload);
+    if (!api.response.success || !api.response.data) {
+      return { api };
+    }
 
-    const body = (await response.json()) as WorkflowAnalyzeResult & {
-      code?: string;
-      detail?: string;
-      title?: string;
-    };
+    const review = await this.analyzeContractReviewFromWorkflow(input, api.response.data);
+    return { api, review };
+  }
 
-    if (!response.ok) {
-      throw new ContractClientError(
-        response.status,
-        body.detail ?? body.title ?? "Contract workflow analyze request failed",
-        body.code
+  async postWorkflowAnalyze(payload: WorkflowAnalyzeInput): Promise<WorkflowAnalyzeResult> {
+    const result = await this.postWorkflowAnalyzeWithApiResult(payload);
+    if (!result.response.success) {
+      throw createTransportClientError(
+        ContractClientError,
+        result,
+        "Contract workflow analyze request failed"
       );
     }
 
-    return body;
+    return unwrapWorkflowAnalyzeResult(result);
+  }
+
+  async postWorkflowAnalyzeWithApiResult(
+    payload: WorkflowAnalyzeInput
+  ): Promise<WorkflowAnalyzeApiResult> {
+    return executeWorkflowAnalyze(payload, this.transport, this.authToken);
+  }
+
+  private async analyzeContractReviewFromWorkflow(
+    input: ContractWorkflowInput,
+    workflow: WorkflowAnalyzeResult
+  ): Promise<AnalyzeContractReviewResult> {
+    const context = buildContractReviewContext(input, workflow);
+    const review = this.reviewWorkflow({ workflow, context });
+
+    return {
+      request: {
+        request_text: input.request_text.trim(),
+        budget: input.budget,
+        preferred_days: input.preferred_days,
+        category: input.category?.trim() || undefined,
+        customer_id: input.customer_id,
+        customer_label: input.customer_label,
+      },
+      ...review,
+    };
   }
 }
 
 export function createContractClient(options: ContractClientOptions): ContractClient {
   return new ContractClient(options);
+}
+
+export function isContractAnalyzeApiResult(value: unknown): value is ApiResult<WorkflowAnalyzeResult> {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const record = value as ApiResult<WorkflowAnalyzeResult>;
+  return typeof record.response?.success === "boolean" && typeof record.meta?.status === "number";
 }

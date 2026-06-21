@@ -1,4 +1,5 @@
 import type { WorkflowAnalyzeInput, WorkflowAnalyzeResult } from "../../orchestrator/intelligence/types.js";
+import type { RequestExecutor } from "../../integration/request-executor.js";
 
 export type { WorkflowAnalyzeInput, WorkflowAnalyzeResult };
 
@@ -39,6 +40,8 @@ export interface ContractClientConfig {
   baseUrl: string;
   authToken?: string;
   fetchImpl?: typeof fetch;
+  timeoutMs?: number;
+  requestExecutor?: RequestExecutor;
 }
 
 export type ContractWorkflowExecutor = (

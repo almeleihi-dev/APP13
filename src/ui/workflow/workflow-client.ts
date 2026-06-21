@@ -1,6 +1,16 @@
 import type { WorkflowAnalyzeInput, WorkflowAnalyzeResult } from "../../orchestrator/intelligence/types.js";
+import type { ApiResult } from "../../integration/api-response.js";
 import { buildWorkflowAnalyzePayload } from "./workflow-payload.js";
+import {
+  createTransportClientError,
+  createWorkflowApiTransport,
+  executeWorkflowAnalyze,
+  unwrapWorkflowAnalyzeResult,
+  type WorkflowAnalyzeApiResult,
+} from "../shared/workflow-api-transport.js";
 import type { CustomerRequestInput, WorkflowAnalyzeExecutor, WorkflowClientOptions } from "./types.js";
+
+export type { WorkflowAnalyzeApiResult };
 
 export class WorkflowClientError extends Error {
   readonly status: number;
@@ -15,16 +25,20 @@ export class WorkflowClientError extends Error {
 }
 
 export class WorkflowClient {
-  private readonly baseUrl: string;
   private readonly authToken?: string;
-  private readonly fetchImpl: typeof fetch;
   private readonly executor?: WorkflowAnalyzeExecutor;
+  private readonly transport;
 
   constructor(options: WorkflowClientOptions) {
-    this.baseUrl = options.baseUrl.replace(/\/$/, "");
     this.authToken = options.authToken;
-    this.fetchImpl = options.fetchImpl ?? fetch;
     this.executor = options.executor;
+    this.transport = createWorkflowApiTransport({
+      baseUrl: options.baseUrl,
+      authToken: options.authToken,
+      fetchImpl: options.fetchImpl,
+      timeoutMs: options.timeoutMs,
+      requestExecutor: options.requestExecutor,
+    });
   }
 
   async analyzeRequest(input: CustomerRequestInput): Promise<WorkflowAnalyzeResult> {
@@ -37,39 +51,54 @@ export class WorkflowClient {
     return this.postWorkflowAnalyze(payload);
   }
 
-  async postWorkflowAnalyze(payload: WorkflowAnalyzeInput): Promise<WorkflowAnalyzeResult> {
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
+  async analyzeRequestWithApiResult(input: CustomerRequestInput): Promise<WorkflowAnalyzeApiResult> {
+    const payload = buildWorkflowAnalyzePayload(input);
 
-    if (this.authToken) {
-      headers.Authorization = `Bearer ${this.authToken}`;
+    if (this.executor) {
+      const workflow = await this.executor(payload);
+      return {
+        response: { success: true, data: workflow },
+        meta: {
+          status: 200,
+          method: "POST",
+          path: "/ai/workflow/analyze",
+          durationMs: 0,
+        },
+      };
     }
 
-    const response = await this.fetchImpl(`${this.baseUrl}/ai/workflow/analyze`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify(payload),
-    });
+    return this.postWorkflowAnalyzeWithApiResult(payload);
+  }
 
-    const body = (await response.json()) as WorkflowAnalyzeResult & {
-      code?: string;
-      detail?: string;
-      title?: string;
-    };
-
-    if (!response.ok) {
-      throw new WorkflowClientError(
-        response.status,
-        body.detail ?? body.title ?? "Workflow analyze request failed",
-        body.code
+  async postWorkflowAnalyze(payload: WorkflowAnalyzeInput): Promise<WorkflowAnalyzeResult> {
+    const result = await this.postWorkflowAnalyzeWithApiResult(payload);
+    if (!result.response.success) {
+      throw createTransportClientError(
+        WorkflowClientError,
+        result,
+        "Workflow analyze request failed"
       );
     }
 
-    return body;
+    return unwrapWorkflowAnalyzeResult(result);
+  }
+
+  async postWorkflowAnalyzeWithApiResult(
+    payload: WorkflowAnalyzeInput
+  ): Promise<WorkflowAnalyzeApiResult> {
+    return executeWorkflowAnalyze(payload, this.transport, this.authToken);
   }
 }
 
 export function createWorkflowClient(options: WorkflowClientOptions): WorkflowClient {
   return new WorkflowClient(options);
+}
+
+export function isWorkflowAnalyzeApiResult(value: unknown): value is ApiResult<WorkflowAnalyzeResult> {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const record = value as ApiResult<WorkflowAnalyzeResult>;
+  return typeof record.response?.success === "boolean" && typeof record.meta?.status === "number";
 }

@@ -3,6 +3,7 @@ import type {
   WorkflowAnalyzeInput,
   WorkflowAnalyzeResult,
 } from "../../orchestrator/intelligence/types.js";
+import type { RequestExecutor } from "../../integration/request-executor.js";
 
 export type { WorkflowAnalyzeResult, ProviderCandidate };
 
@@ -26,6 +27,8 @@ export interface WorkflowClientConfig {
   baseUrl: string;
   authToken?: string;
   fetchImpl?: typeof fetch;
+  timeoutMs?: number;
+  requestExecutor?: RequestExecutor;
 }
 
 export type WorkflowAnalyzeExecutor = (

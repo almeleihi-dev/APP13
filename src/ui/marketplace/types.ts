@@ -3,6 +3,7 @@ import type {
   WorkflowAnalyzeInput,
   WorkflowAnalyzeResult,
 } from "../../orchestrator/intelligence/types.js";
+import type { RequestExecutor } from "../../integration/request-executor.js";
 
 export type { WorkflowAnalyzeInput, WorkflowAnalyzeResult, ProviderCandidate };
 
@@ -29,6 +30,8 @@ export interface MarketplaceClientConfig {
   baseUrl: string;
   authToken?: string;
   fetchImpl?: typeof fetch;
+  timeoutMs?: number;
+  requestExecutor?: RequestExecutor;
 }
 
 export type MarketplaceWorkflowExecutor = (

@@ -1,10 +1,20 @@
 import type { WorkflowAnalyzeInput, WorkflowAnalyzeResult } from "../../orchestrator/intelligence/types.js";
+import type { ApiResult } from "../../integration/api-response.js";
 import { buildMarketplaceWorkflowPayload } from "./marketplace-payload.js";
+import {
+  createTransportClientError,
+  createWorkflowApiTransport,
+  executeWorkflowAnalyze,
+  unwrapWorkflowAnalyzeResult,
+  type WorkflowAnalyzeApiResult,
+} from "../shared/workflow-api-transport.js";
 import type {
   MarketplaceClientOptions,
   MarketplaceSearchInput,
   MarketplaceWorkflowExecutor,
 } from "./types.js";
+
+export type { WorkflowAnalyzeApiResult };
 
 export class MarketplaceClientError extends Error {
   readonly status: number;
@@ -19,16 +29,20 @@ export class MarketplaceClientError extends Error {
 }
 
 export class MarketplaceClient {
-  private readonly baseUrl: string;
   private readonly authToken?: string;
-  private readonly fetchImpl: typeof fetch;
   private readonly executor?: MarketplaceWorkflowExecutor;
+  private readonly transport;
 
   constructor(options: MarketplaceClientOptions) {
-    this.baseUrl = options.baseUrl.replace(/\/$/, "");
     this.authToken = options.authToken;
-    this.fetchImpl = options.fetchImpl ?? fetch;
     this.executor = options.executor;
+    this.transport = createWorkflowApiTransport({
+      baseUrl: options.baseUrl,
+      authToken: options.authToken,
+      fetchImpl: options.fetchImpl,
+      timeoutMs: options.timeoutMs,
+      requestExecutor: options.requestExecutor,
+    });
   }
 
   async analyzeAndFindProviders(input: MarketplaceSearchInput): Promise<WorkflowAnalyzeResult> {
@@ -41,39 +55,56 @@ export class MarketplaceClient {
     return this.postWorkflowAnalyze(payload);
   }
 
-  async postWorkflowAnalyze(payload: WorkflowAnalyzeInput): Promise<WorkflowAnalyzeResult> {
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
+  async analyzeAndFindProvidersWithApiResult(
+    input: MarketplaceSearchInput
+  ): Promise<WorkflowAnalyzeApiResult> {
+    const payload = buildMarketplaceWorkflowPayload(input);
 
-    if (this.authToken) {
-      headers.Authorization = `Bearer ${this.authToken}`;
+    if (this.executor) {
+      const workflow = await this.executor(payload);
+      return {
+        response: { success: true, data: workflow },
+        meta: {
+          status: 200,
+          method: "POST",
+          path: "/ai/workflow/analyze",
+          durationMs: 0,
+        },
+      };
     }
 
-    const response = await this.fetchImpl(`${this.baseUrl}/ai/workflow/analyze`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify(payload),
-    });
+    return this.postWorkflowAnalyzeWithApiResult(payload);
+  }
 
-    const body = (await response.json()) as WorkflowAnalyzeResult & {
-      code?: string;
-      detail?: string;
-      title?: string;
-    };
-
-    if (!response.ok) {
-      throw new MarketplaceClientError(
-        response.status,
-        body.detail ?? body.title ?? "Marketplace workflow analyze request failed",
-        body.code
+  async postWorkflowAnalyze(payload: WorkflowAnalyzeInput): Promise<WorkflowAnalyzeResult> {
+    const result = await this.postWorkflowAnalyzeWithApiResult(payload);
+    if (!result.response.success) {
+      throw createTransportClientError(
+        MarketplaceClientError,
+        result,
+        "Marketplace workflow analyze request failed"
       );
     }
 
-    return body;
+    return unwrapWorkflowAnalyzeResult(result);
+  }
+
+  async postWorkflowAnalyzeWithApiResult(
+    payload: WorkflowAnalyzeInput
+  ): Promise<WorkflowAnalyzeApiResult> {
+    return executeWorkflowAnalyze(payload, this.transport, this.authToken);
   }
 }
 
 export function createMarketplaceClient(options: MarketplaceClientOptions): MarketplaceClient {
   return new MarketplaceClient(options);
+}
+
+export function isMarketplaceAnalyzeApiResult(value: unknown): value is ApiResult<WorkflowAnalyzeResult> {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const record = value as ApiResult<WorkflowAnalyzeResult>;
+  return typeof record.response?.success === "boolean" && typeof record.meta?.status === "number";
 }

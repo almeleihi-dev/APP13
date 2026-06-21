@@ -73,18 +73,18 @@ function isAbortError(error: unknown): boolean {
 }
 
 async function parseJsonBody(response: Response): Promise<unknown> {
-  const contentType = response.headers.get("content-type") ?? "";
-
-  if (!contentType.includes("application/json")) {
-    const text = await response.text();
-    return text.length > 0 ? text : null;
-  }
-
   if (response.status === 204) {
     return null;
   }
 
-  return response.json();
+  const contentType = response.headers?.get?.("content-type") ?? "";
+
+  if (contentType.includes("application/json") || contentType.length === 0) {
+    return response.json();
+  }
+
+  const text = await response.text();
+  return text.length > 0 ? text : null;
 }
 
 export class ApiClient {
