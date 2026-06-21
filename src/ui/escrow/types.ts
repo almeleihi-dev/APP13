@@ -1,5 +1,6 @@
 import type { EscrowStatus } from "../../financial/domain/escrow.js";
 import type { WorkflowAnalyzeResult } from "../../orchestrator/intelligence/types.js";
+import type { RequestExecutor } from "../../integration/request-executor.js";
 
 export type { EscrowStatus, WorkflowAnalyzeResult };
 
@@ -99,6 +100,8 @@ export interface EscrowClientConfig {
   baseUrl?: string;
   authToken?: string;
   fetchImpl?: typeof fetch;
+  timeoutMs?: number;
+  requestExecutor?: RequestExecutor;
 }
 
 export type EscrowOverviewExecutor = (

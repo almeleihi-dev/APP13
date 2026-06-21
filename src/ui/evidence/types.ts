@@ -1,5 +1,6 @@
 import type { ContractStatus } from "../../contract/domain/contract.js";
 import type { EvidenceType } from "../../execution/domain/evidence.js";
+import type { RequestExecutor } from "../../integration/request-executor.js";
 
 export type { ContractStatus, EvidenceType };
 
@@ -129,6 +130,8 @@ export interface EvidenceClientConfig {
   baseUrl?: string;
   authToken?: string;
   fetchImpl?: typeof fetch;
+  timeoutMs?: number;
+  requestExecutor?: RequestExecutor;
 }
 
 export type EvidenceOverviewExecutor = (

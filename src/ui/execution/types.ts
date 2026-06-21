@@ -1,5 +1,6 @@
 import type { MilestoneStatus } from "../../execution/domain/milestone.js";
 import type { ContractStatus } from "../../contract/domain/contract.js";
+import type { RequestExecutor } from "../../integration/request-executor.js";
 
 export type { MilestoneStatus, ContractStatus };
 
@@ -126,6 +127,8 @@ export interface ExecutionClientConfig {
   baseUrl?: string;
   authToken?: string;
   fetchImpl?: typeof fetch;
+  timeoutMs?: number;
+  requestExecutor?: RequestExecutor;
 }
 
 export type ExecutionDashboardExecutor = (
