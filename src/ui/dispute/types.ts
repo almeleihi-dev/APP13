@@ -1,4 +1,5 @@
 import type { IssueStatus } from "../../complaint/domain/issue.js";
+import type { RequestExecutor } from "../../integration/request-executor.js";
 
 export type { IssueStatus };
 
@@ -136,6 +137,8 @@ export interface DisputeClientConfig {
   baseUrl?: string;
   authToken?: string;
   fetchImpl?: typeof fetch;
+  timeoutMs?: number;
+  requestExecutor?: RequestExecutor;
 }
 
 export type DisputeDashboardExecutor = (

@@ -1,3 +1,5 @@
+import type { RequestExecutor } from "../../integration/request-executor.js";
+
 export interface ActivityCardSnapshot {
   summary: string;
   fields: Array<{ label: string; value: string }>;
@@ -57,6 +59,8 @@ export interface PlatformClientConfig {
   baseUrl?: string;
   authToken?: string;
   fetchImpl?: typeof fetch;
+  timeoutMs?: number;
+  requestExecutor?: RequestExecutor;
 }
 
 export type PlatformHomeExecutor = (request: PlatformHomeRequest) => Promise<PlatformExperienceSource>;

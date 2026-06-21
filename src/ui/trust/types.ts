@@ -1,4 +1,5 @@
 import type { LiveFrameColor, TrustRecommendation, TrustTier } from "../../trust/intelligence/types.js";
+import type { RequestExecutor } from "../../integration/request-executor.js";
 
 export type { LiveFrameColor, TrustRecommendation, TrustTier };
 
@@ -177,6 +178,8 @@ export interface TrustClientConfig {
   baseUrl?: string;
   authToken?: string;
   fetchImpl?: typeof fetch;
+  timeoutMs?: number;
+  requestExecutor?: RequestExecutor;
 }
 
 export type TrustCenterExecutor = (request: TrustCenterRequest) => Promise<TrustExperienceSource>;
