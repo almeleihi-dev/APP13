@@ -18,3 +18,8 @@ export {
   createReputationTimelineService,
   buildReputationTimeline,
 } from "./reputation-timeline-service.js";
+export {
+  LiveFrameService,
+  createLiveFrameService,
+  buildLiveFrameProjection,
+} from "./live-frame-service.js";
