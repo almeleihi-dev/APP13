@@ -36,6 +36,12 @@ import { createWorkflowIntelligenceService } from "./orchestrator/intelligence/w
 import { createProviderIntelligenceService } from "./provider/intelligence/provider-intelligence-service.js";
 import { createEscrowService } from "./financial/application/escrow-service.js";
 import { createExperienceServices } from "./experience/index.js";
+import {
+  AuditLogRepository,
+  createDefaultOwnershipRegistry,
+  createSecurityAuditService,
+  createSecurityAuthKernelService,
+} from "./security/index.js";
 
 async function main(): Promise<void> {
   const config = loadConfig();
@@ -110,6 +116,19 @@ async function main(): Promise<void> {
     providerIntelligence,
   });
 
+  const securityAudit = createSecurityAuditService(new AuditLogRepository(db));
+  const ownershipRegistry = createDefaultOwnershipRegistry(db);
+  const securityAuth = createSecurityAuthKernelService({
+    db,
+    config,
+    auth,
+    registration,
+    identityRepo: identityRepository,
+    jwt,
+    sessions,
+    audit: securityAudit,
+  });
+
   const app = await buildServer({
     config,
     logger,
@@ -137,6 +156,9 @@ async function main(): Promise<void> {
     workflowIntelligence,
     providerIntelligence,
     experience,
+    securityAuth,
+    ownershipRegistry,
+    securityAudit,
   });
 
   try {

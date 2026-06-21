@@ -21,6 +21,10 @@ import { createAuthenticateMiddleware } from "./middleware/authenticate.js";
 import { requireAuthMiddleware } from "./middleware/require-auth.js";
 import { registerHealthRoutes } from "./routes/health.js";
 import { registerAuthRoutes } from "./routes/auth.js";
+import { registerSecurityAuthRoutes } from "./routes/security-auth.js";
+import type { SecurityAuthKernelService } from "../security/auth-kernel-service.js";
+import type { OwnershipRegistry } from "../security/ownership-registry.js";
+import type { SecurityAuditService } from "../security/audit-service.js";
 import { registerIdentityRoutes } from "./routes/identity.js";
 import { registerVerificationRoutes } from "./routes/verification.js";
 import type { ActionService } from "../action/application/action-service.js";
@@ -88,6 +92,9 @@ export interface AppDependencies {
   workflowIntelligence: WorkflowIntelligenceService;
   providerIntelligence: ProviderIntelligenceService;
   experience: ExperienceServices;
+  securityAuth: SecurityAuthKernelService;
+  ownershipRegistry: OwnershipRegistry;
+  securityAudit: SecurityAuditService;
 }
 
 export async function buildServer(deps: AppDependencies) {
@@ -120,6 +127,7 @@ export async function buildServer(deps: AppDependencies) {
     auth: deps.auth,
     registration: deps.registration,
   });
+  await registerSecurityAuthRoutes(app, { securityAuth: deps.securityAuth });
   await registerIdentityRoutes(app, deps.profile);
   await registerVerificationRoutes(app, deps.verification);
   await registerActionRoutes(app, deps.actions);

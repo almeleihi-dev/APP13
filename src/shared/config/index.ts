@@ -57,13 +57,13 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     idempotencyTtlSeconds: env.IDEMPOTENCY_TTL_SECONDS,
     jwt: {
       secret: env.JWT_SECRET,
-      accessTtlSeconds: env.JWT_ACCESS_TTL_SECONDS,
+      accessTtlSeconds: env.JWT_EXPIRES_IN ?? env.JWT_ACCESS_TTL_SECONDS,
       issuer: env.JWT_ISSUER,
     },
     session: {
       cookieName: env.SESSION_COOKIE_NAME,
       ttlSeconds: env.SESSION_TTL_SECONDS,
-      refreshTtlSeconds: env.REFRESH_TTL_SECONDS,
+      refreshTtlSeconds: env.REFRESH_EXPIRES_IN ?? env.REFRESH_TTL_SECONDS,
     },
     kyc: {
       webhookSecret: env.KYC_WEBHOOK_SECRET,
