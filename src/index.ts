@@ -56,6 +56,7 @@ import { createDiscoveryMatchingModule } from "./experience/discovery-matching/m
 import { createProfessionalPassportModule } from "./experience/professional-passport/module.js";
 import { createProfessionalSealsModule } from "./experience/professional-seals/module.js";
 import { createLiveTrustFrameModule } from "./experience/live-trust-frame/module.js";
+import { createProviderCommandCenterModule } from "./experience/provider-command-center/module.js";
 import { createExperienceServices } from "./experience/index.js";
 import {
   AuditLogRepository,
@@ -146,6 +147,10 @@ async function main(): Promise<void> {
     providerProfile,
   });
   const { liveTrustFrame } = createLiveTrustFrameModule(db, {
+    trustScore,
+    providerProfile,
+  });
+  const { providerCommandCenter } = createProviderCommandCenterModule(db, {
     trustScore,
     providerProfile,
   });
@@ -247,6 +252,7 @@ async function main(): Promise<void> {
     professionalPassport,
     professionalSeals,
     liveTrustFrame,
+    providerCommandCenter,
     securityAuth,
     ownershipRegistry,
     securityAudit,
