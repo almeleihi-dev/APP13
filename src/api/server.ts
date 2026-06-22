@@ -66,6 +66,7 @@ import type { TrustReputationExperienceService } from "../experience/trust-reput
 import type { DiscoveryMatchingService } from "../experience/discovery-matching/application/discovery-matching-service.js";
 import type { ProfessionalPassportService } from "../experience/professional-passport/application/professional-passport-service.js";
 import type { ProfessionalSealsService } from "../experience/professional-seals/application/professional-seals-service.js";
+import type { LiveTrustFrameService } from "../experience/live-trust-frame/application/live-trust-frame-service.js";
 import { registerTrustExperienceRoutes, registerTrustReputationRoutes } from "./routes/trust.js";
 import { registerProviderRoutes } from "./routes/providers.js";
 import { registerRequestRoutes } from "./routes/requests.js";
@@ -86,6 +87,7 @@ import { registerTrustReputationExperienceRoutes } from "./routes/trust-reputati
 import { registerDiscoveryMatchingRoutes } from "./routes/discovery-matching.js";
 import { registerProfessionalPassportRoutes } from "./routes/professional-passport.js";
 import { registerProfessionalSealsRoutes } from "./routes/professional-seals.js";
+import { registerLiveTrustFrameRoutes } from "./routes/live-trust-frame.js";
 import { registerPlatformExperienceRoutes } from "./routes/platform.js";
 import { createServiceAuthMiddleware } from "./middleware/service-auth.js";
 import { createRevalidationMiddleware } from "./middleware/revalidate.js";
@@ -151,6 +153,7 @@ export interface AppDependencies {
   discoveryMatching: DiscoveryMatchingService;
   professionalPassport: ProfessionalPassportService;
   professionalSeals: ProfessionalSealsService;
+  liveTrustFrame: LiveTrustFrameService;
   securityAuth: SecurityAuthKernelService;
   ownershipRegistry: OwnershipRegistry;
   securityAudit: SecurityAuditService;
@@ -229,6 +232,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerDiscoveryMatchingRoutes(app, deps.discoveryMatching);
   await registerProfessionalPassportRoutes(app, deps.professionalPassport);
   await registerProfessionalSealsRoutes(app, deps.professionalSeals);
+  await registerLiveTrustFrameRoutes(app, deps.liveTrustFrame);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 
   return app;
