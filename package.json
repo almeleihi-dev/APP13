@@ -154,6 +154,8 @@
     "verify:x17": "bash scripts/verify-x17.sh",
     "test:x18-investor-readiness": "node --import tsx --test --test-concurrency=1 test/x18-investor-readiness.test.ts",
     "verify:x18": "bash scripts/verify-x18.sh",
+    "test:x19-government-partnership": "node --import tsx --test --test-concurrency=1 test/x19-government-partnership.test.ts",
+    "verify:x19": "bash scripts/verify-x19.sh",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
     "test:b5": "node --import tsx --test test/b5-execution-integration.test.ts",
     "test:b6": "node --import tsx --test --test-concurrency=1 test/b6-financial-migration.test.ts test/b6-ledger-service-integration.test.ts test/b6-escrow-service-integration.test.ts",

@@ -100,6 +100,8 @@ import { registerMarketplaceIntelligenceRoutes } from "./routes/marketplace-inte
 import { registerExecutiveCommandCenterRoutes } from "./routes/executive-command-center.js";
 import { registerLaunchSimulationRoutes } from "./routes/launch-simulation.js";
 import { registerInvestorReadinessRoutes } from "./routes/investor-readiness.js";
+import { registerGovernmentPartnershipRoutes } from "./routes/government-partnership.js";
+import type { GovernmentPartnershipService } from "../experience/government-partnership/application/government-partnership-service.js";
 import type { InvestorReadinessService } from "../experience/investor-readiness/application/investor-readiness-service.js";
 import type { LaunchSimulationService } from "../experience/launch-simulation/application/launch-simulation-service.js";
 import type { ExecutiveCommandCenterService } from "../experience/executive-command-center/application/executive-command-center-service.js";
@@ -177,6 +179,7 @@ export interface AppDependencies {
   executiveCommandCenter: ExecutiveCommandCenterService;
   launchSimulation: LaunchSimulationService;
   investorReadiness: InvestorReadinessService;
+  governmentPartnership: GovernmentPartnershipService;
   releaseReadinessCenter: ReleaseReadinessCenterService;
   securityAuth: SecurityAuthKernelService;
   ownershipRegistry: OwnershipRegistry;
@@ -264,6 +267,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerExecutiveCommandCenterRoutes(app, deps.executiveCommandCenter);
   await registerLaunchSimulationRoutes(app, deps.launchSimulation);
   await registerInvestorReadinessRoutes(app, deps.investorReadiness);
+  await registerGovernmentPartnershipRoutes(app, deps.governmentPartnership);
   await registerReleaseReadinessRoutes(app, deps.releaseReadinessCenter);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 
