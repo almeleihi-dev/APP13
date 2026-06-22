@@ -98,6 +98,8 @@ import { registerPlatformControlTowerRoutes } from "./routes/platform-control-to
 import { registerReleaseReadinessRoutes } from "./routes/release-readiness.js";
 import { registerMarketplaceIntelligenceRoutes } from "./routes/marketplace-intelligence.js";
 import { registerExecutiveCommandCenterRoutes } from "./routes/executive-command-center.js";
+import { registerLaunchSimulationRoutes } from "./routes/launch-simulation.js";
+import type { LaunchSimulationService } from "../experience/launch-simulation/application/launch-simulation-service.js";
 import type { ExecutiveCommandCenterService } from "../experience/executive-command-center/application/executive-command-center-service.js";
 import type { MarketplaceIntelligenceService } from "../experience/marketplace-intelligence/application/marketplace-intelligence-service.js";
 import { registerPlatformExperienceRoutes } from "./routes/platform.js";
@@ -171,6 +173,7 @@ export interface AppDependencies {
   platformControlTower: PlatformControlTowerService;
   marketplaceIntelligence: MarketplaceIntelligenceService;
   executiveCommandCenter: ExecutiveCommandCenterService;
+  launchSimulation: LaunchSimulationService;
   releaseReadinessCenter: ReleaseReadinessCenterService;
   securityAuth: SecurityAuthKernelService;
   ownershipRegistry: OwnershipRegistry;
@@ -256,6 +259,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerPlatformControlTowerRoutes(app, deps.platformControlTower);
   await registerMarketplaceIntelligenceRoutes(app, deps.marketplaceIntelligence);
   await registerExecutiveCommandCenterRoutes(app, deps.executiveCommandCenter);
+  await registerLaunchSimulationRoutes(app, deps.launchSimulation);
   await registerReleaseReadinessRoutes(app, deps.releaseReadinessCenter);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 
