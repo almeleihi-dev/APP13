@@ -65,6 +65,7 @@ import type { EscrowPaymentExperienceService } from "../experience/escrow-paymen
 import type { TrustReputationExperienceService } from "../experience/trust-reputation/application/trust-reputation-experience-service.js";
 import type { DiscoveryMatchingService } from "../experience/discovery-matching/application/discovery-matching-service.js";
 import type { ProfessionalPassportService } from "../experience/professional-passport/application/professional-passport-service.js";
+import type { ProfessionalSealsService } from "../experience/professional-seals/application/professional-seals-service.js";
 import { registerTrustExperienceRoutes, registerTrustReputationRoutes } from "./routes/trust.js";
 import { registerProviderRoutes } from "./routes/providers.js";
 import { registerRequestRoutes } from "./routes/requests.js";
@@ -84,6 +85,7 @@ import { registerEscrowPaymentRoutes } from "./routes/escrow-payment.js";
 import { registerTrustReputationExperienceRoutes } from "./routes/trust-reputation.js";
 import { registerDiscoveryMatchingRoutes } from "./routes/discovery-matching.js";
 import { registerProfessionalPassportRoutes } from "./routes/professional-passport.js";
+import { registerProfessionalSealsRoutes } from "./routes/professional-seals.js";
 import { registerPlatformExperienceRoutes } from "./routes/platform.js";
 import { createServiceAuthMiddleware } from "./middleware/service-auth.js";
 import { createRevalidationMiddleware } from "./middleware/revalidate.js";
@@ -148,6 +150,7 @@ export interface AppDependencies {
   trustReputationExperience: TrustReputationExperienceService;
   discoveryMatching: DiscoveryMatchingService;
   professionalPassport: ProfessionalPassportService;
+  professionalSeals: ProfessionalSealsService;
   securityAuth: SecurityAuthKernelService;
   ownershipRegistry: OwnershipRegistry;
   securityAudit: SecurityAuditService;
@@ -225,6 +228,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerTrustReputationExperienceRoutes(app, deps.trustReputationExperience);
   await registerDiscoveryMatchingRoutes(app, deps.discoveryMatching);
   await registerProfessionalPassportRoutes(app, deps.professionalPassport);
+  await registerProfessionalSealsRoutes(app, deps.professionalSeals);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 
   return app;

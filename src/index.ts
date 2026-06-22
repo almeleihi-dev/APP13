@@ -54,6 +54,7 @@ import { createEscrowPaymentExperienceModule } from "./experience/escrow-payment
 import { createTrustReputationExperienceModule } from "./experience/trust-reputation/module.js";
 import { createDiscoveryMatchingModule } from "./experience/discovery-matching/module.js";
 import { createProfessionalPassportModule } from "./experience/professional-passport/module.js";
+import { createProfessionalSealsModule } from "./experience/professional-seals/module.js";
 import { createExperienceServices } from "./experience/index.js";
 import {
   AuditLogRepository,
@@ -136,6 +137,10 @@ async function main(): Promise<void> {
   });
   const { discoveryMatching } = createDiscoveryMatchingModule(db, { trustScore });
   const { professionalPassport } = createProfessionalPassportModule(db, {
+    trustScore,
+    providerProfile,
+  });
+  const { professionalSeals } = createProfessionalSealsModule(db, {
     trustScore,
     providerProfile,
   });
@@ -235,6 +240,7 @@ async function main(): Promise<void> {
     trustReputationExperience,
     discoveryMatching,
     professionalPassport,
+    professionalSeals,
     securityAuth,
     ownershipRegistry,
     securityAudit,
