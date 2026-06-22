@@ -59,6 +59,7 @@ import { createLiveTrustFrameModule } from "./experience/live-trust-frame/module
 import { createProviderCommandCenterModule } from "./experience/provider-command-center/module.js";
 import { createCustomerCommandCenterModule } from "./experience/customer-command-center/module.js";
 import { createPlatformControlTowerModule } from "./experience/platform-control-tower/module.js";
+import { createReleaseReadinessCenterModule } from "./experience/release-readiness/module.js";
 import { createExperienceServices } from "./experience/index.js";
 import {
   AuditLogRepository,
@@ -160,6 +161,7 @@ async function main(): Promise<void> {
     liveTrustFrame,
   });
   const { platformControlTower } = createPlatformControlTowerModule(db);
+  const { releaseReadinessCenter } = createReleaseReadinessCenterModule();
   const contracts = createContractEngineService(db, identityRepository, trust, eventInbox);
   const storage = createObjectStorage(config);
   const execution = createExecutionService(db, contractRepository, storage, undefined, eventInbox);
@@ -261,6 +263,7 @@ async function main(): Promise<void> {
     providerCommandCenter,
     customerCommandCenter,
     platformControlTower,
+    releaseReadinessCenter,
     securityAuth,
     ownershipRegistry,
     securityAudit,

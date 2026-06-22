@@ -70,6 +70,7 @@ import type { LiveTrustFrameService } from "../experience/live-trust-frame/appli
 import type { ProviderCommandCenterService } from "../experience/provider-command-center/application/provider-command-center-service.js";
 import type { CustomerCommandCenterService } from "../experience/customer-command-center/application/customer-command-center-service.js";
 import type { PlatformControlTowerService } from "../experience/platform-control-tower/application/platform-control-tower-service.js";
+import type { ReleaseReadinessCenterService } from "../experience/release-readiness/application/release-readiness-service.js";
 import { registerTrustExperienceRoutes, registerTrustReputationRoutes } from "./routes/trust.js";
 import { registerProviderRoutes } from "./routes/providers.js";
 import { registerRequestRoutes } from "./routes/requests.js";
@@ -94,6 +95,7 @@ import { registerLiveTrustFrameRoutes } from "./routes/live-trust-frame.js";
 import { registerProviderCommandCenterRoutes } from "./routes/provider-command-center.js";
 import { registerCustomerCommandCenterRoutes } from "./routes/customer-command-center.js";
 import { registerPlatformControlTowerRoutes } from "./routes/platform-control-tower.js";
+import { registerReleaseReadinessRoutes } from "./routes/release-readiness.js";
 import { registerPlatformExperienceRoutes } from "./routes/platform.js";
 import { createServiceAuthMiddleware } from "./middleware/service-auth.js";
 import { createRevalidationMiddleware } from "./middleware/revalidate.js";
@@ -163,6 +165,7 @@ export interface AppDependencies {
   providerCommandCenter: ProviderCommandCenterService;
   customerCommandCenter: CustomerCommandCenterService;
   platformControlTower: PlatformControlTowerService;
+  releaseReadinessCenter: ReleaseReadinessCenterService;
   securityAuth: SecurityAuthKernelService;
   ownershipRegistry: OwnershipRegistry;
   securityAudit: SecurityAuditService;
@@ -245,6 +248,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerProviderCommandCenterRoutes(app, deps.providerCommandCenter);
   await registerCustomerCommandCenterRoutes(app, deps.customerCommandCenter);
   await registerPlatformControlTowerRoutes(app, deps.platformControlTower);
+  await registerReleaseReadinessRoutes(app, deps.releaseReadinessCenter);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 
   return app;
