@@ -99,6 +99,8 @@ import { registerReleaseReadinessRoutes } from "./routes/release-readiness.js";
 import { registerMarketplaceIntelligenceRoutes } from "./routes/marketplace-intelligence.js";
 import { registerExecutiveCommandCenterRoutes } from "./routes/executive-command-center.js";
 import { registerLaunchSimulationRoutes } from "./routes/launch-simulation.js";
+import { registerInvestorReadinessRoutes } from "./routes/investor-readiness.js";
+import type { InvestorReadinessService } from "../experience/investor-readiness/application/investor-readiness-service.js";
 import type { LaunchSimulationService } from "../experience/launch-simulation/application/launch-simulation-service.js";
 import type { ExecutiveCommandCenterService } from "../experience/executive-command-center/application/executive-command-center-service.js";
 import type { MarketplaceIntelligenceService } from "../experience/marketplace-intelligence/application/marketplace-intelligence-service.js";
@@ -174,6 +176,7 @@ export interface AppDependencies {
   marketplaceIntelligence: MarketplaceIntelligenceService;
   executiveCommandCenter: ExecutiveCommandCenterService;
   launchSimulation: LaunchSimulationService;
+  investorReadiness: InvestorReadinessService;
   releaseReadinessCenter: ReleaseReadinessCenterService;
   securityAuth: SecurityAuthKernelService;
   ownershipRegistry: OwnershipRegistry;
@@ -260,6 +263,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerMarketplaceIntelligenceRoutes(app, deps.marketplaceIntelligence);
   await registerExecutiveCommandCenterRoutes(app, deps.executiveCommandCenter);
   await registerLaunchSimulationRoutes(app, deps.launchSimulation);
+  await registerInvestorReadinessRoutes(app, deps.investorReadiness);
   await registerReleaseReadinessRoutes(app, deps.releaseReadinessCenter);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 

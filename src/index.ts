@@ -63,6 +63,7 @@ import { createReleaseReadinessCenterModule } from "./experience/release-readine
 import { createMarketplaceIntelligenceModule } from "./experience/marketplace-intelligence/module.js";
 import { createExecutiveCommandCenterModule } from "./experience/executive-command-center/module.js";
 import { createLaunchSimulationModule } from "./experience/launch-simulation/module.js";
+import { createInvestorReadinessModule } from "./experience/investor-readiness/module.js";
 import { createExperienceServices } from "./experience/index.js";
 import {
   AuditLogRepository,
@@ -167,6 +168,7 @@ async function main(): Promise<void> {
   const { marketplaceIntelligence } = createMarketplaceIntelligenceModule(db);
   const { executiveCommandCenter } = createExecutiveCommandCenterModule(db);
   const { launchSimulation } = createLaunchSimulationModule(db);
+  const { investorReadiness } = createInvestorReadinessModule(db);
   const { releaseReadinessCenter } = createReleaseReadinessCenterModule();
   const contracts = createContractEngineService(db, identityRepository, trust, eventInbox);
   const storage = createObjectStorage(config);
@@ -272,6 +274,7 @@ async function main(): Promise<void> {
     marketplaceIntelligence,
     executiveCommandCenter,
     launchSimulation,
+    investorReadiness,
     releaseReadinessCenter,
     securityAuth,
     ownershipRegistry,
