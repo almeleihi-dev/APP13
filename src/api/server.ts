@@ -97,6 +97,8 @@ import { registerCustomerCommandCenterRoutes } from "./routes/customer-command-c
 import { registerPlatformControlTowerRoutes } from "./routes/platform-control-tower.js";
 import { registerReleaseReadinessRoutes } from "./routes/release-readiness.js";
 import { registerMarketplaceIntelligenceRoutes } from "./routes/marketplace-intelligence.js";
+import { registerExecutiveCommandCenterRoutes } from "./routes/executive-command-center.js";
+import type { ExecutiveCommandCenterService } from "../experience/executive-command-center/application/executive-command-center-service.js";
 import type { MarketplaceIntelligenceService } from "../experience/marketplace-intelligence/application/marketplace-intelligence-service.js";
 import { registerPlatformExperienceRoutes } from "./routes/platform.js";
 import { createServiceAuthMiddleware } from "./middleware/service-auth.js";
@@ -168,6 +170,7 @@ export interface AppDependencies {
   customerCommandCenter: CustomerCommandCenterService;
   platformControlTower: PlatformControlTowerService;
   marketplaceIntelligence: MarketplaceIntelligenceService;
+  executiveCommandCenter: ExecutiveCommandCenterService;
   releaseReadinessCenter: ReleaseReadinessCenterService;
   securityAuth: SecurityAuthKernelService;
   ownershipRegistry: OwnershipRegistry;
@@ -252,6 +255,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerCustomerCommandCenterRoutes(app, deps.customerCommandCenter);
   await registerPlatformControlTowerRoutes(app, deps.platformControlTower);
   await registerMarketplaceIntelligenceRoutes(app, deps.marketplaceIntelligence);
+  await registerExecutiveCommandCenterRoutes(app, deps.executiveCommandCenter);
   await registerReleaseReadinessRoutes(app, deps.releaseReadinessCenter);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 
