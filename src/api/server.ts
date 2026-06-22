@@ -68,6 +68,7 @@ import type { ProfessionalPassportService } from "../experience/professional-pas
 import type { ProfessionalSealsService } from "../experience/professional-seals/application/professional-seals-service.js";
 import type { LiveTrustFrameService } from "../experience/live-trust-frame/application/live-trust-frame-service.js";
 import type { ProviderCommandCenterService } from "../experience/provider-command-center/application/provider-command-center-service.js";
+import type { CustomerCommandCenterService } from "../experience/customer-command-center/application/customer-command-center-service.js";
 import { registerTrustExperienceRoutes, registerTrustReputationRoutes } from "./routes/trust.js";
 import { registerProviderRoutes } from "./routes/providers.js";
 import { registerRequestRoutes } from "./routes/requests.js";
@@ -90,6 +91,7 @@ import { registerProfessionalPassportRoutes } from "./routes/professional-passpo
 import { registerProfessionalSealsRoutes } from "./routes/professional-seals.js";
 import { registerLiveTrustFrameRoutes } from "./routes/live-trust-frame.js";
 import { registerProviderCommandCenterRoutes } from "./routes/provider-command-center.js";
+import { registerCustomerCommandCenterRoutes } from "./routes/customer-command-center.js";
 import { registerPlatformExperienceRoutes } from "./routes/platform.js";
 import { createServiceAuthMiddleware } from "./middleware/service-auth.js";
 import { createRevalidationMiddleware } from "./middleware/revalidate.js";
@@ -157,6 +159,7 @@ export interface AppDependencies {
   professionalSeals: ProfessionalSealsService;
   liveTrustFrame: LiveTrustFrameService;
   providerCommandCenter: ProviderCommandCenterService;
+  customerCommandCenter: CustomerCommandCenterService;
   securityAuth: SecurityAuthKernelService;
   ownershipRegistry: OwnershipRegistry;
   securityAudit: SecurityAuditService;
@@ -237,6 +240,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerProfessionalSealsRoutes(app, deps.professionalSeals);
   await registerLiveTrustFrameRoutes(app, deps.liveTrustFrame);
   await registerProviderCommandCenterRoutes(app, deps.providerCommandCenter);
+  await registerCustomerCommandCenterRoutes(app, deps.customerCommandCenter);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 
   return app;

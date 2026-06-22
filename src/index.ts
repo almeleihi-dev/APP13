@@ -57,6 +57,7 @@ import { createProfessionalPassportModule } from "./experience/professional-pass
 import { createProfessionalSealsModule } from "./experience/professional-seals/module.js";
 import { createLiveTrustFrameModule } from "./experience/live-trust-frame/module.js";
 import { createProviderCommandCenterModule } from "./experience/provider-command-center/module.js";
+import { createCustomerCommandCenterModule } from "./experience/customer-command-center/module.js";
 import { createExperienceServices } from "./experience/index.js";
 import {
   AuditLogRepository,
@@ -153,6 +154,9 @@ async function main(): Promise<void> {
   const { providerCommandCenter } = createProviderCommandCenterModule(db, {
     trustScore,
     providerProfile,
+  });
+  const { customerCommandCenter } = createCustomerCommandCenterModule(db, {
+    liveTrustFrame,
   });
   const contracts = createContractEngineService(db, identityRepository, trust, eventInbox);
   const storage = createObjectStorage(config);
@@ -253,6 +257,7 @@ async function main(): Promise<void> {
     professionalSeals,
     liveTrustFrame,
     providerCommandCenter,
+    customerCommandCenter,
     securityAuth,
     ownershipRegistry,
     securityAudit,
