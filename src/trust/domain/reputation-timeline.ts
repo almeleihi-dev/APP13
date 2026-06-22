@@ -128,5 +128,17 @@ export function resolveTimelinePresentation(
           : "Escrow funds were refunded to the customer.",
       };
     }
+    case TrustEventTypes.CONTRACT_CANCELLED:
+      return {
+        severity: "negative",
+        title: "Contract cancelled",
+        description: "A contract engagement was cancelled before completion.",
+      };
+    default:
+      return {
+        severity: "neutral",
+        title: event.eventType,
+        description: "Trust lifecycle event recorded.",
+      };
   }
 }

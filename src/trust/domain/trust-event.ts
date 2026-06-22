@@ -7,6 +7,7 @@ export const TrustEventTypes = {
   CUSTOMER_EVALUATION_SUBMITTED: "customer_evaluation_submitted",
   ESCROW_RELEASED: "escrow_released",
   ESCROW_REFUNDED: "escrow_refunded",
+  CONTRACT_CANCELLED: "contract_cancelled",
 } as const;
 
 export type TrustEventType = (typeof TrustEventTypes)[keyof typeof TrustEventTypes];

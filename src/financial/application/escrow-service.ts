@@ -19,6 +19,11 @@ import {
   observeEscrowRefunded,
   observeEscrowReleased,
 } from "../../trust/application/trust-service.js";
+import type { EventInboxService } from "../../notifications/application/event-inbox-service.js";
+import {
+  observeInboxEscrowFunded,
+  observeInboxEscrowReleased,
+} from "../../notifications/application/event-inbox-service.js";
 
 export interface EscrowAccountSet {
   customerAccountId: string;
@@ -56,7 +61,8 @@ export class EscrowService {
     private readonly escrow: EscrowRepository = escrowRepository,
     private readonly accounts: AccountRepository = accountRepository,
     private readonly contracts: ContractRepository = contractRepository,
-    private readonly trust?: TrustService
+    private readonly trust?: TrustService,
+    private readonly eventInbox?: EventInboxService
   ) {}
 
   async createForContract(input: CreateEscrowInput): Promise<EscrowAgreement> {
@@ -115,6 +121,9 @@ export class EscrowService {
         toStatus: "funded",
         actorUserId: input.actorUserId,
         reason: input.idempotencyKey,
+      });
+      await observeInboxEscrowFunded(this.eventInbox, tx, {
+        contractId: escrow.contractId,
       });
       return updated;
     });
@@ -197,6 +206,10 @@ export class EscrowService {
           contractId: input.contractId,
           escrowId: escrow.id,
           idempotencyKey: input.idempotencyKey,
+        });
+        await observeInboxEscrowReleased(this.eventInbox, tx, {
+          contractId: input.contractId,
+          escrowId: escrow.id,
         });
       }
 
@@ -481,7 +494,16 @@ export function createEscrowService(
   db: DbPool,
   ledger: LedgerService = createLedgerService(db),
   contracts: ContractRepository = contractRepository,
-  trust?: TrustService
+  trust?: TrustService,
+  eventInbox?: EventInboxService
 ): EscrowService {
-  return new EscrowService(db, ledger, escrowRepository, accountRepository, contracts, trust);
+  return new EscrowService(
+    db,
+    ledger,
+    escrowRepository,
+    accountRepository,
+    contracts,
+    trust,
+    eventInbox
+  );
 }

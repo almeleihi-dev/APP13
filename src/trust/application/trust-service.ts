@@ -11,6 +11,10 @@ import type {
 } from "../domain/trust-event.js";
 import { TrustEventTypes } from "../domain/trust-event.js";
 import { TrustRepository, trustRepository } from "../infrastructure/trust-repository.js";
+import type { TrustScoreService } from "./trust-score-service.js";
+import { isSupportedS5EventType } from "../domain/trust-profile.js";
+import type { EventInboxService } from "../../notifications/application/event-inbox-service.js";
+import { observeInboxTrustUpdated } from "../../notifications/application/event-inbox-service.js";
 
 export interface RecordTrustEventResult {
   event: TrustEvent;
@@ -83,10 +87,21 @@ export function countConfirmedIssues(events: TrustEvent[]): number {
 }
 
 export class TrustService {
+  private trustScore?: TrustScoreService;
+  private eventInbox?: EventInboxService;
+
   constructor(
     private readonly db: DbPool,
     private readonly repository: TrustRepository = trustRepository
   ) {}
+
+  attachTrustScoreService(trustScore: TrustScoreService): void {
+    this.trustScore = trustScore;
+  }
+
+  attachEventInboxService(eventInbox: EventInboxService): void {
+    this.eventInbox = eventInbox;
+  }
 
   async recordEvent(
     client: DbClient,
@@ -109,6 +124,17 @@ export class TrustService {
       },
       engineSource: "trust",
       idempotencyKey: `trust-recompute-${append.event.id}`,
+    });
+
+    if (this.trustScore && isSupportedS5EventType(input.eventType)) {
+      await this.trustScore.persistSnapshotForProvider(client, input.providerId, input.eventType);
+    }
+
+    await observeInboxTrustUpdated(this.eventInbox, client, {
+      providerId: input.providerId,
+      trustEventId: append.event.id,
+      trustScore: score.score,
+      triggeringEventType: input.eventType,
     });
 
     return { event: append.event, created: true, score };
@@ -184,6 +210,22 @@ export async function observeContractCompleted(
     sourceEntityId: input.contractId,
     contractId: input.contractId,
     idempotencyKey: input.idempotencyKey ?? `trust-contract-completed-${input.contractId}`,
+  });
+}
+
+export async function observeContractCancelled(
+  trust: TrustService | undefined,
+  tx: DbClient,
+  input: { providerId: string | null; contractId: string; idempotencyKey?: string }
+): Promise<void> {
+  if (!trust || !input.providerId) return;
+  await trust.recordEvent(tx, {
+    providerId: input.providerId,
+    eventType: TrustEventTypes.CONTRACT_CANCELLED,
+    sourceEntityType: "contract",
+    sourceEntityId: input.contractId,
+    contractId: input.contractId,
+    idempotencyKey: input.idempotencyKey ?? `trust-contract-cancelled-${input.contractId}`,
   });
 }
 

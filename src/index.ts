@@ -36,6 +36,23 @@ import { createWorkflowIntelligenceService } from "./orchestrator/intelligence/w
 import { createProviderIntelligenceService } from "./provider/intelligence/provider-intelligence-service.js";
 import { createEscrowService } from "./financial/application/escrow-service.js";
 import { createTrustModule } from "./trust/module.js";
+import { createProviderExperienceModule } from "./provider-experience/module.js";
+import { createRequestExperienceModule } from "./request-experience/module.js";
+import { createConversionModule } from "./conversion/module.js";
+import { createCustomerExperienceModule } from "./customer-experience/module.js";
+import { createProviderWorkspaceModule } from "./provider-workspace/module.js";
+import { createOperationsModule } from "./operations/module.js";
+import { createNotificationsModule } from "./notifications/module.js";
+import { createDiscoveryModule } from "./discovery/module.js";
+import { createAnalyticsModule } from "./analytics/module.js";
+import { createHomeExperienceModule } from "./experience/module.js";
+import { createLiveFrameExperienceModule } from "./experience/live-frame/module.js";
+import { createContractJourneyModule } from "./experience/contract-journey/module.js";
+import { createActionEconomyModule } from "./experience/action-economy/module.js";
+import { createRequestMatchExperienceModule } from "./experience/request-match/module.js";
+import { createEscrowPaymentExperienceModule } from "./experience/escrow-payment/module.js";
+import { createTrustReputationExperienceModule } from "./experience/trust-reputation/module.js";
+import { createDiscoveryMatchingModule } from "./experience/discovery-matching/module.js";
 import { createExperienceServices } from "./experience/index.js";
 import {
   AuditLogRepository,
@@ -87,13 +104,49 @@ async function main(): Promise<void> {
   const revalidation = createIdentityRevalidationService(db, identityRepository);
 
   const actions = createActionService(db, identityRepository);
-  const { trust } = createTrustModule(db);
-  const contracts = createContractEngineService(db, identityRepository, trust);
+  const { trust, trustScore } = createTrustModule(db);
+  const { eventInbox } = createNotificationsModule(db);
+  trust.attachEventInboxService(eventInbox);
+  const { providerProfile } = createProviderExperienceModule(db, { trustScore });
+  const { requestIntelligence } = createRequestExperienceModule(db, { trustScore });
+  const { matchContractConversion } = createConversionModule(db, { eventInbox });
+  const { customerDashboard } = createCustomerExperienceModule(db);
+  const { providerDashboard } = createProviderWorkspaceModule(db, { trustScore });
+  const { adminConsole } = createOperationsModule(db);
+  const { discovery } = createDiscoveryModule(db, { trustScore });
+  const { platformAnalytics } = createAnalyticsModule(db);
+  const { homeExperience } = createHomeExperienceModule(db, {
+    customerDashboard,
+    providerDashboard,
+    eventInbox,
+    trustScore,
+  });
+  const { liveFrameExperience } = createLiveFrameExperienceModule(db, {
+    trustScore,
+    providerProfile,
+  });
+  const { contractJourney } = createContractJourneyModule(db);
+  const { actionEconomy } = createActionEconomyModule(db, { trustScore });
+  const { requestMatchExperience } = createRequestMatchExperienceModule(db, { trustScore });
+  const { escrowPaymentExperience } = createEscrowPaymentExperienceModule(db);
+  const { trustReputationExperience } = createTrustReputationExperienceModule(db, {
+    trustScore,
+    providerProfile,
+  });
+  const { discoveryMatching } = createDiscoveryMatchingModule(db, { trustScore });
+  const contracts = createContractEngineService(db, identityRepository, trust, eventInbox);
   const storage = createObjectStorage(config);
-  const execution = createExecutionService(db, contractRepository, storage);
+  const execution = createExecutionService(db, contractRepository, storage, undefined, eventInbox);
   const evaluation = createEvaluationService(db, contractRepository, undefined, trust);
-  const escrow = createEscrowService(db, undefined, contractRepository, trust);
-  const issues = createIssueService(db, contractRepository, undefined, escrow, trust);
+  const escrow = createEscrowService(db, undefined, contractRepository, trust, eventInbox);
+  const issues = createIssueService(
+    db,
+    contractRepository,
+    undefined,
+    escrow,
+    trust,
+    eventInbox
+  );
   const actionIntelligence = createActionIntelligenceService();
   const requirementIntelligence = createRequirementIntelligenceService();
   const contractIntelligence = createContractIntelligenceService(
@@ -158,6 +211,24 @@ async function main(): Promise<void> {
     workflowIntelligence,
     providerIntelligence,
     experience,
+    trustScore,
+    providerProfile,
+    requestIntelligence,
+    matchContractConversion,
+    customerDashboard,
+    providerDashboard,
+    adminConsole,
+    eventInbox,
+    discovery,
+    platformAnalytics,
+    homeExperience,
+    liveFrameExperience,
+    contractJourney,
+    actionEconomy,
+    requestMatchExperience,
+    escrowPaymentExperience,
+    trustReputationExperience,
+    discoveryMatching,
     securityAuth,
     ownershipRegistry,
     securityAudit,

@@ -35,9 +35,15 @@ import { MilestoneFactory, AttestationFactory } from "../materialization/factory
 import type { TrustService } from "../../trust/application/trust-service.js";
 import {
   observeContractCompleted,
+  observeContractCancelled,
   observeIssueResolved,
   observeMilestoneAccepted,
 } from "../../trust/application/trust-service.js";
+import type { EventInboxService } from "../../notifications/application/event-inbox-service.js";
+import {
+  observeInboxIssueResolved,
+  observeInboxMilestoneAccepted,
+} from "../../notifications/application/event-inbox-service.js";
 
 export function sha256Document(payload: unknown): string {
   const hash = createHash("sha256").update(JSON.stringify(payload)).digest("hex");
@@ -91,7 +97,8 @@ export class ContractEngineService {
     private readonly actions: ActionRepository = actionRepository,
     private readonly contracts: ContractRepository = contractRepository,
     private readonly complaints: ComplaintReadinessRepository = complaintReadinessRepository,
-    private readonly trust?: TrustService
+    private readonly trust?: TrustService,
+    private readonly eventInbox?: EventInboxService
   ) {}
 
   async generateContract(actionId: string, userId: string, idempotencyKey?: string) {
@@ -311,6 +318,11 @@ export class ContractEngineService {
           engineSource: "contract",
           idempotencyKey: idempotencyKey ?? `contract-cancelled-${contractId}`,
         });
+        await observeContractCancelled(this.trust, tx, {
+          providerId: locked.providerId,
+          contractId,
+          idempotencyKey: idempotencyKey ?? `trust-contract-cancelled-${contractId}`,
+        });
         const refreshed = await this.contracts.findById(tx, contractId);
         return { type: "sync" as const, contract: toContractResponse(refreshed!) };
       });
@@ -446,6 +458,11 @@ export class ContractEngineService {
             issueId,
             transition: input.transition,
           });
+          await observeInboxIssueResolved(this.eventInbox, tx, {
+            contractId,
+            issueId,
+            transition: input.transition,
+          });
         }
       }
 
@@ -510,6 +527,10 @@ export class ContractEngineService {
       if (transition === "accept") {
         await observeMilestoneAccepted(this.trust, tx, {
           providerId: contract.providerId,
+          contractId,
+          milestoneId,
+        });
+        await observeInboxMilestoneAccepted(this.eventInbox, tx, {
           contractId,
           milestoneId,
         });
@@ -799,7 +820,16 @@ export class ContractEngineService {
 export function createContractEngineService(
   db: DbPool,
   identityRepo: IdentityRepository,
-  trust?: TrustService
+  trust?: TrustService,
+  eventInbox?: EventInboxService
 ): ContractEngineService {
-  return new ContractEngineService(db, identityRepo, actionRepository, contractRepository, complaintReadinessRepository, trust);
+  return new ContractEngineService(
+    db,
+    identityRepo,
+    actionRepository,
+    contractRepository,
+    complaintReadinessRepository,
+    trust,
+    eventInbox
+  );
 }

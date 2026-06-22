@@ -5,6 +5,7 @@ export {
   deriveTrustMetricsFromEvents,
   countConfirmedIssues,
   observeContractCompleted,
+  observeContractCancelled,
   observeMilestoneAccepted,
   observeIssueRaised,
   observeIssueResolved,
@@ -23,3 +24,9 @@ export {
   createLiveFrameService,
   buildLiveFrameProjection,
 } from "./live-frame-service.js";
+export {
+  TrustScoreService,
+  createTrustScoreService,
+  isSupportedS5EventType,
+  type RecordTrustScoreEventResult,
+} from "./trust-score-service.js";

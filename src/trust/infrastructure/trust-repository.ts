@@ -254,6 +254,26 @@ export class TrustRepository {
 
     return mapProviderTrustScore(result.rows[0]);
   }
+
+  async saveS5ProfileSnapshot(
+    client: DbClient,
+    input: {
+      providerId: string;
+      snapshot: Record<string, unknown>;
+    }
+  ): Promise<void> {
+    await this.ensureProviderScoreRow(client, input.providerId);
+    await client.query(
+      `
+        UPDATE trust.trust_scores
+        SET
+          dimension_scores = COALESCE(dimension_scores, '{}'::jsonb) || $2::jsonb,
+          computed_at = now()
+        WHERE provider_id = $1
+      `,
+      [input.providerId, JSON.stringify({ s5: input.snapshot })]
+    );
+  }
 }
 
 export const trustRepository = new TrustRepository();

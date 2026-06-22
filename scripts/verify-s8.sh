@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+
+export PATH="${ROOT}/.verify/node-v20.18.1-darwin-arm64/bin:${PATH}"
+export DATABASE_URL="${DATABASE_URL:-postgres://app13:app13@127.0.0.1:5432/app13}"
+
+DOCKER=""
+for candidate in docker /usr/local/bin/docker /opt/homebrew/bin/docker \
+  "/Applications/Docker.app/Contents/Resources/bin/docker"; do
+  if command -v "$candidate" >/dev/null 2>&1; then
+    DOCKER="$candidate"
+    break
+  fi
+done
+
+if [[ -n "$DOCKER" ]]; then
+  echo "==> Starting PostgreSQL (Docker) for S3–S8 regression suite"
+  "$DOCKER" compose up -d postgres
+
+  echo "==> Waiting for PostgreSQL health"
+  for i in $(seq 1 30); do
+    if "$DOCKER" compose exec -T postgres pg_isready -U app13 -d app13 >/dev/null 2>&1; then
+      echo "PostgreSQL ready"
+      break
+    fi
+    if [[ "$i" -eq 30 ]]; then
+      echo "PostgreSQL failed to become ready" >&2
+      exit 1
+    fi
+    sleep 1
+  done
+
+  echo "==> Running migrations"
+  npm run migrate
+fi
+
+echo "==> S3 foundation regression"
+node --import tsx --test --test-concurrency=1 \
+  test/s3-security.test.ts \
+  test/s3-financial-safety.test.ts
+
+echo "==> S3 trust engine regression"
+node --import tsx --test --test-concurrency=1 test/s3-trust-engine.test.ts
+
+echo "==> S3 reputation timeline regression"
+node --import tsx --test --test-concurrency=1 test/s3-reputation-timeline.test.ts
+
+echo "==> S3 live frame regression"
+node --import tsx --test --test-concurrency=1 test/s3-live-frame.test.ts
+
+echo "==> S3 matching engine regression"
+node --import tsx --test test/s3-matching-engine.test.ts
+
+echo "==> S3 action intelligence regression"
+node --import tsx --test test/s3-action-intelligence.test.ts
+
+echo "==> S3 marketplace integration regression"
+node --import tsx --test --test-concurrency=1 test/s3-marketplace-integration.test.ts
+
+echo "==> S4 marketplace experience regression"
+node --import tsx --test --test-concurrency=1 test/s4-marketplace-experience.test.ts
+
+echo "==> S4 contract initiation regression"
+node --import tsx --test --test-concurrency=1 test/s4-contract-initiation.test.ts
+
+echo "==> S4 contract creation bridge regression"
+node --import tsx --test --test-concurrency=1 test/s4-contract-creation-bridge.test.ts
+
+echo "==> S4 escrow initiation regression"
+node --import tsx --test --test-concurrency=1 test/s4-escrow-initiation.test.ts
+
+echo "==> S5 trust & reputation regression"
+node --import tsx --test --test-concurrency=1 test/s5-trust-reputation.test.ts
+
+echo "==> S6 provider public profile regression"
+node --import tsx --test --test-concurrency=1 test/s6-provider-profile.test.ts
+
+echo "==> S7 customer request regression"
+node --import tsx --test --test-concurrency=1 test/s7-customer-request.test.ts
+
+echo "==> S8 match-to-contract conversion tests"
+node --import tsx --test --test-concurrency=1 test/s8-match-contract-conversion.test.ts
+
+echo "==> Building"
+npm run build
+
+echo "==> Import lint"
+npm run lint:imports
+
+echo "S8 match-to-contract conversion verification complete"

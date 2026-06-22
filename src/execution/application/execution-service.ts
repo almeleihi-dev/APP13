@@ -24,6 +24,11 @@ import {
   type ExecutionRepository,
   type MilestoneStatus,
 } from "../infrastructure/execution-repository.js";
+import type { EventInboxService } from "../../notifications/application/event-inbox-service.js";
+import {
+  observeInboxEvidenceUploaded,
+  observeInboxMilestoneSubmitted,
+} from "../../notifications/application/event-inbox-service.js";
 
 const UPLOAD_INTENT_TTL_SECONDS = 900;
 
@@ -32,7 +37,8 @@ export class ExecutionService {
     private readonly db: DbPool,
     private readonly contracts: ContractRepository,
     private readonly execution: ExecutionRepository,
-    private readonly storage: ObjectStorage
+    private readonly storage: ObjectStorage,
+    private readonly eventInbox?: EventInboxService
   ) {}
 
   async createEvidenceUploadIntent(
@@ -235,6 +241,12 @@ export class ExecutionService {
         idempotencyKey: input.idempotency_key,
       });
 
+      await observeInboxEvidenceUploaded(this.eventInbox, tx, {
+        contractId,
+        milestoneId,
+        evidenceId: evidence.id,
+      });
+
       return {
         id: evidence.id,
         evidence_type: evidence.evidenceType,
@@ -295,6 +307,10 @@ export class ExecutionService {
           payload: { contract_id: contractId, milestone_id: milestoneId },
           engineSource: "execution",
           idempotencyKey: `milestone-submit-${milestoneId}`,
+        });
+        await observeInboxMilestoneSubmitted(this.eventInbox, tx, {
+          contractId,
+          milestoneId,
         });
       }
 
@@ -622,7 +638,8 @@ export function createExecutionService(
   db: DbPool,
   contracts: ContractRepository,
   storage: ObjectStorage,
-  execution: ExecutionRepository = executionRepository
+  execution: ExecutionRepository = executionRepository,
+  eventInbox?: EventInboxService
 ): ExecutionService {
-  return new ExecutionService(db, contracts, execution, storage);
+  return new ExecutionService(db, contracts, execution, storage, eventInbox);
 }

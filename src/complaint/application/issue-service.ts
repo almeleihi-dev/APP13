@@ -10,6 +10,8 @@ import { complaintRepository, type ComplaintRepository } from "../infrastructure
 import type { EscrowService } from "../../financial/application/escrow-service.js";
 import type { TrustService } from "../../trust/application/trust-service.js";
 import { observeIssueRaised } from "../../trust/application/trust-service.js";
+import type { EventInboxService } from "../../notifications/application/event-inbox-service.js";
+import { observeInboxIssueRaised } from "../../notifications/application/event-inbox-service.js";
 
 export class IssueService {
   constructor(
@@ -17,7 +19,8 @@ export class IssueService {
     private readonly contracts: ContractRepository,
     private readonly complaints: ComplaintRepository = complaintRepository,
     private readonly escrow?: EscrowService,
-    private readonly trust?: TrustService
+    private readonly trust?: TrustService,
+    private readonly eventInbox?: EventInboxService
   ) {}
 
   async createIssue(
@@ -85,6 +88,11 @@ export class IssueService {
         confirmed: true,
       });
 
+      await observeInboxIssueRaised(this.eventInbox, tx, {
+        contractId: input.contract_id,
+        issueId: issue.id,
+      });
+
       return {
         id: issue.id,
         contract_id: issue.contractId,
@@ -119,7 +127,8 @@ export function createIssueService(
   contracts: ContractRepository,
   complaints: ComplaintRepository = complaintRepository,
   escrow?: EscrowService,
-  trust?: TrustService
+  trust?: TrustService,
+  eventInbox?: EventInboxService
 ): IssueService {
-  return new IssueService(db, contracts, complaints, escrow, trust);
+  return new IssueService(db, contracts, complaints, escrow, trust, eventInbox);
 }
