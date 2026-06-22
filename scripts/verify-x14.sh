@@ -19,7 +19,7 @@ for candidate in docker /usr/local/bin/docker /opt/homebrew/bin/docker \
 done
 
 if [[ -n "$DOCKER" ]]; then
-  echo "==> Starting PostgreSQL (Docker) for X15 regression suite"
+  echo "==> Starting PostgreSQL (Docker) for X14 regression suite"
   "$DOCKER" compose up -d postgres
 
   echo "==> Waiting for PostgreSQL health"
@@ -39,11 +39,11 @@ if [[ -n "$DOCKER" ]]; then
   npm run migrate
 fi
 
-echo "==> X14 marketplace intelligence regression"
-bash scripts/verify-x14.sh
+echo "==> X13 platform control tower regression"
+bash scripts/verify-x13.sh
 
-echo "==> X15 release readiness center experience tests"
-node --import tsx --test --test-concurrency=1 test/x15-release-readiness.test.ts
+echo "==> X14 marketplace intelligence experience tests"
+node --import tsx --test --test-concurrency=1 test/x14-marketplace-intelligence.test.ts
 
 echo "==> Build"
 npm run build
@@ -51,4 +51,4 @@ npm run build
 echo "==> Import lint"
 npm run lint:imports
 
-echo "X15 release readiness center experience verification complete"
+echo "X14 marketplace intelligence experience verification complete"

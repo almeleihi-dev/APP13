@@ -144,6 +144,8 @@
     "verify:x12": "bash scripts/verify-x12.sh",
     "test:x13-platform-control-tower": "node --import tsx --test --test-concurrency=1 test/x13-platform-control-tower.test.ts",
     "verify:x13": "bash scripts/verify-x13.sh",
+    "test:x14-marketplace-intelligence": "node --import tsx --test --test-concurrency=1 test/x14-marketplace-intelligence.test.ts",
+    "verify:x14": "bash scripts/verify-x14.sh",
     "test:x15-release-readiness": "node --import tsx --test --test-concurrency=1 test/x15-release-readiness.test.ts",
     "verify:x15": "bash scripts/verify-x15.sh",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
