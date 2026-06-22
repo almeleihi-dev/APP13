@@ -132,6 +132,8 @@
     "verify:x7": "bash scripts/verify-x7.sh",
     "test:x8-discovery-matching": "node --import tsx --test --test-concurrency=1 test/x8-discovery-matching.test.ts",
     "verify:x8": "bash scripts/verify-x8.sh",
+    "test:x9-professional-passport": "node --import tsx --test --test-concurrency=1 test/x9-professional-passport.test.ts",
+    "verify:x9": "bash scripts/verify-x9.sh",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
     "test:b5": "node --import tsx --test test/b5-execution-integration.test.ts",
     "test:b6": "node --import tsx --test --test-concurrency=1 test/b6-financial-migration.test.ts test/b6-ledger-service-integration.test.ts test/b6-escrow-service-integration.test.ts",

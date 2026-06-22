@@ -53,6 +53,7 @@ import { createRequestMatchExperienceModule } from "./experience/request-match/m
 import { createEscrowPaymentExperienceModule } from "./experience/escrow-payment/module.js";
 import { createTrustReputationExperienceModule } from "./experience/trust-reputation/module.js";
 import { createDiscoveryMatchingModule } from "./experience/discovery-matching/module.js";
+import { createProfessionalPassportModule } from "./experience/professional-passport/module.js";
 import { createExperienceServices } from "./experience/index.js";
 import {
   AuditLogRepository,
@@ -134,6 +135,10 @@ async function main(): Promise<void> {
     providerProfile,
   });
   const { discoveryMatching } = createDiscoveryMatchingModule(db, { trustScore });
+  const { professionalPassport } = createProfessionalPassportModule(db, {
+    trustScore,
+    providerProfile,
+  });
   const contracts = createContractEngineService(db, identityRepository, trust, eventInbox);
   const storage = createObjectStorage(config);
   const execution = createExecutionService(db, contractRepository, storage, undefined, eventInbox);
@@ -229,6 +234,7 @@ async function main(): Promise<void> {
     escrowPaymentExperience,
     trustReputationExperience,
     discoveryMatching,
+    professionalPassport,
     securityAuth,
     ownershipRegistry,
     securityAudit,
