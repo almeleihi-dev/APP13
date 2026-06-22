@@ -102,8 +102,10 @@ import { registerLaunchSimulationRoutes } from "./routes/launch-simulation.js";
 import { registerInvestorReadinessRoutes } from "./routes/investor-readiness.js";
 import { registerGovernmentPartnershipRoutes } from "./routes/government-partnership.js";
 import { registerStrategicOperatingRoutes } from "./routes/strategic-operating-system.js";
+import { registerMissionControlRoutes } from "./routes/mission-control.js";
 import type { GovernmentPartnershipService } from "../experience/government-partnership/application/government-partnership-service.js";
 import type { StrategicOperatingService } from "../experience/strategic-operating-system/application/strategic-operating-service.js";
+import type { MissionControlService } from "../experience/mission-control/application/mission-control-service.js";
 import type { InvestorReadinessService } from "../experience/investor-readiness/application/investor-readiness-service.js";
 import type { LaunchSimulationService } from "../experience/launch-simulation/application/launch-simulation-service.js";
 import type { ExecutiveCommandCenterService } from "../experience/executive-command-center/application/executive-command-center-service.js";
@@ -183,6 +185,7 @@ export interface AppDependencies {
   investorReadiness: InvestorReadinessService;
   governmentPartnership: GovernmentPartnershipService;
   strategicOperatingSystem: StrategicOperatingService;
+  missionControl: MissionControlService;
   releaseReadinessCenter: ReleaseReadinessCenterService;
   securityAuth: SecurityAuthKernelService;
   ownershipRegistry: OwnershipRegistry;
@@ -272,6 +275,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerInvestorReadinessRoutes(app, deps.investorReadiness);
   await registerGovernmentPartnershipRoutes(app, deps.governmentPartnership);
   await registerStrategicOperatingRoutes(app, deps.strategicOperatingSystem);
+  await registerMissionControlRoutes(app, deps.missionControl);
   await registerReleaseReadinessRoutes(app, deps.releaseReadinessCenter);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 
