@@ -110,6 +110,7 @@ import { registerProductionReadinessRoutes } from "./routes/production-readiness
 import { registerSecurityReadinessRoutes } from "./routes/security-readiness.js";
 import { registerPlatformOperationsRoutes } from "./routes/platform-operations.js";
 import { registerLaunchControlRoutes } from "./routes/launch-control.js";
+import { registerPostLaunchMonitoringRoutes } from "./routes/post-launch-monitoring.js";
 import type { GovernmentPartnershipService } from "../experience/government-partnership/application/government-partnership-service.js";
 import type { StrategicOperatingService } from "../experience/strategic-operating-system/application/strategic-operating-service.js";
 import type { MissionControlService } from "../experience/mission-control/application/mission-control-service.js";
@@ -120,6 +121,7 @@ import type { ProductionReadinessService } from "../experience/production-readin
 import type { SecurityReadinessService } from "../experience/security-readiness/application/security-readiness-service.js";
 import type { PlatformOperationsService } from "../experience/platform-operations/application/platform-operations-service.js";
 import type { LaunchControlService } from "../experience/launch-control/application/launch-control-service.js";
+import type { PostLaunchMonitoringService } from "../experience/post-launch-monitoring/application/post-launch-monitoring-service.js";
 import type { InvestorReadinessService } from "../experience/investor-readiness/application/investor-readiness-service.js";
 import type { LaunchSimulationService } from "../experience/launch-simulation/application/launch-simulation-service.js";
 import type { ExecutiveCommandCenterService } from "../experience/executive-command-center/application/executive-command-center-service.js";
@@ -207,6 +209,7 @@ export interface AppDependencies {
   securityReadiness: SecurityReadinessService;
   platformOperations: PlatformOperationsService;
   launchControl: LaunchControlService;
+  postLaunchMonitoring: PostLaunchMonitoringService;
   releaseReadinessCenter: ReleaseReadinessCenterService;
   securityAuth: SecurityAuthKernelService;
   ownershipRegistry: OwnershipRegistry;
@@ -304,6 +307,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerSecurityReadinessRoutes(app, deps.securityReadiness);
   await registerPlatformOperationsRoutes(app, deps.platformOperations);
   await registerLaunchControlRoutes(app, deps.launchControl);
+  await registerPostLaunchMonitoringRoutes(app, deps.postLaunchMonitoring);
   await registerReleaseReadinessRoutes(app, deps.releaseReadinessCenter);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 
