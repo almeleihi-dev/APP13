@@ -107,6 +107,8 @@ import { registerExecutiveExperienceRoutes } from "./routes/executive-experience
 import { registerArchitectureReviewRoutes } from "./routes/architecture-review.js";
 import { registerApiAuditRoutes } from "./routes/api-audit.js";
 import { registerProductionReadinessRoutes } from "./routes/production-readiness.js";
+import { registerSecurityReadinessRoutes } from "./routes/security-readiness.js";
+import { registerPlatformOperationsRoutes } from "./routes/platform-operations.js";
 import type { GovernmentPartnershipService } from "../experience/government-partnership/application/government-partnership-service.js";
 import type { StrategicOperatingService } from "../experience/strategic-operating-system/application/strategic-operating-service.js";
 import type { MissionControlService } from "../experience/mission-control/application/mission-control-service.js";
@@ -114,6 +116,8 @@ import type { ExecutiveExperienceService } from "../experience/executive-experie
 import type { ArchitectureReviewService } from "../experience/architecture-review/application/architecture-review-service.js";
 import type { ApiAuditService } from "../experience/api-audit/application/api-audit-service.js";
 import type { ProductionReadinessService } from "../experience/production-readiness/application/production-readiness-service.js";
+import type { SecurityReadinessService } from "../experience/security-readiness/application/security-readiness-service.js";
+import type { PlatformOperationsService } from "../experience/platform-operations/application/platform-operations-service.js";
 import type { InvestorReadinessService } from "../experience/investor-readiness/application/investor-readiness-service.js";
 import type { LaunchSimulationService } from "../experience/launch-simulation/application/launch-simulation-service.js";
 import type { ExecutiveCommandCenterService } from "../experience/executive-command-center/application/executive-command-center-service.js";
@@ -198,6 +202,8 @@ export interface AppDependencies {
   architectureReview: ArchitectureReviewService;
   apiAudit: ApiAuditService;
   productionReadiness: ProductionReadinessService;
+  securityReadiness: SecurityReadinessService;
+  platformOperations: PlatformOperationsService;
   releaseReadinessCenter: ReleaseReadinessCenterService;
   securityAuth: SecurityAuthKernelService;
   ownershipRegistry: OwnershipRegistry;
@@ -292,6 +298,8 @@ export async function buildServer(deps: AppDependencies) {
   await registerArchitectureReviewRoutes(app, deps.architectureReview);
   await registerApiAuditRoutes(app, deps.apiAudit);
   await registerProductionReadinessRoutes(app, deps.productionReadiness);
+  await registerSecurityReadinessRoutes(app, deps.securityReadiness);
+  await registerPlatformOperationsRoutes(app, deps.platformOperations);
   await registerReleaseReadinessRoutes(app, deps.releaseReadinessCenter);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 

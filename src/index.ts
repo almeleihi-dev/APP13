@@ -71,6 +71,8 @@ import { createExecutiveExperienceModule } from "./experience/executive-experien
 import { createArchitectureReviewModule } from "./experience/architecture-review/module.js";
 import { createApiAuditModule } from "./experience/api-audit/module.js";
 import { createProductionReadinessModule } from "./experience/production-readiness/module.js";
+import { createSecurityReadinessModule } from "./experience/security-readiness/module.js";
+import { createPlatformOperationsModule } from "./experience/platform-operations/module.js";
 import { createExperienceServices } from "./experience/index.js";
 import {
   AuditLogRepository,
@@ -183,6 +185,8 @@ async function main(): Promise<void> {
   const { architectureReview } = createArchitectureReviewModule(db);
   const { apiAudit } = createApiAuditModule(db);
   const { productionReadiness } = createProductionReadinessModule(db);
+  const { securityReadiness } = createSecurityReadinessModule(db);
+  const { platformOperations } = createPlatformOperationsModule(db);
   const { releaseReadinessCenter } = createReleaseReadinessCenterModule();
   const contracts = createContractEngineService(db, identityRepository, trust, eventInbox);
   const storage = createObjectStorage(config);
@@ -296,6 +300,8 @@ async function main(): Promise<void> {
     architectureReview,
     apiAudit,
     productionReadiness,
+    securityReadiness,
+    platformOperations,
     releaseReadinessCenter,
     securityAuth,
     ownershipRegistry,
