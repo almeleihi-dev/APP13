@@ -68,6 +68,7 @@ import { createGovernmentPartnershipModule } from "./experience/government-partn
 import { createStrategicOperatingModule } from "./experience/strategic-operating-system/module.js";
 import { createMissionControlModule } from "./experience/mission-control/module.js";
 import { createExecutiveExperienceModule } from "./experience/executive-experience/module.js";
+import { createArchitectureReviewModule } from "./experience/architecture-review/module.js";
 import { createExperienceServices } from "./experience/index.js";
 import {
   AuditLogRepository,
@@ -177,6 +178,7 @@ async function main(): Promise<void> {
   const { strategicOperatingSystem } = createStrategicOperatingModule(db);
   const { missionControl } = createMissionControlModule(db);
   const { executiveExperience } = createExecutiveExperienceModule(db);
+  const { architectureReview } = createArchitectureReviewModule(db);
   const { releaseReadinessCenter } = createReleaseReadinessCenterModule();
   const contracts = createContractEngineService(db, identityRepository, trust, eventInbox);
   const storage = createObjectStorage(config);
@@ -287,6 +289,7 @@ async function main(): Promise<void> {
     strategicOperatingSystem,
     missionControl,
     executiveExperience,
+    architectureReview,
     releaseReadinessCenter,
     securityAuth,
     ownershipRegistry,

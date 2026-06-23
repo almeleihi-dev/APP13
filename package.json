@@ -162,6 +162,8 @@
     "verify:x21": "bash scripts/verify-x21.sh",
     "test:x22-executive-experience": "node --import tsx --test --test-concurrency=1 test/x22-executive-experience.test.ts",
     "verify:x22": "bash scripts/verify-x22.sh",
+    "test:x23-architecture-review": "node --import tsx --test --test-concurrency=1 test/x23-architecture-review.test.ts",
+    "verify:x23": "bash scripts/verify-x23.sh",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
     "test:b5": "node --import tsx --test test/b5-execution-integration.test.ts",
     "test:b6": "node --import tsx --test --test-concurrency=1 test/b6-financial-migration.test.ts test/b6-ledger-service-integration.test.ts test/b6-escrow-service-integration.test.ts",
