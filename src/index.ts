@@ -70,6 +70,7 @@ import { createMissionControlModule } from "./experience/mission-control/module.
 import { createExecutiveExperienceModule } from "./experience/executive-experience/module.js";
 import { createArchitectureReviewModule } from "./experience/architecture-review/module.js";
 import { createApiAuditModule } from "./experience/api-audit/module.js";
+import { createProductionReadinessModule } from "./experience/production-readiness/module.js";
 import { createExperienceServices } from "./experience/index.js";
 import {
   AuditLogRepository,
@@ -181,6 +182,7 @@ async function main(): Promise<void> {
   const { executiveExperience } = createExecutiveExperienceModule(db);
   const { architectureReview } = createArchitectureReviewModule(db);
   const { apiAudit } = createApiAuditModule(db);
+  const { productionReadiness } = createProductionReadinessModule(db);
   const { releaseReadinessCenter } = createReleaseReadinessCenterModule();
   const contracts = createContractEngineService(db, identityRepository, trust, eventInbox);
   const storage = createObjectStorage(config);
@@ -293,6 +295,7 @@ async function main(): Promise<void> {
     executiveExperience,
     architectureReview,
     apiAudit,
+    productionReadiness,
     releaseReadinessCenter,
     securityAuth,
     ownershipRegistry,
