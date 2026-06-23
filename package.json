@@ -176,6 +176,8 @@
     "verify:x28": "bash scripts/verify-x28.sh",
     "test:x29-post-launch-monitoring": "node --import tsx --test --test-concurrency=1 test/x29-post-launch-monitoring.test.ts",
     "verify:x29": "bash scripts/verify-x29.sh",
+    "test:x30-business-intelligence": "node --import tsx --test --test-concurrency=1 test/x30-business-intelligence.test.ts",
+    "verify:x30": "bash scripts/verify-x30.sh",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
     "test:b5": "node --import tsx --test test/b5-execution-integration.test.ts",
     "test:b6": "node --import tsx --test --test-concurrency=1 test/b6-financial-migration.test.ts test/b6-ledger-service-integration.test.ts test/b6-escrow-service-integration.test.ts",
