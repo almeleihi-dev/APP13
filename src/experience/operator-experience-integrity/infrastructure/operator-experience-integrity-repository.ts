@@ -24,6 +24,7 @@ const EXPERIENCE_ROUTE_FILES = [
   "src/api/routes/launch-control.ts",
   "src/api/routes/mission-control.ts",
   "src/api/routes/operator-experience-integrity.ts",
+  "src/api/routes/operator-onboarding-readiness.ts",
   "src/api/routes/operator-surface-navigation.ts",
   "src/api/routes/platform-operations.ts",
   "src/api/routes/post-launch-monitoring.ts",

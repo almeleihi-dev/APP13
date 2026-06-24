@@ -194,6 +194,8 @@
     "verify:x37": "bash scripts/verify-x37.sh",
     "test:x38-operator-experience-integrity": "node --import tsx --test --test-concurrency=1 test/x38-operator-experience-integrity.test.ts",
     "verify:x38": "bash scripts/verify-x38.sh",
+    "test:x39-operator-onboarding-readiness": "node --import tsx --test --test-concurrency=1 test/x39-operator-onboarding-readiness.test.ts",
+    "verify:x39": "bash scripts/verify-x39.sh",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
     "test:b5": "node --import tsx --test test/b5-execution-integration.test.ts",
     "test:b6": "node --import tsx --test --test-concurrency=1 test/b6-financial-migration.test.ts test/b6-ledger-service-integration.test.ts test/b6-escrow-service-integration.test.ts",

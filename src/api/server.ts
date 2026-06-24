@@ -116,6 +116,7 @@ import { registerExecutiveUxReadinessRoutes } from "./routes/executive-ux-readin
 import { registerBrowserExperienceCompletenessRoutes } from "./routes/browser-experience-completeness.js";
 import { registerOperatorSurfaceNavigationRoutes } from "./routes/operator-surface-navigation.js";
 import { registerOperatorExperienceIntegrityRoutes } from "./routes/operator-experience-integrity.js";
+import { registerOperatorOnboardingReadinessRoutes } from "./routes/operator-onboarding-readiness.js";
 import { registerBrowserSurfaceRoutes } from "./routes/browser-surface.js";
 import { registerBrowserStaticRoutes } from "./routes/browser-static.js";
 import type { GovernmentPartnershipService } from "../experience/government-partnership/application/government-partnership-service.js";
@@ -134,6 +135,7 @@ import type { ExecutiveUxReadinessService } from "../experience/executive-ux-rea
 import type { BrowserExperienceCompletenessService } from "../experience/browser-experience-completeness/application/browser-experience-completeness-service.js";
 import type { OperatorSurfaceNavigationService } from "../experience/operator-surface-navigation/application/operator-surface-navigation-service.js";
 import type { OperatorExperienceIntegrityService } from "../experience/operator-experience-integrity/application/operator-experience-integrity-service.js";
+import type { OperatorOnboardingReadinessService } from "../experience/operator-onboarding-readiness/application/operator-onboarding-readiness-service.js";
 import type { BrowserSurfaceService } from "../browser-surface/application/browser-surface-service.js";
 import type { BrowserStaticService } from "../browser-static/application/browser-static-service.js";
 import type { InvestorReadinessService } from "../experience/investor-readiness/application/investor-readiness-service.js";
@@ -229,6 +231,7 @@ export interface AppDependencies {
   browserExperienceCompleteness: BrowserExperienceCompletenessService;
   operatorSurfaceNavigation: OperatorSurfaceNavigationService;
   operatorExperienceIntegrity: OperatorExperienceIntegrityService;
+  operatorOnboardingReadiness: OperatorOnboardingReadinessService;
   browserSurface: BrowserSurfaceService;
   browserStatic: BrowserStaticService;
   releaseReadinessCenter: ReleaseReadinessCenterService;
@@ -336,6 +339,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerBrowserExperienceCompletenessRoutes(app, deps.browserExperienceCompleteness);
   await registerOperatorSurfaceNavigationRoutes(app, deps.operatorSurfaceNavigation);
   await registerOperatorExperienceIntegrityRoutes(app, deps.operatorExperienceIntegrity);
+  await registerOperatorOnboardingReadinessRoutes(app, deps.operatorOnboardingReadiness);
   await registerReleaseReadinessRoutes(app, deps.releaseReadinessCenter);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 
