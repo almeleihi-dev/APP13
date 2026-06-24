@@ -81,6 +81,7 @@ import { createBrowserExperienceCompletenessModule } from "./experience/browser-
 import { createOperatorSurfaceNavigationModule } from "./experience/operator-surface-navigation/module.js";
 import { createOperatorExperienceIntegrityModule } from "./experience/operator-experience-integrity/module.js";
 import { createOperatorOnboardingReadinessModule } from "./experience/operator-onboarding-readiness/module.js";
+import { createActionBlueprintModule } from "./action-blueprint/module.js";
 import { createBrowserSurfaceModule } from "./browser-surface/module.js";
 import { createBrowserStaticModule } from "./browser-static/module.js";
 import { createExperienceServices } from "./experience/index.js";
@@ -205,6 +206,7 @@ async function main(): Promise<void> {
   const { operatorSurfaceNavigation } = createOperatorSurfaceNavigationModule(db);
   const { operatorExperienceIntegrity } = createOperatorExperienceIntegrityModule(db);
   const { operatorOnboardingReadiness } = createOperatorOnboardingReadinessModule(db);
+  const { actionBlueprint } = createActionBlueprintModule();
   const { browserSurface } = createBrowserSurfaceModule();
   const { browserStatic } = createBrowserStaticModule();
   const { releaseReadinessCenter } = createReleaseReadinessCenterModule();
@@ -330,6 +332,7 @@ async function main(): Promise<void> {
     operatorSurfaceNavigation,
     operatorExperienceIntegrity,
     operatorOnboardingReadiness,
+    actionBlueprint,
     browserSurface,
     browserStatic,
     releaseReadinessCenter,
