@@ -1,0 +1,16 @@
+{
+  "name": "APP13 Platform",
+  "short_name": "APP13",
+  "description": "APP13 browser entry surface",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f8fa",
+  "theme_color": "#1f4fd6",
+  "icons": [
+    {
+      "src": "/browser/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -4,10 +4,10 @@ import { AppError, problem } from "../../shared/errors/index.js";
 
 const REQUEST_ID_HEADER = "x-request-id";
 
-export function requestIdMiddleware(
+export async function requestIdMiddleware(
   request: FastifyRequest,
   reply: FastifyReply
-): void {
+): Promise<void> {
   const incoming = request.headers[REQUEST_ID_HEADER];
   const requestId =
     typeof incoming === "string" && incoming.length > 0

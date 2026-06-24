@@ -76,6 +76,9 @@ import { createPlatformOperationsModule } from "./experience/platform-operations
 import { createLaunchControlModule } from "./experience/launch-control/module.js";
 import { createPostLaunchMonitoringModule } from "./experience/post-launch-monitoring/module.js";
 import { createBusinessIntelligenceModule } from "./experience/business-intelligence/module.js";
+import { createExecutiveUxReadinessModule } from "./experience/executive-ux-readiness/module.js";
+import { createBrowserSurfaceModule } from "./browser-surface/module.js";
+import { createBrowserStaticModule } from "./browser-static/module.js";
 import { createExperienceServices } from "./experience/index.js";
 import {
   AuditLogRepository,
@@ -193,6 +196,9 @@ async function main(): Promise<void> {
   const { launchControl } = createLaunchControlModule(db);
   const { postLaunchMonitoring } = createPostLaunchMonitoringModule(db);
   const { businessIntelligence } = createBusinessIntelligenceModule(db);
+  const { executiveUxReadiness } = createExecutiveUxReadinessModule(db);
+  const { browserSurface } = createBrowserSurfaceModule();
+  const { browserStatic } = createBrowserStaticModule();
   const { releaseReadinessCenter } = createReleaseReadinessCenterModule();
   const contracts = createContractEngineService(db, identityRepository, trust, eventInbox);
   const storage = createObjectStorage(config);
@@ -311,6 +317,9 @@ async function main(): Promise<void> {
     launchControl,
     postLaunchMonitoring,
     businessIntelligence,
+    executiveUxReadiness,
+    browserSurface,
+    browserStatic,
     releaseReadinessCenter,
     securityAuth,
     ownershipRegistry,

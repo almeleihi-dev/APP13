@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import Fastify from "fastify";
 import cookie from "@fastify/cookie";
-import type { Logger } from "../shared/logging/index.js";
+import { resolveFastifyLogger, type Logger } from "../shared/logging/index.js";
 import type { AppConfig } from "../shared/config/index.js";
 import type { DbPool } from "../shared/db/index.js";
 import type { IdempotencyService } from "../platform/idempotency/index.js";
@@ -112,6 +112,9 @@ import { registerPlatformOperationsRoutes } from "./routes/platform-operations.j
 import { registerLaunchControlRoutes } from "./routes/launch-control.js";
 import { registerPostLaunchMonitoringRoutes } from "./routes/post-launch-monitoring.js";
 import { registerBusinessIntelligenceRoutes } from "./routes/business-intelligence.js";
+import { registerExecutiveUxReadinessRoutes } from "./routes/executive-ux-readiness.js";
+import { registerBrowserSurfaceRoutes } from "./routes/browser-surface.js";
+import { registerBrowserStaticRoutes } from "./routes/browser-static.js";
 import type { GovernmentPartnershipService } from "../experience/government-partnership/application/government-partnership-service.js";
 import type { StrategicOperatingService } from "../experience/strategic-operating-system/application/strategic-operating-service.js";
 import type { MissionControlService } from "../experience/mission-control/application/mission-control-service.js";
@@ -124,6 +127,9 @@ import type { PlatformOperationsService } from "../experience/platform-operation
 import type { LaunchControlService } from "../experience/launch-control/application/launch-control-service.js";
 import type { PostLaunchMonitoringService } from "../experience/post-launch-monitoring/application/post-launch-monitoring-service.js";
 import type { BusinessIntelligenceService } from "../experience/business-intelligence/application/business-intelligence-service.js";
+import type { ExecutiveUxReadinessService } from "../experience/executive-ux-readiness/application/executive-ux-readiness-service.js";
+import type { BrowserSurfaceService } from "../browser-surface/application/browser-surface-service.js";
+import type { BrowserStaticService } from "../browser-static/application/browser-static-service.js";
 import type { InvestorReadinessService } from "../experience/investor-readiness/application/investor-readiness-service.js";
 import type { LaunchSimulationService } from "../experience/launch-simulation/application/launch-simulation-service.js";
 import type { ExecutiveCommandCenterService } from "../experience/executive-command-center/application/executive-command-center-service.js";
@@ -213,6 +219,9 @@ export interface AppDependencies {
   launchControl: LaunchControlService;
   postLaunchMonitoring: PostLaunchMonitoringService;
   businessIntelligence: BusinessIntelligenceService;
+  executiveUxReadiness: ExecutiveUxReadinessService;
+  browserSurface: BrowserSurfaceService;
+  browserStatic: BrowserStaticService;
   releaseReadinessCenter: ReleaseReadinessCenterService;
   securityAuth: SecurityAuthKernelService;
   ownershipRegistry: OwnershipRegistry;
@@ -221,7 +230,7 @@ export interface AppDependencies {
 
 export async function buildServer(deps: AppDependencies) {
   const app = Fastify({
-    logger: deps.logger,
+    logger: resolveFastifyLogger(deps.config),
     requestIdHeader: "x-request-id",
     genReqId: () => randomUUID(),
   });
@@ -245,6 +254,8 @@ export async function buildServer(deps: AppDependencies) {
   app.setErrorHandler(errorHandler);
 
   await registerHealthRoutes(app, deps.db);
+  await registerBrowserSurfaceRoutes(app, deps.browserSurface);
+  await registerBrowserStaticRoutes(app, deps.browserStatic);
   await registerAuthRoutes(app, {
     auth: deps.auth,
     registration: deps.registration,
@@ -312,6 +323,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerLaunchControlRoutes(app, deps.launchControl);
   await registerPostLaunchMonitoringRoutes(app, deps.postLaunchMonitoring);
   await registerBusinessIntelligenceRoutes(app, deps.businessIntelligence);
+  await registerExecutiveUxReadinessRoutes(app, deps.executiveUxReadiness);
   await registerReleaseReadinessRoutes(app, deps.releaseReadinessCenter);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 
