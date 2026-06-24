@@ -260,6 +260,7 @@ const OPERATOR_EXPERIENCE_PREFIXES = [
   "/executive-ux-readiness",
   "/browser-experience-completeness",
   "/operator-surface-navigation",
+  "/operator-experience-integrity",
 ];
 
 const POTENTIAL_ENTRY_PREFIXES = ["/home", "/marketplace", "/discovery", "/platform", "/contracts"];

@@ -79,6 +79,7 @@ import { createBusinessIntelligenceModule } from "./experience/business-intellig
 import { createExecutiveUxReadinessModule } from "./experience/executive-ux-readiness/module.js";
 import { createBrowserExperienceCompletenessModule } from "./experience/browser-experience-completeness/module.js";
 import { createOperatorSurfaceNavigationModule } from "./experience/operator-surface-navigation/module.js";
+import { createOperatorExperienceIntegrityModule } from "./experience/operator-experience-integrity/module.js";
 import { createBrowserSurfaceModule } from "./browser-surface/module.js";
 import { createBrowserStaticModule } from "./browser-static/module.js";
 import { createExperienceServices } from "./experience/index.js";
@@ -201,6 +202,7 @@ async function main(): Promise<void> {
   const { executiveUxReadiness } = createExecutiveUxReadinessModule(db);
   const { browserExperienceCompleteness } = createBrowserExperienceCompletenessModule(db);
   const { operatorSurfaceNavigation } = createOperatorSurfaceNavigationModule(db);
+  const { operatorExperienceIntegrity } = createOperatorExperienceIntegrityModule(db);
   const { browserSurface } = createBrowserSurfaceModule();
   const { browserStatic } = createBrowserStaticModule();
   const { releaseReadinessCenter } = createReleaseReadinessCenterModule();
@@ -324,6 +326,7 @@ async function main(): Promise<void> {
     executiveUxReadiness,
     browserExperienceCompleteness,
     operatorSurfaceNavigation,
+    operatorExperienceIntegrity,
     browserSurface,
     browserStatic,
     releaseReadinessCenter,
