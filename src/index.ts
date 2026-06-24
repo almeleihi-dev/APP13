@@ -77,6 +77,8 @@ import { createLaunchControlModule } from "./experience/launch-control/module.js
 import { createPostLaunchMonitoringModule } from "./experience/post-launch-monitoring/module.js";
 import { createBusinessIntelligenceModule } from "./experience/business-intelligence/module.js";
 import { createExecutiveUxReadinessModule } from "./experience/executive-ux-readiness/module.js";
+import { createBrowserExperienceCompletenessModule } from "./experience/browser-experience-completeness/module.js";
+import { createOperatorSurfaceNavigationModule } from "./experience/operator-surface-navigation/module.js";
 import { createBrowserSurfaceModule } from "./browser-surface/module.js";
 import { createBrowserStaticModule } from "./browser-static/module.js";
 import { createExperienceServices } from "./experience/index.js";
@@ -197,6 +199,8 @@ async function main(): Promise<void> {
   const { postLaunchMonitoring } = createPostLaunchMonitoringModule(db);
   const { businessIntelligence } = createBusinessIntelligenceModule(db);
   const { executiveUxReadiness } = createExecutiveUxReadinessModule(db);
+  const { browserExperienceCompleteness } = createBrowserExperienceCompletenessModule(db);
+  const { operatorSurfaceNavigation } = createOperatorSurfaceNavigationModule(db);
   const { browserSurface } = createBrowserSurfaceModule();
   const { browserStatic } = createBrowserStaticModule();
   const { releaseReadinessCenter } = createReleaseReadinessCenterModule();
@@ -318,6 +322,8 @@ async function main(): Promise<void> {
     postLaunchMonitoring,
     businessIntelligence,
     executiveUxReadiness,
+    browserExperienceCompleteness,
+    operatorSurfaceNavigation,
     browserSurface,
     browserStatic,
     releaseReadinessCenter,
