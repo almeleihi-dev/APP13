@@ -1,0 +1,58 @@
+export {
+  LEARN_BY_ACTION_SCHEMA_VERSION,
+  LEARN_BY_ACTION_JSON_SCHEMA,
+  LEARN_BY_ACTION_ROUTES,
+  LEARNING_CATEGORIES,
+  SESSION_STATUSES,
+  PRIORITY_LEVELS,
+} from "./domain/learning-schema.js";
+export {
+  buildLearningProfile,
+  buildExpertRecommendations,
+  buildLearningOpportunities,
+  buildLearningSessions,
+  buildLearningImpact,
+  buildLearningRoadmap,
+  buildLearningRecommendations,
+  buildLearningHistory,
+  buildLearningPreview,
+  buildLearningStatistics,
+  validateLearningContext,
+  collectLearnByActionPaths,
+  toLearningProfileView,
+  toExpertRecommendationView,
+  toLearningOpportunityView,
+  toLearningSessionView,
+  toLearningImpactView,
+  toLearningRoadmapView,
+  toLearningOutcomeView,
+  toLearningStatisticsView,
+  type LearningProfile,
+  type LearningOpportunity,
+  type ExpertRecommendation,
+  type LearningSession,
+  type LearningImpact,
+  type LearningRoadmap,
+  type LearningRecommendation,
+  type LearningValidation,
+  type LearningPreview,
+  type LearningOutcome,
+  type LearningStatistics,
+  type LearningCategory,
+} from "./domain/learning-profile.js";
+export {
+  buildLearningContext,
+  type LearningContext,
+  type SeedExpertProfile,
+} from "./domain/learning-context.js";
+export {
+  LearnByActionService,
+  createLearnByActionModule,
+  createLearnByActionService,
+  type LearnByActionModule,
+} from "./application/learn-by-action-service.js";
+export {
+  LearnByActionRepository,
+  createLearnByActionRepository,
+  learnByActionRepository,
+} from "./infrastructure/learn-by-action-repository.js";

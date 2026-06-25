@@ -87,6 +87,17 @@ import { createProjectDecompositionModule } from "./project-decomposition/module
 import { createTekrrIntelligenceModule } from "./tekrr-intelligence/module.js";
 import { createExecutionBlueprintModule } from "./execution-blueprint/module.js";
 import { createBlueprintGovernanceModule } from "./blueprint-governance/module.js";
+import { createMarketplaceCompilationModule } from "./marketplace-compilation/module.js";
+import { createIntelligentPricingModule } from "./intelligent-pricing/module.js";
+import { createIntelligentCommissionModule } from "./intelligent-commission/module.js";
+import { createPersonalAssistantModule } from "./personal-assistant/module.js";
+import { createDevelopMeModule } from "./develop-me/module.js";
+import { createLearnByActionModule } from "./learn-by-action/module.js";
+import { createExpertNetworkModule } from "./expert-network/module.js";
+import { createTeamBuilderModule } from "./team-builder/module.js";
+import { createKnowledgeBankModule } from "./knowledge-bank/module.js";
+import { createIntelligenceOrchestrationModule } from "./intelligence-orchestration/module.js";
+import { createLivingOnboardingModule, createProfessionalHomeModule, createLivingPassportModule, createLivingLiveFrameModule, createLivingJourneyModule, createLivingTodayIActedModule, createLivingOpportunitiesModule, createLivingPartnerEcosystemModule, createLivingProfessionalCommunityModule, createLivingProfessionalCoachModule } from "./living-experience/module.js";
 import { createBrowserSurfaceModule } from "./browser-surface/module.js";
 import { createBrowserStaticModule } from "./browser-static/module.js";
 import { createExperienceServices } from "./experience/index.js";
@@ -217,6 +228,26 @@ async function main(): Promise<void> {
   const { tekrrIntelligence } = createTekrrIntelligenceModule();
   const { executionBlueprint } = createExecutionBlueprintModule();
   const { blueprintGovernance } = createBlueprintGovernanceModule();
+  const { marketplaceCompilation } = createMarketplaceCompilationModule();
+  const { intelligentPricing } = createIntelligentPricingModule();
+  const { intelligentCommission } = createIntelligentCommissionModule();
+  const { personalAssistant } = createPersonalAssistantModule();
+  const { developMe } = createDevelopMeModule();
+  const { learnByAction } = createLearnByActionModule();
+  const { expertNetwork } = createExpertNetworkModule();
+  const { teamBuilder } = createTeamBuilderModule();
+  const { knowledgeBank } = createKnowledgeBankModule();
+  const { intelligenceOrchestration } = createIntelligenceOrchestrationModule();
+  const { livingOnboarding } = createLivingOnboardingModule();
+  const { professionalHome } = createProfessionalHomeModule();
+  const { livingPassport } = createLivingPassportModule();
+  const { livingLiveFrame } = createLivingLiveFrameModule();
+  const { livingJourney } = createLivingJourneyModule();
+  const { livingTodayIActed } = createLivingTodayIActedModule();
+  const { livingOpportunities } = createLivingOpportunitiesModule();
+  const { livingPartnerEcosystem } = createLivingPartnerEcosystemModule();
+  const { livingProfessionalCommunity } = createLivingProfessionalCommunityModule();
+  const { livingProfessionalCoach } = createLivingProfessionalCoachModule();
   const { browserSurface } = createBrowserSurfaceModule();
   const { browserStatic } = createBrowserStaticModule();
   const { releaseReadinessCenter } = createReleaseReadinessCenterModule();
@@ -348,6 +379,26 @@ async function main(): Promise<void> {
     tekrrIntelligence,
     executionBlueprint,
     blueprintGovernance,
+    marketplaceCompilation,
+    intelligentPricing,
+    intelligentCommission,
+    personalAssistant,
+    developMe,
+    learnByAction,
+    expertNetwork,
+    teamBuilder,
+    knowledgeBank,
+    intelligenceOrchestration,
+    livingOnboarding,
+    professionalHome,
+    livingPassport,
+    livingLiveFrame,
+    livingJourney,
+    livingTodayIActed,
+    livingOpportunities,
+    livingPartnerEcosystem,
+    livingProfessionalCommunity,
+    livingProfessionalCoach,
     browserSurface,
     browserStatic,
     releaseReadinessCenter,
