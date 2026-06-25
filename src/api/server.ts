@@ -122,6 +122,7 @@ import { registerProfessionOntologyRoutes } from "./routes/profession-ontology.j
 import { registerProjectDecompositionRoutes } from "./routes/project-decomposition.js";
 import { registerTekrrIntelligenceRoutes } from "./routes/tekrr-intelligence.js";
 import { registerExecutionBlueprintRoutes } from "./routes/execution-blueprint.js";
+import { registerBlueprintGovernanceRoutes } from "./routes/blueprint-governance.js";
 import { registerBrowserSurfaceRoutes } from "./routes/browser-surface.js";
 import { registerBrowserStaticRoutes } from "./routes/browser-static.js";
 import type { GovernmentPartnershipService } from "../experience/government-partnership/application/government-partnership-service.js";
@@ -146,6 +147,7 @@ import type { ProfessionOntologyService } from "../profession-ontology/applicati
 import type { ProjectDecompositionService } from "../project-decomposition/application/project-decomposition-service.js";
 import type { TekrrIntelligenceService } from "../tekrr-intelligence/application/tekrr-intelligence-service.js";
 import type { ExecutionBlueprintService } from "../execution-blueprint/application/execution-blueprint-service.js";
+import type { BlueprintGovernanceService } from "../blueprint-governance/application/blueprint-governance-service.js";
 import type { BrowserSurfaceService } from "../browser-surface/application/browser-surface-service.js";
 import type { BrowserStaticService } from "../browser-static/application/browser-static-service.js";
 import type { InvestorReadinessService } from "../experience/investor-readiness/application/investor-readiness-service.js";
@@ -247,6 +249,7 @@ export interface AppDependencies {
   projectDecomposition: ProjectDecompositionService;
   tekrrIntelligence: TekrrIntelligenceService;
   executionBlueprint: ExecutionBlueprintService;
+  blueprintGovernance: BlueprintGovernanceService;
   browserSurface: BrowserSurfaceService;
   browserStatic: BrowserStaticService;
   releaseReadinessCenter: ReleaseReadinessCenterService;
@@ -360,6 +363,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerProjectDecompositionRoutes(app, deps.projectDecomposition);
   await registerTekrrIntelligenceRoutes(app, deps.tekrrIntelligence);
   await registerExecutionBlueprintRoutes(app, deps.executionBlueprint);
+  await registerBlueprintGovernanceRoutes(app, deps.blueprintGovernance);
   await registerReleaseReadinessRoutes(app, deps.releaseReadinessCenter);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 

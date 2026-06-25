@@ -206,6 +206,8 @@
     "verify:x43": "bash scripts/verify-x43.sh",
     "test:x44-execution-blueprint": "node --import tsx --test --test-concurrency=1 test/x44-execution-blueprint.test.ts",
     "verify:x44": "bash scripts/verify-x44.sh",
+    "test:x45-blueprint-governance": "node --import tsx --test --test-concurrency=1 test/x45-blueprint-governance.test.ts",
+    "verify:x45": "bash scripts/verify-x45.sh",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
     "test:b5": "node --import tsx --test test/b5-execution-integration.test.ts",
     "test:b6": "node --import tsx --test --test-concurrency=1 test/b6-financial-migration.test.ts test/b6-ledger-service-integration.test.ts test/b6-escrow-service-integration.test.ts",

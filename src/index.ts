@@ -86,6 +86,7 @@ import { createProfessionOntologyModule } from "./profession-ontology/module.js"
 import { createProjectDecompositionModule } from "./project-decomposition/module.js";
 import { createTekrrIntelligenceModule } from "./tekrr-intelligence/module.js";
 import { createExecutionBlueprintModule } from "./execution-blueprint/module.js";
+import { createBlueprintGovernanceModule } from "./blueprint-governance/module.js";
 import { createBrowserSurfaceModule } from "./browser-surface/module.js";
 import { createBrowserStaticModule } from "./browser-static/module.js";
 import { createExperienceServices } from "./experience/index.js";
@@ -215,6 +216,7 @@ async function main(): Promise<void> {
   const { projectDecomposition } = createProjectDecompositionModule();
   const { tekrrIntelligence } = createTekrrIntelligenceModule();
   const { executionBlueprint } = createExecutionBlueprintModule();
+  const { blueprintGovernance } = createBlueprintGovernanceModule();
   const { browserSurface } = createBrowserSurfaceModule();
   const { browserStatic } = createBrowserStaticModule();
   const { releaseReadinessCenter } = createReleaseReadinessCenterModule();
@@ -345,6 +347,7 @@ async function main(): Promise<void> {
     projectDecomposition,
     tekrrIntelligence,
     executionBlueprint,
+    blueprintGovernance,
     browserSurface,
     browserStatic,
     releaseReadinessCenter,
