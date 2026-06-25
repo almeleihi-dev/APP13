@@ -84,6 +84,7 @@ import { createOperatorOnboardingReadinessModule } from "./experience/operator-o
 import { createActionBlueprintModule } from "./action-blueprint/module.js";
 import { createProfessionOntologyModule } from "./profession-ontology/module.js";
 import { createProjectDecompositionModule } from "./project-decomposition/module.js";
+import { createTekrrIntelligenceModule } from "./tekrr-intelligence/module.js";
 import { createBrowserSurfaceModule } from "./browser-surface/module.js";
 import { createBrowserStaticModule } from "./browser-static/module.js";
 import { createExperienceServices } from "./experience/index.js";
@@ -211,6 +212,7 @@ async function main(): Promise<void> {
   const { actionBlueprint } = createActionBlueprintModule();
   const { professionOntology } = createProfessionOntologyModule();
   const { projectDecomposition } = createProjectDecompositionModule();
+  const { tekrrIntelligence } = createTekrrIntelligenceModule();
   const { browserSurface } = createBrowserSurfaceModule();
   const { browserStatic } = createBrowserStaticModule();
   const { releaseReadinessCenter } = createReleaseReadinessCenterModule();
@@ -339,6 +341,7 @@ async function main(): Promise<void> {
     actionBlueprint,
     professionOntology,
     projectDecomposition,
+    tekrrIntelligence,
     browserSurface,
     browserStatic,
     releaseReadinessCenter,

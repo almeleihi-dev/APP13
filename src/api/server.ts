@@ -120,6 +120,7 @@ import { registerOperatorOnboardingReadinessRoutes } from "./routes/operator-onb
 import { registerActionBlueprintRoutes } from "./routes/action-blueprint.js";
 import { registerProfessionOntologyRoutes } from "./routes/profession-ontology.js";
 import { registerProjectDecompositionRoutes } from "./routes/project-decomposition.js";
+import { registerTekrrIntelligenceRoutes } from "./routes/tekrr-intelligence.js";
 import { registerBrowserSurfaceRoutes } from "./routes/browser-surface.js";
 import { registerBrowserStaticRoutes } from "./routes/browser-static.js";
 import type { GovernmentPartnershipService } from "../experience/government-partnership/application/government-partnership-service.js";
@@ -142,6 +143,7 @@ import type { OperatorOnboardingReadinessService } from "../experience/operator-
 import type { ActionBlueprintService } from "../action-blueprint/application/action-blueprint-service.js";
 import type { ProfessionOntologyService } from "../profession-ontology/application/profession-ontology-service.js";
 import type { ProjectDecompositionService } from "../project-decomposition/application/project-decomposition-service.js";
+import type { TekrrIntelligenceService } from "../tekrr-intelligence/application/tekrr-intelligence-service.js";
 import type { BrowserSurfaceService } from "../browser-surface/application/browser-surface-service.js";
 import type { BrowserStaticService } from "../browser-static/application/browser-static-service.js";
 import type { InvestorReadinessService } from "../experience/investor-readiness/application/investor-readiness-service.js";
@@ -241,6 +243,7 @@ export interface AppDependencies {
   actionBlueprint: ActionBlueprintService;
   professionOntology: ProfessionOntologyService;
   projectDecomposition: ProjectDecompositionService;
+  tekrrIntelligence: TekrrIntelligenceService;
   browserSurface: BrowserSurfaceService;
   browserStatic: BrowserStaticService;
   releaseReadinessCenter: ReleaseReadinessCenterService;
@@ -352,6 +355,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerActionBlueprintRoutes(app, deps.actionBlueprint);
   await registerProfessionOntologyRoutes(app, deps.professionOntology);
   await registerProjectDecompositionRoutes(app, deps.projectDecomposition);
+  await registerTekrrIntelligenceRoutes(app, deps.tekrrIntelligence);
   await registerReleaseReadinessRoutes(app, deps.releaseReadinessCenter);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 
