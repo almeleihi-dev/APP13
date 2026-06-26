@@ -97,7 +97,7 @@ import { createExpertNetworkModule } from "./expert-network/module.js";
 import { createTeamBuilderModule } from "./team-builder/module.js";
 import { createKnowledgeBankModule } from "./knowledge-bank/module.js";
 import { createIntelligenceOrchestrationModule } from "./intelligence-orchestration/module.js";
-import { createLivingOnboardingModule, createProfessionalHomeModule, createLivingPassportModule, createLivingLiveFrameModule, createLivingJourneyModule, createLivingTodayIActedModule, createLivingOpportunitiesModule, createLivingPartnerEcosystemModule, createLivingProfessionalCommunityModule, createLivingProfessionalCoachModule } from "./living-experience/module.js";
+import { createLivingOnboardingModule, createProfessionalHomeModule, createLivingPassportModule, createLivingLiveFrameModule, createLivingJourneyModule, createLivingTodayIActedModule, createLivingOpportunitiesModule, createLivingPartnerEcosystemModule, createLivingProfessionalCommunityModule, createLivingProfessionalCoachModule, createLivingActionPlannerModule, createLivingProfessionalImpactModule } from "./living-experience/module.js";
 import { createBrowserSurfaceModule } from "./browser-surface/module.js";
 import { createBrowserStaticModule } from "./browser-static/module.js";
 import { createExperienceServices } from "./experience/index.js";
@@ -248,6 +248,8 @@ async function main(): Promise<void> {
   const { livingPartnerEcosystem } = createLivingPartnerEcosystemModule();
   const { livingProfessionalCommunity } = createLivingProfessionalCommunityModule();
   const { livingProfessionalCoach } = createLivingProfessionalCoachModule();
+  const { livingActionPlanner } = createLivingActionPlannerModule();
+  const { livingProfessionalImpact } = createLivingProfessionalImpactModule();
   const { browserSurface } = createBrowserSurfaceModule();
   const { browserStatic } = createBrowserStaticModule();
   const { releaseReadinessCenter } = createReleaseReadinessCenterModule();
@@ -399,6 +401,8 @@ async function main(): Promise<void> {
     livingPartnerEcosystem,
     livingProfessionalCommunity,
     livingProfessionalCoach,
+    livingActionPlanner,
+    livingProfessionalImpact,
     browserSurface,
     browserStatic,
     releaseReadinessCenter,

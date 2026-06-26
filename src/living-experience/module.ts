@@ -485,3 +485,95 @@ export {
   createLivingProfessionalCoachRepository,
   livingProfessionalCoachRepository,
 } from "./professional-coach/infrastructure/living-professional-coach-repository.js";
+export {
+  LIVING_ACTION_PLANNER_SCHEMA_VERSION,
+  LIVING_ACTION_PLANNER_JSON_SCHEMA,
+  LIVING_ACTION_PLANNER_ROUTES,
+  LIVING_ACTION_PLANNER_SECTIONS,
+  LIVING_ACTION_PLANNER_SECTION_LABELS,
+} from "./action-planner/domain/planner-schema.js";
+export {
+  buildLivingActionPlannerContext,
+  hashPlannerSeed,
+  type LivingActionPlannerContext,
+} from "./action-planner/domain/planner-context.js";
+export {
+  buildAllPlannerSections,
+  buildDefaultExecutionState,
+  recordActionCompleted,
+  recordActionPostponed,
+  toPlannerSectionView,
+  toPlannerSectionsView,
+  type LivingActionPlannerSection,
+  type PlannerEngineSnapshot,
+  type PlannerExecutionState,
+} from "./action-planner/domain/planner-sections.js";
+export {
+  buildLivingActionPlannerExperience,
+  buildLivingActionPlannerStatistics,
+  validateLivingActionPlannerContext,
+  toLivingActionPlannerView,
+  toLivingActionPlannerStatisticsView,
+  findPlannerSection,
+  type LivingActionPlannerExperience,
+  type LivingActionPlannerStatistics,
+} from "./action-planner/domain/planner-experience.js";
+export {
+  collectLivingActionPlannerEngineSnapshot,
+  type LivingActionPlannerEngineDeps,
+} from "./action-planner/application/planner-collector.js";
+export {
+  LivingActionPlannerService,
+  createLivingActionPlannerModule,
+  createLivingActionPlannerService,
+  type LivingActionPlannerModule,
+} from "./action-planner/application/living-action-planner-service.js";
+export {
+  LivingActionPlannerRepository,
+  createLivingActionPlannerRepository,
+  livingActionPlannerRepository,
+} from "./action-planner/infrastructure/living-action-planner-repository.js";
+export {
+  LIVING_PROFESSIONAL_IMPACT_SCHEMA_VERSION,
+  LIVING_PROFESSIONAL_IMPACT_JSON_SCHEMA,
+  LIVING_PROFESSIONAL_IMPACT_ROUTES,
+  LIVING_PROFESSIONAL_IMPACT_SECTIONS,
+  LIVING_PROFESSIONAL_IMPACT_SECTION_LABELS,
+} from "./professional-impact/domain/impact-schema.js";
+export {
+  buildLivingProfessionalImpactContext,
+  hashImpactSeed,
+  type LivingProfessionalImpactContext,
+} from "./professional-impact/domain/impact-context.js";
+export {
+  buildAllImpactSections,
+  toImpactSectionView,
+  toImpactSectionsView,
+  type LivingProfessionalImpactSection,
+  type ImpactEngineSnapshot,
+} from "./professional-impact/domain/impact-sections.js";
+export {
+  buildLivingProfessionalImpactExperience,
+  buildLivingProfessionalImpactStatistics,
+  validateLivingProfessionalImpactContext,
+  toLivingProfessionalImpactView,
+  toLivingProfessionalImpactStatisticsView,
+  findImpactSection,
+  type LivingProfessionalImpactExperience,
+  type LivingProfessionalImpactStatistics,
+} from "./professional-impact/domain/impact-experience.js";
+export {
+  collectLivingProfessionalImpactEngineSnapshot,
+  type LivingProfessionalImpactEngineDeps,
+} from "./professional-impact/application/impact-collector.js";
+export {
+  LivingProfessionalImpactService,
+  createLivingProfessionalImpactModule,
+  createLivingProfessionalImpactService,
+  type LivingProfessionalImpactModule,
+} from "./professional-impact/application/living-professional-impact-service.js";
+export {
+  LivingProfessionalImpactRepository,
+  createLivingProfessionalImpactRepository,
+  livingProfessionalImpactRepository,
+} from "./professional-impact/infrastructure/living-professional-impact-repository.js";
