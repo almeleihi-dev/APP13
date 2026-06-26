@@ -624,3 +624,52 @@ export {
   createLivingProfessionalIdentityRepository,
   livingProfessionalIdentityRepository,
 } from "./professional-identity/infrastructure/living-professional-identity-repository.js";
+export {
+  LIVING_PROFESSIONAL_INTELLIGENCE_SCHEMA_VERSION,
+  LIVING_PROFESSIONAL_INTELLIGENCE_JSON_SCHEMA,
+  LIVING_PROFESSIONAL_INTELLIGENCE_ROUTES,
+  LIVING_PROFESSIONAL_INTELLIGENCE_SECTIONS,
+  LIVING_PROFESSIONAL_INTELLIGENCE_SECTION_LABELS,
+} from "./professional-intelligence/domain/intelligence-schema.js";
+export {
+  buildLivingProfessionalIntelligenceContext,
+  hashIntelligenceSeed,
+  type LivingProfessionalIntelligenceContext,
+} from "./professional-intelligence/domain/intelligence-context.js";
+export {
+  buildAllIntelligenceSections,
+  buildAskAnythingAnswer,
+  buildDefaultIntelligenceHistory,
+  recordIntelligenceRecommendation,
+  toIntelligenceSectionView,
+  toIntelligenceSectionsView,
+  toAskAnythingAnswerView,
+  type LivingProfessionalIntelligenceSection,
+  type IntelligenceEngineSnapshot,
+  type IntelligenceHistoryProfile,
+} from "./professional-intelligence/domain/intelligence-sections.js";
+export {
+  buildLivingProfessionalIntelligenceExperience,
+  buildLivingProfessionalIntelligenceStatistics,
+  validateLivingProfessionalIntelligenceContext,
+  toLivingProfessionalIntelligenceView,
+  toLivingProfessionalIntelligenceStatisticsView,
+  findIntelligenceSection,
+  type LivingProfessionalIntelligenceExperience,
+  type LivingProfessionalIntelligenceStatistics,
+} from "./professional-intelligence/domain/intelligence-experience.js";
+export {
+  collectLivingProfessionalIntelligenceEngineSnapshot,
+  type LivingProfessionalIntelligenceEngineDeps,
+} from "./professional-intelligence/application/intelligence-collector.js";
+export {
+  LivingProfessionalIntelligenceService,
+  createLivingProfessionalIntelligenceModule,
+  createLivingProfessionalIntelligenceService,
+  type LivingProfessionalIntelligenceModule,
+} from "./professional-intelligence/application/living-professional-intelligence-service.js";
+export {
+  LivingProfessionalIntelligenceRepository,
+  createLivingProfessionalIntelligenceRepository,
+  livingProfessionalIntelligenceRepository,
+} from "./professional-intelligence/infrastructure/living-professional-intelligence-repository.js";
