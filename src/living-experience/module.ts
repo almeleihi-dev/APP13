@@ -577,3 +577,50 @@ export {
   createLivingProfessionalImpactRepository,
   livingProfessionalImpactRepository,
 } from "./professional-impact/infrastructure/living-professional-impact-repository.js";
+export {
+  LIVING_PROFESSIONAL_IDENTITY_SCHEMA_VERSION,
+  LIVING_PROFESSIONAL_IDENTITY_JSON_SCHEMA,
+  LIVING_PROFESSIONAL_IDENTITY_ROUTES,
+  LIVING_PROFESSIONAL_IDENTITY_SECTIONS,
+  LIVING_PROFESSIONAL_IDENTITY_SECTION_LABELS,
+} from "./professional-identity/domain/identity-schema.js";
+export {
+  buildLivingProfessionalIdentityContext,
+  hashIdentitySeed,
+  type LivingProfessionalIdentityContext,
+} from "./professional-identity/domain/identity-context.js";
+export {
+  buildAllIdentitySections,
+  buildDefaultSharingPermissions,
+  updateSharingPermissions,
+  toIdentitySectionView,
+  toIdentitySectionsView,
+  type LivingProfessionalIdentitySection,
+  type IdentityEngineSnapshot,
+  type IdentitySharingPermissions,
+} from "./professional-identity/domain/identity-sections.js";
+export {
+  buildLivingProfessionalIdentityExperience,
+  buildLivingProfessionalIdentityStatistics,
+  validateLivingProfessionalIdentityContext,
+  toLivingProfessionalIdentityView,
+  toLivingProfessionalIdentityStatisticsView,
+  findIdentitySection,
+  type LivingProfessionalIdentityExperience,
+  type LivingProfessionalIdentityStatistics,
+} from "./professional-identity/domain/identity-experience.js";
+export {
+  collectLivingProfessionalIdentityEngineSnapshot,
+  type LivingProfessionalIdentityEngineDeps,
+} from "./professional-identity/application/identity-collector.js";
+export {
+  LivingProfessionalIdentityService,
+  createLivingProfessionalIdentityModule,
+  createLivingProfessionalIdentityService,
+  type LivingProfessionalIdentityModule,
+} from "./professional-identity/application/living-professional-identity-service.js";
+export {
+  LivingProfessionalIdentityRepository,
+  createLivingProfessionalIdentityRepository,
+  livingProfessionalIdentityRepository,
+} from "./professional-identity/infrastructure/living-professional-identity-repository.js";

@@ -180,6 +180,7 @@ import type { LivingProfessionalCommunityService } from "../living-experience/pr
 import type { LivingProfessionalCoachService } from "../living-experience/professional-coach/application/living-professional-coach-service.js";
 import type { LivingActionPlannerService } from "../living-experience/action-planner/application/living-action-planner-service.js";
 import type { LivingProfessionalImpactService } from "../living-experience/professional-impact/application/living-professional-impact-service.js";
+import type { LivingProfessionalIdentityService } from "../living-experience/professional-identity/application/living-professional-identity-service.js";
 import { registerLivingOnboardingRoutes } from "./routes/living-onboarding.js";
 import { registerProfessionalHomeRoutes } from "./routes/professional-home.js";
 import { registerLivingPassportRoutes } from "./routes/living-passport.js";
@@ -192,6 +193,7 @@ import { registerLivingProfessionalCommunityRoutes } from "./routes/living-profe
 import { registerLivingProfessionalCoachRoutes } from "./routes/living-professional-coach.js";
 import { registerLivingActionPlannerRoutes } from "./routes/living-action-planner.js";
 import { registerLivingProfessionalImpactRoutes } from "./routes/living-professional-impact.js";
+import { registerLivingProfessionalIdentityRoutes } from "./routes/living-professional-identity.js";
 import type { BrowserSurfaceService } from "../browser-surface/application/browser-surface-service.js";
 import type { BrowserStaticService } from "../browser-static/application/browser-static-service.js";
 import type { InvestorReadinessService } from "../experience/investor-readiness/application/investor-readiness-service.js";
@@ -316,6 +318,7 @@ export interface AppDependencies {
   livingProfessionalCoach: LivingProfessionalCoachService;
   livingActionPlanner: LivingActionPlannerService;
   livingProfessionalImpact: LivingProfessionalImpactService;
+  livingProfessionalIdentity: LivingProfessionalIdentityService;
   browserSurface: BrowserSurfaceService;
   browserStatic: BrowserStaticService;
   releaseReadinessCenter: ReleaseReadinessCenterService;
@@ -452,6 +455,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerLivingProfessionalCoachRoutes(app, deps.livingProfessionalCoach);
   await registerLivingActionPlannerRoutes(app, deps.livingActionPlanner);
   await registerLivingProfessionalImpactRoutes(app, deps.livingProfessionalImpact);
+  await registerLivingProfessionalIdentityRoutes(app, deps.livingProfessionalIdentity);
   await registerReleaseReadinessRoutes(app, deps.releaseReadinessCenter);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 
