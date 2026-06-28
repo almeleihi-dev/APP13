@@ -85,6 +85,7 @@ import type { ExpertNetworkService } from "../expert-network/application/expert-
 import type { TeamBuilderService } from "../team-builder/application/team-builder-service.js";
 import type { KnowledgeBankService } from "../knowledge-bank/application/knowledge-bank-service.js";
 import type { IntelligenceOrchestrationService } from "../intelligence-orchestration/application/intelligence-orchestration-service.js";
+import type { UnifiedActionIntelligenceService } from "../unified-action-intelligence/application/unified-action-intelligence-service.js";
 import type { LivingOnboardingService } from "../living-experience/onboarding/application/living-onboarding-service.js";
 import type { ProfessionalHomeService } from "../living-experience/professional-home/application/professional-home-service.js";
 import type { LivingPassportService } from "../living-experience/professional-passport/application/living-passport-service.js";
@@ -200,6 +201,7 @@ export interface IntelligenceDependencies {
   teamBuilder: TeamBuilderService;
   knowledgeBank: KnowledgeBankService;
   intelligenceOrchestration: IntelligenceOrchestrationService;
+  unifiedActionIntelligence: UnifiedActionIntelligenceService;
 }
 
 export interface ExperienceDependencies {

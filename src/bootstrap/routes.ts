@@ -84,6 +84,7 @@ import { registerExpertNetworkRoutes } from "../api/routes/expert-network.js";
 import { registerTeamBuilderRoutes } from "../api/routes/team-builder.js";
 import { registerKnowledgeBankRoutes } from "../api/routes/knowledge-bank.js";
 import { registerIntelligenceOrchestrationRoutes } from "../api/routes/intelligence-orchestration.js";
+import { registerActionIntelligenceRoutes } from "../api/routes/action-intelligence.js";
 import { registerBrowserSurfaceRoutes } from "../api/routes/browser-surface.js";
 import { registerBrowserStaticRoutes } from "../api/routes/browser-static.js";
 import { registerLivingOnboardingRoutes } from "../api/routes/living-onboarding.js";
@@ -231,6 +232,7 @@ export async function registerAppRoutes(
   await registerTeamBuilderRoutes(app, deps.teamBuilder);
   await registerKnowledgeBankRoutes(app, deps.knowledgeBank);
   await registerIntelligenceOrchestrationRoutes(app, deps.intelligenceOrchestration);
+  await registerActionIntelligenceRoutes(app, deps.unifiedActionIntelligence);
   await registerLivingOnboardingRoutes(app, deps.livingOnboarding);
   await registerProfessionalHomeRoutes(app, deps.professionalHome);
   await registerLivingPassportRoutes(app, deps.livingPassport);
