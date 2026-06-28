@@ -87,6 +87,7 @@ import type { KnowledgeBankService } from "../knowledge-bank/application/knowled
 import type { IntelligenceOrchestrationService } from "../intelligence-orchestration/application/intelligence-orchestration-service.js";
 import type { UnifiedActionIntelligenceService } from "../unified-action-intelligence/application/unified-action-intelligence-service.js";
 import type { ActionOntologyService } from "../action-ontology/application/action-ontology-service.js";
+import type { ActionPlanningService } from "../action-planning/application/action-planning-service.js";
 import type { LivingOnboardingService } from "../living-experience/onboarding/application/living-onboarding-service.js";
 import type { ProfessionalHomeService } from "../living-experience/professional-home/application/professional-home-service.js";
 import type { LivingPassportService } from "../living-experience/professional-passport/application/living-passport-service.js";
@@ -204,6 +205,7 @@ export interface IntelligenceDependencies {
   intelligenceOrchestration: IntelligenceOrchestrationService;
   unifiedActionIntelligence: UnifiedActionIntelligenceService;
   actionOntology: ActionOntologyService;
+  actionPlanning: ActionPlanningService;
 }
 
 export interface ExperienceDependencies {

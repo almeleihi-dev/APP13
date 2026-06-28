@@ -16,6 +16,7 @@ import { createKnowledgeBankModule } from "../knowledge-bank/module.js";
 import { createIntelligenceOrchestrationModule } from "../intelligence-orchestration/module.js";
 import { createUnifiedActionIntelligenceModule } from "../unified-action-intelligence/module.js";
 import { createActionOntologyModule } from "../action-ontology/module.js";
+import { createActionPlanningModule } from "../action-planning/module.js";
 import { createActionIntelligenceService } from "../action/intelligence/action-intelligence-service.js";
 import { createRequirementIntelligenceService } from "../action/intelligence/requirement/requirement-intelligence-service.js";
 import { createContractIntelligenceService } from "../contract/intelligence/contract-intelligence-service.js";
@@ -47,6 +48,7 @@ export function bootstrapIntelligenceModules(): Pick<
   | "intelligenceOrchestration"
   | "unifiedActionIntelligence"
   | "actionOntology"
+  | "actionPlanning"
 > {
   const { actionBlueprint } = createActionBlueprintModule();
   const { professionOntology } = createProfessionOntologyModule();
@@ -66,6 +68,7 @@ export function bootstrapIntelligenceModules(): Pick<
   const { intelligenceOrchestration } = createIntelligenceOrchestrationModule();
   const { unifiedActionIntelligence } = createUnifiedActionIntelligenceModule();
   const { actionOntology } = createActionOntologyModule();
+  const { actionPlanning } = createActionPlanningModule();
 
   return {
     actionBlueprint,
@@ -86,6 +89,7 @@ export function bootstrapIntelligenceModules(): Pick<
     intelligenceOrchestration,
     unifiedActionIntelligence,
     actionOntology,
+    actionPlanning,
   };
 }
 
