@@ -35,6 +35,7 @@ import { createActionIntelligenceExperienceModule } from "../action-intelligence
 import { createIntelligenceDashboardModule } from "../intelligence-dashboard/module.js";
 import { createExecutiveIntelligenceCenterModule } from "../executive-intelligence-center/module.js";
 import { createActionIntelligenceCertificationModule } from "../action-intelligence-certification/module.js";
+import { createActionIntelligenceFinalClosureModule } from "../action-intelligence-final-closure/module.js";
 import { createActionIntelligenceService } from "../action/intelligence/action-intelligence-service.js";
 import { createRequirementIntelligenceService } from "../action/intelligence/requirement/requirement-intelligence-service.js";
 import { createContractIntelligenceService } from "../contract/intelligence/contract-intelligence-service.js";
@@ -85,6 +86,7 @@ export function bootstrapIntelligenceModules(): Pick<
   | "intelligenceDashboard"
   | "executiveIntelligenceCenter"
   | "actionIntelligenceCertification"
+  | "actionIntelligenceFinalClosure"
 > {
   const { actionBlueprint } = createActionBlueprintModule();
   const { professionOntology } = createProfessionOntologyModule();
@@ -125,6 +127,9 @@ export function bootstrapIntelligenceModules(): Pick<
   const { actionIntelligenceCertification } = createActionIntelligenceCertificationModule({
     executiveIntelligenceCenter,
   });
+  const { actionIntelligenceFinalClosure } = createActionIntelligenceFinalClosureModule({
+    actionIntelligenceCertification,
+  });
 
   return {
     actionBlueprint,
@@ -164,6 +169,7 @@ export function bootstrapIntelligenceModules(): Pick<
     intelligenceDashboard,
     executiveIntelligenceCenter,
     actionIntelligenceCertification,
+    actionIntelligenceFinalClosure,
   };
 }
 
