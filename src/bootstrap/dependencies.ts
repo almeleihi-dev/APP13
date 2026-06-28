@@ -107,6 +107,7 @@ import type { IntelligenceDashboardService } from "../intelligence-dashboard/app
 import type { ExecutiveIntelligenceCenterService } from "../executive-intelligence-center/application/executive-intelligence-center-service.js";
 import type { ActionIntelligenceCertificationService } from "../action-intelligence-certification/application/action-intelligence-certification-service.js";
 import type { ActionIntelligenceFinalClosureService } from "../action-intelligence-final-closure/application/action-intelligence-final-closure-service.js";
+import type { AiExperienceFoundationService } from "../ai-experience/application/ai-experience-foundation-service.js";
 import type { LivingOnboardingService } from "../living-experience/onboarding/application/living-onboarding-service.js";
 import type { ProfessionalHomeService } from "../living-experience/professional-home/application/professional-home-service.js";
 import type { LivingPassportService } from "../living-experience/professional-passport/application/living-passport-service.js";
@@ -244,6 +245,7 @@ export interface IntelligenceDependencies {
   executiveIntelligenceCenter: ExecutiveIntelligenceCenterService;
   actionIntelligenceCertification: ActionIntelligenceCertificationService;
   actionIntelligenceFinalClosure: ActionIntelligenceFinalClosureService;
+  aiExperienceFoundation: AiExperienceFoundationService;
 }
 
 export interface ExperienceDependencies {

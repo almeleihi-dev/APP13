@@ -376,6 +376,8 @@
     "verify:ch4-c21": "bash scripts/verify-ch4-c21.sh",
     "test:ch4-c22-action-intelligence-final-closure": "node --import tsx --test test/ch4-c22-action-intelligence-final-closure.test.ts",
     "verify:ch4-c22": "bash scripts/verify-ch4-c22.sh",
+    "test:ch5-x1-ai-experience-foundation": "node --import tsx --test test/ch5-x1-ai-experience-foundation.test.ts",
+    "verify:ch5-x1": "bash scripts/verify-ch5-x1.sh",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
     "test:b5": "node --import tsx --test test/b5-execution-integration.test.ts",
     "test:b6": "node --import tsx --test --test-concurrency=1 test/b6-financial-migration.test.ts test/b6-ledger-service-integration.test.ts test/b6-escrow-service-integration.test.ts",
