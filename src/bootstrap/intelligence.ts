@@ -26,6 +26,7 @@ import { createDecisionIntelligenceEngineModule } from "../decision-intelligence
 import { createRecommendationIntelligenceEngineModule } from "../recommendation-intelligence/module.js";
 import { createInsightIntelligenceEngineModule } from "../insight-intelligence/module.js";
 import { createPredictionIntelligenceEngineModule } from "../prediction-intelligence/module.js";
+import { createStrategyIntelligenceEngineModule } from "../strategy-intelligence/module.js";
 import { createActionIntelligenceService } from "../action/intelligence/action-intelligence-service.js";
 import { createRequirementIntelligenceService } from "../action/intelligence/requirement/requirement-intelligence-service.js";
 import { createContractIntelligenceService } from "../contract/intelligence/contract-intelligence-service.js";
@@ -67,6 +68,7 @@ export function bootstrapIntelligenceModules(): Pick<
   | "recommendationIntelligenceEngine"
   | "insightIntelligenceEngine"
   | "predictionIntelligenceEngine"
+  | "strategyIntelligenceEngine"
 > {
   const { actionBlueprint } = createActionBlueprintModule();
   const { professionOntology } = createProfessionOntologyModule();
@@ -96,6 +98,7 @@ export function bootstrapIntelligenceModules(): Pick<
   const { recommendationIntelligenceEngine } = createRecommendationIntelligenceEngineModule();
   const { insightIntelligenceEngine } = createInsightIntelligenceEngineModule();
   const { predictionIntelligenceEngine } = createPredictionIntelligenceEngineModule();
+  const { strategyIntelligenceEngine } = createStrategyIntelligenceEngineModule();
 
   return {
     actionBlueprint,
@@ -126,6 +129,7 @@ export function bootstrapIntelligenceModules(): Pick<
     recommendationIntelligenceEngine,
     insightIntelligenceEngine,
     predictionIntelligenceEngine,
+    strategyIntelligenceEngine,
   };
 }
 
