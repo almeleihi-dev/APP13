@@ -32,6 +32,7 @@ import {
 import { createBrowserStaticModule } from "../src/browser-static/module.js";
 import { buildExecutiveUxReadinessSnapshot } from "../src/experience/executive-ux-readiness/domain/executive-ux-readiness.js";
 import { createExecutiveUxReadinessRepository } from "../src/experience/executive-ux-readiness/infrastructure/executive-ux-readiness-repository.js";
+import { readModuleWiringSource, readRouteWiringSource } from "./helpers/wiring-source.js";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -144,7 +145,7 @@ describe("X34 browser hub and journey routes", () => {
   describe("wiring (repository sources)", () => {
     it("registers hub and journey routes in app bootstrap", async () => {
       const [serverSource, packageSource, routeSource] = await Promise.all([
-        readFile(path.join(ROOT_DIR, "src/api/server.ts"), "utf8"),
+        readRouteWiringSource(),
         readFile(path.join(ROOT_DIR, "package.json"), "utf8"),
         readFile(path.join(ROOT_DIR, "src/api/routes/browser-surface.ts"), "utf8"),
       ]);

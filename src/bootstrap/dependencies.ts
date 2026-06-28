@@ -1,0 +1,313 @@
+import type { Logger } from "../shared/logging/index.js";
+import type { AppConfig } from "../shared/config/index.js";
+import type { DbPool } from "../shared/db/index.js";
+import type { IdempotencyService } from "../platform/idempotency/index.js";
+import type { AuthService, RegistrationService } from "../identity/application/auth-service.js";
+import type { ProfileService } from "../identity/application/profile-service.js";
+import type { VerificationService } from "../identity/application/verification-service.js";
+import type { IdentityRevalidationService } from "../identity/application/revalidation-service.js";
+import type { JwtService } from "../identity/infrastructure/jwt-service.js";
+import type { SessionStore } from "../identity/infrastructure/session-store.js";
+import type { ActionService } from "../action/application/action-service.js";
+import type { ContractEngineService } from "../contract/application/contract-engine.service.js";
+import type { ExecutionService } from "../execution/application/execution-service.js";
+import type { EvaluationService } from "../execution/application/evaluation-service.js";
+import type { IssueService } from "../complaint/application/issue-service.js";
+import type { TrustScoreService } from "../trust/application/trust-score-service.js";
+import type { EventInboxService } from "../notifications/application/event-inbox-service.js";
+import type { ProviderProfileService } from "../provider-experience/application/provider-profile-service.js";
+import type { RequestIntelligenceService } from "../request-experience/application/request-intelligence-service.js";
+import type { MatchContractConversionService } from "../conversion/application/match-contract-conversion-service.js";
+import type { CustomerDashboardService } from "../customer-experience/application/customer-dashboard-service.js";
+import type { ProviderDashboardService } from "../provider-workspace/application/provider-dashboard-service.js";
+import type { AdminConsoleService } from "../operations/application/admin-console-service.js";
+import type { DiscoveryService } from "../discovery/application/discovery-service.js";
+import type { PlatformAnalyticsService } from "../analytics/application/platform-analytics-service.js";
+import type { ExperienceServices } from "../experience/index.js";
+import type { ActionIntelligenceService } from "../action/intelligence/action-intelligence-service.js";
+import type { RequirementIntelligenceService } from "../action/intelligence/requirement/requirement-intelligence-service.js";
+import type { ContractIntelligenceService } from "../contract/intelligence/contract-intelligence-service.js";
+import type { TrustIntelligenceService } from "../trust/intelligence/trust-intelligence-service.js";
+import type { MatchingIntelligenceService } from "../matching/intelligence/matching-intelligence-service.js";
+import type { PricingIntelligenceService } from "../pricing/intelligence/pricing-intelligence-service.js";
+import type { NegotiationIntelligenceService } from "../negotiation/intelligence/negotiation-intelligence-service.js";
+import type { WorkflowIntelligenceService } from "../orchestrator/intelligence/workflow-intelligence-service.js";
+import type { ProviderIntelligenceService } from "../provider/intelligence/provider-intelligence-service.js";
+import type { HomeExperienceService } from "../experience/application/home-experience-service.js";
+import type { LiveFrameExperienceService } from "../experience/live-frame/application/live-frame-experience-service.js";
+import type { ContractJourneyService } from "../experience/contract-journey/application/contract-journey-service.js";
+import type { ActionEconomyService } from "../experience/action-economy/application/action-economy-service.js";
+import type { RequestMatchExperienceService } from "../experience/request-match/application/request-match-experience-service.js";
+import type { EscrowPaymentExperienceService } from "../experience/escrow-payment/application/escrow-payment-experience-service.js";
+import type { TrustReputationExperienceService } from "../experience/trust-reputation/application/trust-reputation-experience-service.js";
+import type { DiscoveryMatchingService } from "../experience/discovery-matching/application/discovery-matching-service.js";
+import type { ProfessionalPassportService } from "../experience/professional-passport/application/professional-passport-service.js";
+import type { ProfessionalSealsService } from "../experience/professional-seals/application/professional-seals-service.js";
+import type { LiveTrustFrameService } from "../experience/live-trust-frame/application/live-trust-frame-service.js";
+import type { ProviderCommandCenterService } from "../experience/provider-command-center/application/provider-command-center-service.js";
+import type { CustomerCommandCenterService } from "../experience/customer-command-center/application/customer-command-center-service.js";
+import type { PlatformControlTowerService } from "../experience/platform-control-tower/application/platform-control-tower-service.js";
+import type { ReleaseReadinessCenterService } from "../experience/release-readiness/application/release-readiness-service.js";
+import type { MarketplaceIntelligenceService } from "../experience/marketplace-intelligence/application/marketplace-intelligence-service.js";
+import type { ExecutiveCommandCenterService } from "../experience/executive-command-center/application/executive-command-center-service.js";
+import type { LaunchSimulationService } from "../experience/launch-simulation/application/launch-simulation-service.js";
+import type { InvestorReadinessService } from "../experience/investor-readiness/application/investor-readiness-service.js";
+import type { GovernmentPartnershipService } from "../experience/government-partnership/application/government-partnership-service.js";
+import type { StrategicOperatingService } from "../experience/strategic-operating-system/application/strategic-operating-service.js";
+import type { MissionControlService } from "../experience/mission-control/application/mission-control-service.js";
+import type { ExecutiveExperienceService } from "../experience/executive-experience/application/executive-experience-service.js";
+import type { ArchitectureReviewService } from "../experience/architecture-review/application/architecture-review-service.js";
+import type { ApiAuditService } from "../experience/api-audit/application/api-audit-service.js";
+import type { ProductionReadinessService } from "../experience/production-readiness/application/production-readiness-service.js";
+import type { SecurityReadinessService } from "../experience/security-readiness/application/security-readiness-service.js";
+import type { PlatformOperationsService } from "../experience/platform-operations/application/platform-operations-service.js";
+import type { LaunchControlService } from "../experience/launch-control/application/launch-control-service.js";
+import type { PostLaunchMonitoringService } from "../experience/post-launch-monitoring/application/post-launch-monitoring-service.js";
+import type { BusinessIntelligenceService } from "../experience/business-intelligence/application/business-intelligence-service.js";
+import type { ExecutiveUxReadinessService } from "../experience/executive-ux-readiness/application/executive-ux-readiness-service.js";
+import type { BrowserExperienceCompletenessService } from "../experience/browser-experience-completeness/application/browser-experience-completeness-service.js";
+import type { OperatorSurfaceNavigationService } from "../experience/operator-surface-navigation/application/operator-surface-navigation-service.js";
+import type { OperatorExperienceIntegrityService } from "../experience/operator-experience-integrity/application/operator-experience-integrity-service.js";
+import type { OperatorOnboardingReadinessService } from "../experience/operator-onboarding-readiness/application/operator-onboarding-readiness-service.js";
+import type { ActionBlueprintService } from "../action-blueprint/application/action-blueprint-service.js";
+import type { ProfessionOntologyService } from "../profession-ontology/application/profession-ontology-service.js";
+import type { ProjectDecompositionService } from "../project-decomposition/application/project-decomposition-service.js";
+import type { TekrrIntelligenceService } from "../tekrr-intelligence/application/tekrr-intelligence-service.js";
+import type { ExecutionBlueprintService } from "../execution-blueprint/application/execution-blueprint-service.js";
+import type { BlueprintGovernanceService } from "../blueprint-governance/application/blueprint-governance-service.js";
+import type { MarketplaceCompilationService } from "../marketplace-compilation/application/marketplace-compilation-service.js";
+import type { IntelligentPricingService } from "../intelligent-pricing/application/intelligent-pricing-service.js";
+import type { IntelligentCommissionService } from "../intelligent-commission/application/intelligent-commission-service.js";
+import type { PersonalAssistantService } from "../personal-assistant/application/personal-assistant-service.js";
+import type { DevelopMeService } from "../develop-me/application/develop-me-service.js";
+import type { LearnByActionService } from "../learn-by-action/application/learn-by-action-service.js";
+import type { ExpertNetworkService } from "../expert-network/application/expert-network-service.js";
+import type { TeamBuilderService } from "../team-builder/application/team-builder-service.js";
+import type { KnowledgeBankService } from "../knowledge-bank/application/knowledge-bank-service.js";
+import type { IntelligenceOrchestrationService } from "../intelligence-orchestration/application/intelligence-orchestration-service.js";
+import type { LivingOnboardingService } from "../living-experience/onboarding/application/living-onboarding-service.js";
+import type { ProfessionalHomeService } from "../living-experience/professional-home/application/professional-home-service.js";
+import type { LivingPassportService } from "../living-experience/professional-passport/application/living-passport-service.js";
+import type { LivingLiveFrameService } from "../living-experience/live-frame/application/living-live-frame-service.js";
+import type { LivingJourneyService } from "../living-experience/professional-journey/application/living-journey-service.js";
+import type { LivingTodayIActedService } from "../living-experience/today-i-acted/application/living-today-i-acted-service.js";
+import type { LivingOpportunitiesService } from "../living-experience/opportunities/application/living-opportunities-service.js";
+import type { LivingPartnerEcosystemService } from "../living-experience/partner-ecosystem/application/living-partner-ecosystem-service.js";
+import type { LivingProfessionalCommunityService } from "../living-experience/professional-community/application/living-professional-community-service.js";
+import type { LivingProfessionalCoachService } from "../living-experience/professional-coach/application/living-professional-coach-service.js";
+import type { LivingActionPlannerService } from "../living-experience/action-planner/application/living-action-planner-service.js";
+import type { LivingProfessionalImpactService } from "../living-experience/professional-impact/application/living-professional-impact-service.js";
+import type { LivingProfessionalIdentityService } from "../living-experience/professional-identity/application/living-professional-identity-service.js";
+import type { LivingProfessionalIntelligenceService } from "../living-experience/professional-intelligence/application/living-professional-intelligence-service.js";
+import type { LivingProfessionalSimulatorService } from "../living-experience/professional-simulator/application/living-professional-simulator-service.js";
+import type { LivingProfessionalGoalsService } from "../living-experience/professional-goals/application/living-professional-goals-service.js";
+import type { LivingProfessionalAchievementsService } from "../living-experience/professional-achievements/application/living-professional-achievements-service.js";
+import type { LivingProfessionalAnalyticsService } from "../living-experience/professional-analytics/application/living-professional-analytics-service.js";
+import type { LivingProfessionalTimelineService } from "../living-experience/professional-timeline/application/living-professional-timeline-service.js";
+import type { LivingProfessionalCareerEngineService } from "../living-experience/professional-career-engine/application/living-professional-career-engine-service.js";
+import type { NeedExperienceService } from "../runtime-experience/need/application/need-experience-service.js";
+import type { ActionExperienceService } from "../runtime-experience/action/application/action-experience-service.js";
+import type { ContractExperienceService } from "../runtime-experience/contract/application/contract-experience-service.js";
+import type { ChatExperienceService } from "../runtime-experience/chat/application/chat-experience-service.js";
+import type { TimelineExperienceService } from "../runtime-experience/timeline/application/timeline-experience-service.js";
+import type { NotificationExperienceService } from "../runtime-experience/notification/application/notification-experience-service.js";
+import type { ProfileExperienceService } from "../runtime-experience/profile/application/profile-experience-service.js";
+import type { RuntimeJourneyService } from "../runtime-experience/runtime-journey/application/runtime-journey-service.js";
+import type { RuntimeStateService } from "../runtime-experience/runtime-state/application/runtime-state-service.js";
+import type { RuntimeRegistryService } from "../runtime-experience/runtime-registry/application/runtime-registry-service.js";
+import type { RuntimeCoordinatorService } from "../runtime-experience/runtime-coordinator/application/runtime-coordinator-service.js";
+import type { RuntimeHealthService } from "../runtime-experience/runtime-health/application/runtime-health-service.js";
+import type { RuntimeDemoService } from "../runtime-experience/runtime-demo/application/runtime-demo-service.js";
+import type { RuntimePreviewService } from "../runtime-experience/runtime-preview/application/runtime-preview-service.js";
+import type { RuntimeLauncherService } from "../runtime-experience/runtime-launcher/application/runtime-launcher-service.js";
+import type { RuntimeReleaseService } from "../runtime-experience/runtime-release/application/runtime-release-service.js";
+import type { RuntimeOperationsService } from "../runtime-experience/runtime-operations/application/runtime-operations-service.js";
+import type { RuntimeExecutiveDashboardService } from "../runtime-experience/runtime-executive/application/runtime-executive-dashboard-service.js";
+import type { RuntimeReadinessConsoleService } from "../runtime-experience/runtime-readiness/application/runtime-readiness-console-service.js";
+import type { RuntimeCertificationService } from "../runtime-experience/runtime-certification/application/runtime-certification-service.js";
+import type { RuntimeFinalReadinessService } from "../runtime-experience/runtime-final-readiness/application/runtime-final-readiness-service.js";
+import type { RuntimeProductionApprovalService } from "../runtime-experience/runtime-production-approval/application/runtime-production-approval-service.js";
+import type { RuntimeOperationsCenterService } from "../runtime-experience/runtime-operations-center/application/runtime-operations-center-service.js";
+import type { RuntimeLaunchControlService } from "../runtime-experience/runtime-launch-control/application/runtime-launch-control-service.js";
+import type { RuntimeLaunchReadinessAuthorityService } from "../runtime-experience/runtime-launch-readiness-authority/application/runtime-launch-readiness-authority-service.js";
+import type { RuntimeExecutiveLaunchAuthorityService } from "../runtime-experience/runtime-executive-launch-authority/application/runtime-executive-launch-authority-service.js";
+import type { RuntimeCompletionService } from "../runtime-experience/runtime-completion/application/runtime-completion-service.js";
+import type { BrowserSurfaceService } from "../browser-surface/application/browser-surface-service.js";
+import type { BrowserStaticService } from "../browser-static/application/browser-static-service.js";
+import type { SecurityAuthKernelService } from "../security/auth-kernel-service.js";
+import type { OwnershipRegistry } from "../security/ownership-registry.js";
+import type { SecurityAuditService } from "../security/audit-service.js";
+
+export interface PlatformDependencies {
+  config: AppConfig;
+  logger: Logger;
+  db: DbPool;
+  idempotency: IdempotencyService;
+  jwt: JwtService;
+  sessions: SessionStore;
+  auth: AuthService;
+  registration: RegistrationService;
+  profile: ProfileService;
+  verification: VerificationService;
+  revalidation: IdentityRevalidationService;
+}
+
+export interface EngineDependencies {
+  actions: ActionService;
+  trustScore: TrustScoreService;
+  eventInbox: EventInboxService;
+  providerProfile: ProviderProfileService;
+  requestIntelligence: RequestIntelligenceService;
+  matchContractConversion: MatchContractConversionService;
+  customerDashboard: CustomerDashboardService;
+  providerDashboard: ProviderDashboardService;
+  adminConsole: AdminConsoleService;
+  discovery: DiscoveryService;
+  platformAnalytics: PlatformAnalyticsService;
+}
+
+export interface FinancialDependencies {
+  contracts: ContractEngineService;
+  execution: ExecutionService;
+  evaluation: EvaluationService;
+  issues: IssueService;
+  experience: ExperienceServices;
+}
+
+export interface IntelligenceDependencies {
+  actionIntelligence: ActionIntelligenceService;
+  requirementIntelligence: RequirementIntelligenceService;
+  contractIntelligence: ContractIntelligenceService;
+  trustIntelligence: TrustIntelligenceService;
+  matchingIntelligence: MatchingIntelligenceService;
+  pricingIntelligence: PricingIntelligenceService;
+  negotiationIntelligence: NegotiationIntelligenceService;
+  workflowIntelligence: WorkflowIntelligenceService;
+  providerIntelligence: ProviderIntelligenceService;
+  actionBlueprint: ActionBlueprintService;
+  professionOntology: ProfessionOntologyService;
+  projectDecomposition: ProjectDecompositionService;
+  tekrrIntelligence: TekrrIntelligenceService;
+  executionBlueprint: ExecutionBlueprintService;
+  blueprintGovernance: BlueprintGovernanceService;
+  marketplaceCompilation: MarketplaceCompilationService;
+  intelligentPricing: IntelligentPricingService;
+  intelligentCommission: IntelligentCommissionService;
+  personalAssistant: PersonalAssistantService;
+  developMe: DevelopMeService;
+  learnByAction: LearnByActionService;
+  expertNetwork: ExpertNetworkService;
+  teamBuilder: TeamBuilderService;
+  knowledgeBank: KnowledgeBankService;
+  intelligenceOrchestration: IntelligenceOrchestrationService;
+}
+
+export interface ExperienceDependencies {
+  homeExperience: HomeExperienceService;
+  liveFrameExperience: LiveFrameExperienceService;
+  contractJourney: ContractJourneyService;
+  actionEconomy: ActionEconomyService;
+  requestMatchExperience: RequestMatchExperienceService;
+  escrowPaymentExperience: EscrowPaymentExperienceService;
+  trustReputationExperience: TrustReputationExperienceService;
+  discoveryMatching: DiscoveryMatchingService;
+  professionalPassport: ProfessionalPassportService;
+  professionalSeals: ProfessionalSealsService;
+  liveTrustFrame: LiveTrustFrameService;
+  providerCommandCenter: ProviderCommandCenterService;
+  customerCommandCenter: CustomerCommandCenterService;
+  platformControlTower: PlatformControlTowerService;
+  marketplaceIntelligence: MarketplaceIntelligenceService;
+  executiveCommandCenter: ExecutiveCommandCenterService;
+  launchSimulation: LaunchSimulationService;
+  investorReadiness: InvestorReadinessService;
+  governmentPartnership: GovernmentPartnershipService;
+  strategicOperatingSystem: StrategicOperatingService;
+  missionControl: MissionControlService;
+  executiveExperience: ExecutiveExperienceService;
+  architectureReview: ArchitectureReviewService;
+  apiAudit: ApiAuditService;
+  productionReadiness: ProductionReadinessService;
+  securityReadiness: SecurityReadinessService;
+  platformOperations: PlatformOperationsService;
+  launchControl: LaunchControlService;
+  postLaunchMonitoring: PostLaunchMonitoringService;
+  businessIntelligence: BusinessIntelligenceService;
+  executiveUxReadiness: ExecutiveUxReadinessService;
+  browserExperienceCompleteness: BrowserExperienceCompletenessService;
+  operatorSurfaceNavigation: OperatorSurfaceNavigationService;
+  operatorExperienceIntegrity: OperatorExperienceIntegrityService;
+  operatorOnboardingReadiness: OperatorOnboardingReadinessService;
+  browserSurface: BrowserSurfaceService;
+  browserStatic: BrowserStaticService;
+  releaseReadinessCenter: ReleaseReadinessCenterService;
+}
+
+export interface LivingDependencies {
+  livingOnboarding: LivingOnboardingService;
+  professionalHome: ProfessionalHomeService;
+  livingPassport: LivingPassportService;
+  livingLiveFrame: LivingLiveFrameService;
+  livingJourney: LivingJourneyService;
+  livingTodayIActed: LivingTodayIActedService;
+  livingOpportunities: LivingOpportunitiesService;
+  livingPartnerEcosystem: LivingPartnerEcosystemService;
+  livingProfessionalCommunity: LivingProfessionalCommunityService;
+  livingProfessionalCoach: LivingProfessionalCoachService;
+  livingActionPlanner: LivingActionPlannerService;
+  livingProfessionalImpact: LivingProfessionalImpactService;
+  livingProfessionalIdentity: LivingProfessionalIdentityService;
+  livingProfessionalIntelligence: LivingProfessionalIntelligenceService;
+  livingProfessionalSimulator: LivingProfessionalSimulatorService;
+  livingProfessionalGoals: LivingProfessionalGoalsService;
+  livingProfessionalAchievements: LivingProfessionalAchievementsService;
+  livingProfessionalAnalytics: LivingProfessionalAnalyticsService;
+  livingProfessionalTimeline: LivingProfessionalTimelineService;
+  livingProfessionalCareerEngine: LivingProfessionalCareerEngineService;
+}
+
+export interface RuntimeDependencies {
+  needExperience: NeedExperienceService;
+  actionExperience: ActionExperienceService;
+  contractExperience: ContractExperienceService;
+  chatExperience: ChatExperienceService;
+  timelineExperience: TimelineExperienceService;
+  notificationExperience: NotificationExperienceService;
+  profileExperience: ProfileExperienceService;
+  runtimeJourney: RuntimeJourneyService;
+  runtimeState: RuntimeStateService;
+  runtimeRegistry: RuntimeRegistryService;
+  runtimeCoordinator: RuntimeCoordinatorService;
+  runtimeHealth: RuntimeHealthService;
+  runtimeDemo: RuntimeDemoService;
+  runtimePreview: RuntimePreviewService;
+  runtimeLauncher: RuntimeLauncherService;
+  runtimeRelease: RuntimeReleaseService;
+  runtimeOperations: RuntimeOperationsService;
+  runtimeExecutive: RuntimeExecutiveDashboardService;
+  runtimeReadiness: RuntimeReadinessConsoleService;
+  runtimeCertification: RuntimeCertificationService;
+  runtimeFinalReadiness: RuntimeFinalReadinessService;
+  runtimeProductionApproval: RuntimeProductionApprovalService;
+  runtimeOperationsCenter: RuntimeOperationsCenterService;
+  runtimeLaunchControl: RuntimeLaunchControlService;
+  runtimeLaunchReadinessAuthority: RuntimeLaunchReadinessAuthorityService;
+  runtimeExecutiveLaunchAuthority: RuntimeExecutiveLaunchAuthorityService;
+  runtimeCompletion: RuntimeCompletionService;
+}
+
+export interface SecurityDependencies {
+  securityAuth: SecurityAuthKernelService;
+  ownershipRegistry: OwnershipRegistry;
+  securityAudit: SecurityAuditService;
+}
+
+export interface AppDependencies
+  extends PlatformDependencies,
+    EngineDependencies,
+    FinancialDependencies,
+    IntelligenceDependencies,
+    ExperienceDependencies,
+    LivingDependencies,
+    RuntimeDependencies,
+    SecurityDependencies {}

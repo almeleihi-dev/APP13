@@ -31,6 +31,7 @@ import {
 import { MVP_PLATFORM_HOME_SOURCE } from "../src/ui/platform/platform-payload.js";
 import { buildExecutiveUxReadinessSnapshot } from "../src/experience/executive-ux-readiness/domain/executive-ux-readiness.js";
 import { createExecutiveUxReadinessRepository } from "../src/experience/executive-ux-readiness/infrastructure/executive-ux-readiness-repository.js";
+import { readModuleWiringSource, readRouteWiringSource } from "./helpers/wiring-source.js";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -107,8 +108,8 @@ describe("X32 browser surface wiring", () => {
   describe("wiring (repository sources)", () => {
     it("registers browser surface module and routes in app bootstrap", async () => {
       const [indexSource, serverSource, packageSource, routeSource] = await Promise.all([
-        readFile(path.join(ROOT_DIR, "src/index.ts"), "utf8"),
-        readFile(path.join(ROOT_DIR, "src/api/server.ts"), "utf8"),
+        readModuleWiringSource(),
+        readRouteWiringSource(),
         readFile(path.join(ROOT_DIR, "package.json"), "utf8"),
         readFile(path.join(ROOT_DIR, "src/api/routes/browser-surface.ts"), "utf8"),
       ]);

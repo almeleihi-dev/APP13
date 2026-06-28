@@ -108,6 +108,7 @@ import {
   buildCompletionHome,
 } from "../src/runtime-experience/runtime-completion/module.js";
 import { NAVIGATION_ACCESSIBILITY_SPEC } from "../src/navigation-framework/validation/navigation-validator.js";
+import { readModuleWiringSource, readRouteWiringSource } from "./helpers/wiring-source.js";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -532,8 +533,8 @@ describe("CH3-FINAL AN ACT Runtime Completion & Certification", () => {
     });
 
     it("wires runtime completion in server and index", async () => {
-      const server = await readFile(path.join(ROOT_DIR, "src/api/server.ts"), "utf8");
-      const index = await readFile(path.join(ROOT_DIR, "src/index.ts"), "utf8");
+      const server = await readRouteWiringSource();
+      const index = await readModuleWiringSource();
       assert.match(server, /registerRuntimeCompletionRoutes/);
       assert.match(server, /runtimeCompletion/);
       assert.match(index, /createAnActRuntimeCompletionModule/);

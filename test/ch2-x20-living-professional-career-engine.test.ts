@@ -29,6 +29,7 @@ import { createKnowledgeBankModule } from "../src/knowledge-bank/module.js";
 import { createIntelligenceOrchestrationModule } from "../src/intelligence-orchestration/module.js";
 import { AppError } from "../src/shared/errors/index.js";
 import type { AuthContext } from "../src/shared/auth/index.js";
+import { readModuleWiringSource, readRouteWiringSource } from "./helpers/wiring-source.js";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -371,8 +372,8 @@ describe("CH2-X20 living professional career engine", () => {
 
   describe("wiring", () => {
     it("loads workspace wiring for CH2-X20", async () => {
-      const indexSource = await readFile(path.join(ROOT_DIR, "src/index.ts"), "utf8");
-      const serverSource = await readFile(path.join(ROOT_DIR, "src/api/server.ts"), "utf8");
+      const indexSource = await readModuleWiringSource();
+      const serverSource = await readRouteWiringSource();
       const packageSource = await readFile(path.join(ROOT_DIR, "package.json"), "utf8");
 
       assert.match(indexSource, /createLivingProfessionalCareerEngineModule/);

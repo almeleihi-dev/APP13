@@ -30,6 +30,7 @@ import { PROFILE_EXPERIENCE_VERSION } from "../src/runtime-experience/profile/mo
 import { RUNTIME_JOURNEY_VERSION } from "../src/runtime-experience/runtime-journey/module.js";
 import { RUNTIME_STATE_VERSION } from "../src/runtime-experience/runtime-state/module.js";
 import { NAVIGATION_ACCESSIBILITY_SPEC } from "../src/navigation-framework/validation/navigation-validator.js";
+import { readModuleWiringSource, readRouteWiringSource } from "./helpers/wiring-source.js";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -251,8 +252,8 @@ describe("CH3-X14 AN ACT Runtime Experience Registry", () => {
     });
 
     it("wires runtime registry in server and index", async () => {
-      const serverSource = await readFile(path.join(ROOT_DIR, "src/api/server.ts"), "utf8");
-      const indexSource = await readFile(path.join(ROOT_DIR, "src/index.ts"), "utf8");
+      const serverSource = await readRouteWiringSource();
+      const indexSource = await readModuleWiringSource();
       assert.match(serverSource, /registerRuntimeRegistryRoutes/);
       assert.match(serverSource, /runtimeRegistry/);
       assert.match(indexSource, /createAnActRuntimeRegistryModule/);

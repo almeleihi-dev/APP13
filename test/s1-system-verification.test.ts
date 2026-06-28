@@ -74,7 +74,8 @@ describe("S1 system verification", () => {
   });
 
   it("registers AI-1 through AI-8 and workflow orchestrator routes in server bootstrap", () => {
-    const server = readSource("src/api/server.ts");
+    const server =
+      readSource("src/bootstrap/routes.ts") + readSource("src/api/server.ts");
 
     const aiRoutes = [
       "registerAiActionRoutes",

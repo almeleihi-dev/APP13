@@ -25,6 +25,7 @@ import {
   buildExperienceHealthScreen,
 } from "../src/runtime-experience/runtime-health/module.js";
 import { NAVIGATION_ACCESSIBILITY_SPEC } from "../src/navigation-framework/validation/navigation-validator.js";
+import { readModuleWiringSource, readRouteWiringSource } from "./helpers/wiring-source.js";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -278,8 +279,8 @@ describe("CH3-X16 AN ACT Runtime Health & Diagnostics", () => {
     });
 
     it("wires runtime health in server and index", async () => {
-      const serverSource = await readFile(path.join(ROOT_DIR, "src/api/server.ts"), "utf8");
-      const indexSource = await readFile(path.join(ROOT_DIR, "src/index.ts"), "utf8");
+      const serverSource = await readRouteWiringSource();
+      const indexSource = await readModuleWiringSource();
       assert.match(serverSource, /registerRuntimeHealthRoutes/);
       assert.match(serverSource, /runtimeHealth/);
       assert.match(indexSource, /createAnActRuntimeHealthModule/);

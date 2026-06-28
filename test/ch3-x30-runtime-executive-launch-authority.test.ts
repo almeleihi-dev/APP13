@@ -103,6 +103,7 @@ import {
   buildExecutiveLaunchHome,
 } from "../src/runtime-experience/runtime-executive-launch-authority/module.js";
 import { NAVIGATION_ACCESSIBILITY_SPEC } from "../src/navigation-framework/validation/navigation-validator.js";
+import { readModuleWiringSource, readRouteWiringSource } from "./helpers/wiring-source.js";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -637,8 +638,8 @@ describe("CH3-X30 AN ACT Runtime Executive Launch Authority", () => {
     });
 
     it("wires runtime executive launch authority in server and index", async () => {
-      const server = await readFile(path.join(ROOT_DIR, "src/api/server.ts"), "utf8");
-      const index = await readFile(path.join(ROOT_DIR, "src/index.ts"), "utf8");
+      const server = await readRouteWiringSource();
+      const index = await readModuleWiringSource();
       assert.match(server, /registerRuntimeExecutiveLaunchAuthorityRoutes/);
       assert.match(server, /runtimeExecutiveLaunchAuthority/);
       assert.match(index, /createAnActRuntimeExecutiveLaunchAuthorityModule/);

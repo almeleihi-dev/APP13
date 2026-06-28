@@ -33,6 +33,7 @@ import {
 } from "../src/browser-static/module.js";
 import { buildExecutiveUxReadinessSnapshot } from "../src/experience/executive-ux-readiness/domain/executive-ux-readiness.js";
 import { createExecutiveUxReadinessRepository } from "../src/experience/executive-ux-readiness/infrastructure/executive-ux-readiness-repository.js";
+import { readModuleWiringSource, readRouteWiringSource } from "./helpers/wiring-source.js";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -127,8 +128,8 @@ describe("X33 browser entry and static delivery", () => {
     it("registers browser static module and entry routes in app bootstrap", async () => {
       const [indexSource, serverSource, packageSource, surfaceRouteSource, staticRouteSource] =
         await Promise.all([
-          readFile(path.join(ROOT_DIR, "src/index.ts"), "utf8"),
-          readFile(path.join(ROOT_DIR, "src/api/server.ts"), "utf8"),
+          readModuleWiringSource(),
+          readRouteWiringSource(),
           readFile(path.join(ROOT_DIR, "package.json"), "utf8"),
           readFile(path.join(ROOT_DIR, "src/api/routes/browser-surface.ts"), "utf8"),
           readFile(path.join(ROOT_DIR, "src/api/routes/browser-static.ts"), "utf8"),

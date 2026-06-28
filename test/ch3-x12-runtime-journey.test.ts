@@ -34,6 +34,7 @@ import { TIMELINE_EXPERIENCE_VERSION } from "../src/runtime-experience/timeline/
 import { NOTIFICATION_EXPERIENCE_VERSION } from "../src/runtime-experience/notification/module.js";
 import { PROFILE_EXPERIENCE_VERSION } from "../src/runtime-experience/profile/module.js";
 import { NAVIGATION_ACCESSIBILITY_SPEC } from "../src/navigation-framework/validation/navigation-validator.js";
+import { readModuleWiringSource, readRouteWiringSource } from "./helpers/wiring-source.js";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -285,8 +286,8 @@ describe("CH3-X12 AN ACT Complete Runtime Journey", () => {
     });
 
     it("wires runtime journey in server and index", async () => {
-      const serverSource = await readFile(path.join(ROOT_DIR, "src/api/server.ts"), "utf8");
-      const indexSource = await readFile(path.join(ROOT_DIR, "src/index.ts"), "utf8");
+      const serverSource = await readRouteWiringSource();
+      const indexSource = await readModuleWiringSource();
       assert.match(serverSource, /registerRuntimeJourneyRoutes/);
       assert.match(serverSource, /runtimeJourney/);
       assert.match(indexSource, /createAnActRuntimeJourneyModule/);

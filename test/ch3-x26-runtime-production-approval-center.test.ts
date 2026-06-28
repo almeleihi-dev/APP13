@@ -86,6 +86,7 @@ import {
   buildApprovalHome,
 } from "../src/runtime-experience/runtime-production-approval/module.js";
 import { NAVIGATION_ACCESSIBILITY_SPEC } from "../src/navigation-framework/validation/navigation-validator.js";
+import { readModuleWiringSource, readRouteWiringSource } from "./helpers/wiring-source.js";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -528,8 +529,8 @@ describe("CH3-X26 AN ACT Runtime Production Approval Center", () => {
     });
 
     it("wires runtime production approval in server and index", async () => {
-      const server = await readFile(path.join(ROOT_DIR, "src/api/server.ts"), "utf8");
-      const index = await readFile(path.join(ROOT_DIR, "src/index.ts"), "utf8");
+      const server = await readRouteWiringSource();
+      const index = await readModuleWiringSource();
       assert.match(server, /registerRuntimeProductionApprovalRoutes/);
       assert.match(server, /runtimeProductionApproval/);
       assert.match(index, /createAnActRuntimeProductionApprovalCenterModule/);

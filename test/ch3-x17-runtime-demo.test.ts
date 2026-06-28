@@ -48,6 +48,7 @@ import {
   buildDemoControls,
 } from "../src/runtime-experience/runtime-demo/module.js";
 import { NAVIGATION_ACCESSIBILITY_SPEC } from "../src/navigation-framework/validation/navigation-validator.js";
+import { readModuleWiringSource, readRouteWiringSource } from "./helpers/wiring-source.js";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -341,8 +342,8 @@ describe("CH3-X17 AN ACT Runtime Demo Mode", () => {
     });
 
     it("wires runtime demo in server and index", async () => {
-      const serverSource = await readFile(path.join(ROOT_DIR, "src/api/server.ts"), "utf8");
-      const indexSource = await readFile(path.join(ROOT_DIR, "src/index.ts"), "utf8");
+      const serverSource = await readRouteWiringSource();
+      const indexSource = await readModuleWiringSource();
       assert.match(serverSource, /registerRuntimeDemoRoutes/);
       assert.match(serverSource, /runtimeDemo/);
       assert.match(indexSource, /createAnActRuntimeDemoModule/);

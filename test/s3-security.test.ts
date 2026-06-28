@@ -60,7 +60,8 @@ describe("S3.1 Security Hardening Verification", () => {
     });
 
     it("wires authenticate and requireAuth middleware in server bootstrap", () => {
-      const server = readSource("src/api/server.ts");
+      const server =
+        readSource("src/api/server.ts") + readSource("src/bootstrap/routes.ts");
       assert.match(server, /createAuthenticateMiddleware/);
       assert.match(server, /requireAuthMiddleware/);
       assert.match(server, /registerSecurityAuthRoutes/);

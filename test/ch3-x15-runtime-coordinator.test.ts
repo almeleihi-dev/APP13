@@ -39,6 +39,7 @@ import { RUNTIME_JOURNEY_VERSION } from "../src/runtime-experience/runtime-journ
 import { RUNTIME_STATE_VERSION } from "../src/runtime-experience/runtime-state/module.js";
 import { RUNTIME_REGISTRY_VERSION } from "../src/runtime-experience/runtime-registry/module.js";
 import { NAVIGATION_ACCESSIBILITY_SPEC } from "../src/navigation-framework/validation/navigation-validator.js";
+import { readModuleWiringSource, readRouteWiringSource } from "./helpers/wiring-source.js";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -300,8 +301,8 @@ describe("CH3-X15 AN ACT Runtime Experience Coordinator", () => {
     });
 
     it("wires runtime coordinator in server and index", async () => {
-      const serverSource = await readFile(path.join(ROOT_DIR, "src/api/server.ts"), "utf8");
-      const indexSource = await readFile(path.join(ROOT_DIR, "src/index.ts"), "utf8");
+      const serverSource = await readRouteWiringSource();
+      const indexSource = await readModuleWiringSource();
       assert.match(serverSource, /registerRuntimeCoordinatorRoutes/);
       assert.match(serverSource, /runtimeCoordinator/);
       assert.match(indexSource, /createAnActRuntimeCoordinatorModule/);

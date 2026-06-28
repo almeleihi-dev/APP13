@@ -21,6 +21,7 @@ import {
 } from "../src/intelligent-commission/module.js";
 import { AppError } from "../src/shared/errors/index.js";
 import type { AuthContext } from "../src/shared/auth/index.js";
+import { readModuleWiringSource, readRouteWiringSource } from "./helpers/wiring-source.js";
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -160,8 +161,8 @@ describe("X48 intelligent commission engine", () => {
   describe("wiring", () => {
     it("loads workspace wiring for X48", async () => {
       const [indexSource, serverSource, packageSource] = await Promise.all([
-        readFile(path.join(ROOT_DIR, "src/index.ts"), "utf8"),
-        readFile(path.join(ROOT_DIR, "src/api/server.ts"), "utf8"),
+        readModuleWiringSource(),
+        readRouteWiringSource(),
         readFile(path.join(ROOT_DIR, "package.json"), "utf8"),
       ]);
 
