@@ -121,6 +121,7 @@ import { createAnActRuntimeFinalReadinessReviewModule } from "./runtime-experien
 import { createAnActRuntimeProductionApprovalCenterModule } from "./runtime-experience/runtime-production-approval/module.js";
 import { createAnActRuntimeOperationsCenterModule } from "./runtime-experience/runtime-operations-center/module.js";
 import { createAnActRuntimeLaunchControlCenterModule } from "./runtime-experience/runtime-launch-control/module.js";
+import { createAnActRuntimeLaunchReadinessAuthorityModule } from "./runtime-experience/runtime-launch-readiness-authority/module.js";
 import { createLivingOnboardingModule, createProfessionalHomeModule, createLivingPassportModule, createLivingLiveFrameModule, createLivingJourneyModule, createLivingTodayIActedModule, createLivingOpportunitiesModule, createLivingPartnerEcosystemModule, createLivingProfessionalCommunityModule, createLivingProfessionalCoachModule, createLivingActionPlannerModule, createLivingProfessionalImpactModule, createLivingProfessionalIdentityModule, createLivingProfessionalIntelligenceModule, createLivingProfessionalSimulatorModule, createLivingProfessionalGoalsModule, createLivingProfessionalAchievementsModule, createLivingProfessionalAnalyticsModule, createLivingProfessionalTimelineModule, createLivingProfessionalCareerEngineModule } from "./living-experience/module.js";
 import { createBrowserSurfaceModule } from "./browser-surface/module.js";
 import { createBrowserStaticModule } from "./browser-static/module.js";
@@ -420,6 +421,12 @@ async function main(): Promise<void> {
     runtimeLauncher,
     runtimeOperations,
   });
+  const { runtimeLaunchReadinessAuthority } = createAnActRuntimeLaunchReadinessAuthorityModule({
+    runtimeLaunchControl,
+    runtimeOperationsCenter,
+    runtimeProductionApproval,
+    runtimeLauncher,
+  });
   const { browserSurface } = createBrowserSurfaceModule();
   const { browserStatic } = createBrowserStaticModule();
   const { releaseReadinessCenter } = createReleaseReadinessCenterModule();
@@ -605,6 +612,7 @@ async function main(): Promise<void> {
     runtimeProductionApproval,
     runtimeOperationsCenter,
     runtimeLaunchControl,
+    runtimeLaunchReadinessAuthority,
     browserSurface,
     browserStatic,
     releaseReadinessCenter,
