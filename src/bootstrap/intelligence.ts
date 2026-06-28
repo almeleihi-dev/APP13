@@ -39,6 +39,7 @@ import { createActionIntelligenceFinalClosureModule } from "../action-intelligen
 import { createAiExperienceFoundationModule } from "../ai-experience/module.js";
 import { createAiConversationExperienceModule } from "../ai-conversation-experience/module.js";
 import { createAiGuidanceExperienceModule } from "../ai-guidance-experience/module.js";
+import { createAiDecisionSupportExperienceModule } from "../ai-decision-support-experience/module.js";
 import { createActionIntelligenceService } from "../action/intelligence/action-intelligence-service.js";
 import { createRequirementIntelligenceService } from "../action/intelligence/requirement/requirement-intelligence-service.js";
 import { createContractIntelligenceService } from "../contract/intelligence/contract-intelligence-service.js";
@@ -93,6 +94,7 @@ export function bootstrapIntelligenceModules(): Pick<
   | "aiExperienceFoundation"
   | "aiConversationExperience"
   | "aiGuidanceExperience"
+  | "aiDecisionSupportExperience"
 > {
   const { actionBlueprint } = createActionBlueprintModule();
   const { professionOntology } = createProfessionOntologyModule();
@@ -145,6 +147,9 @@ export function bootstrapIntelligenceModules(): Pick<
   const { aiGuidanceExperience } = createAiGuidanceExperienceModule({
     aiConversationExperience,
   });
+  const { aiDecisionSupportExperience } = createAiDecisionSupportExperienceModule({
+    aiGuidanceExperience,
+  });
 
   return {
     actionBlueprint,
@@ -188,6 +193,7 @@ export function bootstrapIntelligenceModules(): Pick<
     aiExperienceFoundation,
     aiConversationExperience,
     aiGuidanceExperience,
+    aiDecisionSupportExperience,
   };
 }
 

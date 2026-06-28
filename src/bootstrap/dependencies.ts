@@ -110,6 +110,7 @@ import type { ActionIntelligenceFinalClosureService } from "../action-intelligen
 import type { AiExperienceFoundationService } from "../ai-experience/application/ai-experience-foundation-service.js";
 import type { AiConversationExperienceService } from "../ai-conversation-experience/application/ai-conversation-experience-service.js";
 import type { AiGuidanceExperienceService } from "../ai-guidance-experience/application/ai-guidance-experience-service.js";
+import type { AiDecisionSupportExperienceService } from "../ai-decision-support-experience/application/ai-decision-support-experience-service.js";
 import type { LivingOnboardingService } from "../living-experience/onboarding/application/living-onboarding-service.js";
 import type { ProfessionalHomeService } from "../living-experience/professional-home/application/professional-home-service.js";
 import type { LivingPassportService } from "../living-experience/professional-passport/application/living-passport-service.js";
@@ -250,6 +251,7 @@ export interface IntelligenceDependencies {
   aiExperienceFoundation: AiExperienceFoundationService;
   aiConversationExperience: AiConversationExperienceService;
   aiGuidanceExperience: AiGuidanceExperienceService;
+  aiDecisionSupportExperience: AiDecisionSupportExperienceService;
 }
 
 export interface ExperienceDependencies {
