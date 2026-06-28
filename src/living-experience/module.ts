@@ -673,3 +673,313 @@ export {
   createLivingProfessionalIntelligenceRepository,
   livingProfessionalIntelligenceRepository,
 } from "./professional-intelligence/infrastructure/living-professional-intelligence-repository.js";
+export {
+  LIVING_PROFESSIONAL_SIMULATOR_SCHEMA_VERSION,
+  LIVING_PROFESSIONAL_SIMULATOR_JSON_SCHEMA,
+  LIVING_PROFESSIONAL_SIMULATOR_ROUTES,
+  LIVING_PROFESSIONAL_SIMULATOR_SECTIONS,
+  LIVING_PROFESSIONAL_SIMULATOR_SECTION_LABELS,
+} from "./professional-simulator/domain/simulator-schema.js";
+export {
+  buildLivingProfessionalSimulatorContext,
+  hashSimulatorSeed,
+  type LivingProfessionalSimulatorContext,
+} from "./professional-simulator/domain/simulator-context.js";
+export {
+  buildAllSimulatorSections,
+  buildWhatIfAnswer,
+  buildDefaultSimulationHistory,
+  recordSimulationOutcome,
+  toSimulatorSectionView,
+  toSimulatorSectionsView,
+  toWhatIfAnswerView,
+  SIMULATOR_EXPERIENCE_FLAGS,
+  type LivingProfessionalSimulatorSection,
+  type SimulatorEngineSnapshot,
+  type SimulationHistoryProfile,
+  type SimulationProjection,
+} from "./professional-simulator/domain/simulator-sections.js";
+export {
+  buildLivingProfessionalSimulatorExperience,
+  buildLivingProfessionalSimulatorStatistics,
+  validateLivingProfessionalSimulatorContext,
+  toLivingProfessionalSimulatorView,
+  toLivingProfessionalSimulatorStatisticsView,
+  findSimulatorSection,
+  type LivingProfessionalSimulatorExperience,
+  type LivingProfessionalSimulatorStatistics,
+} from "./professional-simulator/domain/simulator-experience.js";
+export {
+  collectLivingProfessionalSimulatorEngineSnapshot,
+  type LivingProfessionalSimulatorEngineDeps,
+} from "./professional-simulator/application/simulator-collector.js";
+export {
+  LivingProfessionalSimulatorService,
+  createLivingProfessionalSimulatorModule,
+  createLivingProfessionalSimulatorService,
+  type LivingProfessionalSimulatorModule,
+} from "./professional-simulator/application/living-professional-simulator-service.js";
+export {
+  LivingProfessionalSimulatorRepository,
+  createLivingProfessionalSimulatorRepository,
+  livingProfessionalSimulatorRepository,
+} from "./professional-simulator/infrastructure/living-professional-simulator-repository.js";
+export {
+  LIVING_PROFESSIONAL_GOALS_SCHEMA_VERSION,
+  LIVING_PROFESSIONAL_GOALS_JSON_SCHEMA,
+  LIVING_PROFESSIONAL_GOALS_ROUTES,
+  LIVING_PROFESSIONAL_GOALS_SECTIONS,
+  LIVING_PROFESSIONAL_GOALS_SECTION_LABELS,
+} from "./professional-goals/domain/goals-schema.js";
+export {
+  buildLivingProfessionalGoalsContext,
+  hashGoalsSeed,
+  type LivingProfessionalGoalsContext,
+} from "./professional-goals/domain/goals-context.js";
+export {
+  buildAllGoalsSections,
+  buildProfessionalGoal,
+  buildGoalPlanning,
+  buildDefaultGoalsHistory,
+  recordGoalOutcome,
+  toGoalsSectionView,
+  toGoalsSectionsView,
+  GOALS_EXPERIENCE_FLAGS,
+  type LivingProfessionalGoalsSection,
+  type GoalsEngineSnapshot,
+  type GoalsHistoryProfile,
+  type ProfessionalGoal,
+  type GoalPlanning,
+} from "./professional-goals/domain/goals-sections.js";
+export {
+  buildLivingProfessionalGoalsExperience,
+  buildLivingProfessionalGoalsStatistics,
+  validateLivingProfessionalGoalsContext,
+  toLivingProfessionalGoalsView,
+  toLivingProfessionalGoalsStatisticsView,
+  findGoalsSection,
+  type LivingProfessionalGoalsExperience,
+  type LivingProfessionalGoalsStatistics,
+} from "./professional-goals/domain/goals-experience.js";
+export {
+  collectLivingProfessionalGoalsEngineSnapshot,
+  type LivingProfessionalGoalsEngineDeps,
+} from "./professional-goals/application/goals-collector.js";
+export {
+  LivingProfessionalGoalsService,
+  createLivingProfessionalGoalsModule,
+  createLivingProfessionalGoalsService,
+  type LivingProfessionalGoalsModule,
+} from "./professional-goals/application/living-professional-goals-service.js";
+export {
+  LivingProfessionalGoalsRepository,
+  createLivingProfessionalGoalsRepository,
+  livingProfessionalGoalsRepository,
+} from "./professional-goals/infrastructure/living-professional-goals-repository.js";
+export {
+  LIVING_PROFESSIONAL_ACHIEVEMENTS_SCHEMA_VERSION,
+  LIVING_PROFESSIONAL_ACHIEVEMENTS_JSON_SCHEMA,
+  LIVING_PROFESSIONAL_ACHIEVEMENTS_ROUTES,
+  LIVING_PROFESSIONAL_ACHIEVEMENTS_SECTIONS,
+  LIVING_PROFESSIONAL_ACHIEVEMENTS_SECTION_LABELS,
+} from "./professional-achievements/domain/achievements-schema.js";
+export {
+  buildLivingProfessionalAchievementsContext,
+  hashAchievementsSeed,
+  type LivingProfessionalAchievementsContext,
+} from "./professional-achievements/domain/achievements-context.js";
+export {
+  buildAllAchievementsSections,
+  buildProfessionalAchievement,
+  buildAchievementEngineEvaluation,
+  buildDefaultAchievementHistory,
+  recordAchievementOutcome,
+  toAchievementsSectionView,
+  toAchievementsSectionsView,
+  ACHIEVEMENTS_EXPERIENCE_FLAGS,
+  type LivingProfessionalAchievementsSection,
+  type AchievementsEngineSnapshot,
+  type AchievementHistoryProfile,
+  type ProfessionalAchievement,
+  type AchievementEngineEvaluation,
+} from "./professional-achievements/domain/achievements-sections.js";
+export {
+  buildLivingProfessionalAchievementsExperience,
+  buildLivingProfessionalAchievementsStatistics,
+  validateLivingProfessionalAchievementsContext,
+  toLivingProfessionalAchievementsView,
+  toLivingProfessionalAchievementsStatisticsView,
+  findAchievementsSection,
+  type LivingProfessionalAchievementsExperience,
+  type LivingProfessionalAchievementsStatistics,
+} from "./professional-achievements/domain/achievements-experience.js";
+export {
+  collectLivingProfessionalAchievementsEngineSnapshot,
+  type LivingProfessionalAchievementsEngineDeps,
+} from "./professional-achievements/application/achievements-collector.js";
+export {
+  LivingProfessionalAchievementsService,
+  createLivingProfessionalAchievementsModule,
+  createLivingProfessionalAchievementsService,
+  type LivingProfessionalAchievementsModule,
+} from "./professional-achievements/application/living-professional-achievements-service.js";
+export {
+  LivingProfessionalAchievementsRepository,
+  createLivingProfessionalAchievementsRepository,
+  livingProfessionalAchievementsRepository,
+} from "./professional-achievements/infrastructure/living-professional-achievements-repository.js";
+export {
+  LIVING_PROFESSIONAL_ANALYTICS_SCHEMA_VERSION,
+  LIVING_PROFESSIONAL_ANALYTICS_JSON_SCHEMA,
+  LIVING_PROFESSIONAL_ANALYTICS_ROUTES,
+  LIVING_PROFESSIONAL_ANALYTICS_SECTIONS,
+  LIVING_PROFESSIONAL_ANALYTICS_SECTION_LABELS,
+} from "./professional-analytics/domain/analytics-schema.js";
+export {
+  buildLivingProfessionalAnalyticsContext,
+  hashAnalyticsSeed,
+  type LivingProfessionalAnalyticsContext,
+} from "./professional-analytics/domain/analytics-context.js";
+export {
+  buildAllAnalyticsSections,
+  buildAnalyticsMetric,
+  buildAnalyticsEngineEvaluation,
+  buildDefaultAnalyticsHistory,
+  recordAnalyticsOutcome,
+  toAnalyticsSectionView,
+  toAnalyticsSectionsView,
+  ANALYTICS_EXPERIENCE_FLAGS,
+  type LivingProfessionalAnalyticsSection,
+  type AnalyticsEngineSnapshot,
+  type AnalyticsHistoryProfile,
+  type AnalyticsMetric,
+  type AnalyticsEngineEvaluation,
+} from "./professional-analytics/domain/analytics-sections.js";
+export {
+  buildLivingProfessionalAnalyticsExperience,
+  buildLivingProfessionalAnalyticsStatistics,
+  validateLivingProfessionalAnalyticsContext,
+  toLivingProfessionalAnalyticsView,
+  toLivingProfessionalAnalyticsStatisticsView,
+  findAnalyticsSection,
+  type LivingProfessionalAnalyticsExperience,
+  type LivingProfessionalAnalyticsStatistics,
+} from "./professional-analytics/domain/analytics-experience.js";
+export {
+  collectLivingProfessionalAnalyticsEngineSnapshot,
+  type LivingProfessionalAnalyticsEngineDeps,
+} from "./professional-analytics/application/analytics-collector.js";
+export {
+  LivingProfessionalAnalyticsService,
+  createLivingProfessionalAnalyticsModule,
+  createLivingProfessionalAnalyticsService,
+  type LivingProfessionalAnalyticsModule,
+} from "./professional-analytics/application/living-professional-analytics-service.js";
+export {
+  LivingProfessionalAnalyticsRepository,
+  createLivingProfessionalAnalyticsRepository,
+  livingProfessionalAnalyticsRepository,
+} from "./professional-analytics/infrastructure/living-professional-analytics-repository.js";
+export {
+  LIVING_PROFESSIONAL_TIMELINE_SCHEMA_VERSION,
+  LIVING_PROFESSIONAL_TIMELINE_JSON_SCHEMA,
+  LIVING_PROFESSIONAL_TIMELINE_ROUTES,
+  LIVING_PROFESSIONAL_TIMELINE_SECTIONS,
+  LIVING_PROFESSIONAL_TIMELINE_SECTION_LABELS,
+} from "./professional-timeline/domain/timeline-schema.js";
+export {
+  buildLivingProfessionalTimelineContext,
+  hashTimelineSeed,
+  type LivingProfessionalTimelineContext,
+} from "./professional-timeline/domain/timeline-context.js";
+export {
+  buildAllTimelineSections,
+  buildTimelineEvent,
+  buildTimelineEngineEvaluation,
+  buildDefaultTimelineHistory,
+  recordTimelineOutcome,
+  toTimelineSectionView,
+  toTimelineSectionsView,
+  TIMELINE_EXPERIENCE_FLAGS,
+  type LivingProfessionalTimelineSection,
+  type TimelineEngineSnapshot,
+  type TimelineHistoryProfile,
+  type TimelineEvent,
+  type TimelineEngineEvaluation,
+} from "./professional-timeline/domain/timeline-sections.js";
+export {
+  buildLivingProfessionalTimelineExperience,
+  buildLivingProfessionalTimelineStatistics,
+  validateLivingProfessionalTimelineContext,
+  toLivingProfessionalTimelineView,
+  toLivingProfessionalTimelineStatisticsView,
+  findTimelineSection,
+  type LivingProfessionalTimelineExperience,
+  type LivingProfessionalTimelineStatistics,
+} from "./professional-timeline/domain/timeline-experience.js";
+export {
+  collectLivingProfessionalTimelineEngineSnapshot,
+  type LivingProfessionalTimelineEngineDeps,
+} from "./professional-timeline/application/timeline-collector.js";
+export {
+  LivingProfessionalTimelineService,
+  createLivingProfessionalTimelineModule,
+  createLivingProfessionalTimelineService,
+  type LivingProfessionalTimelineModule,
+} from "./professional-timeline/application/living-professional-timeline-service.js";
+export {
+  LivingProfessionalTimelineRepository,
+  createLivingProfessionalTimelineRepository,
+  livingProfessionalTimelineRepository,
+} from "./professional-timeline/infrastructure/living-professional-timeline-repository.js";
+export {
+  LIVING_PROFESSIONAL_CAREER_ENGINE_SCHEMA_VERSION,
+  LIVING_PROFESSIONAL_CAREER_ENGINE_SECTIONS,
+  LIVING_PROFESSIONAL_CAREER_ENGINE_SECTION_LABELS,
+  LIVING_PROFESSIONAL_CAREER_ENGINE_ROUTES,
+  type LivingProfessionalCareerEngineSectionId,
+} from "./professional-career-engine/domain/career-engine-schema.js";
+export {
+  buildLivingProfessionalCareerEngineContext,
+  hashCareerEngineSeed,
+  type LivingProfessionalCareerEngineContext,
+} from "./professional-career-engine/domain/career-engine-context.js";
+export {
+  buildAllCareerEngineSections,
+  buildCareerEngineEvaluation,
+  buildDefaultCareerEngineHistory,
+  buildCareerRecommendation,
+  CAREER_ENGINE_EXPERIENCE_FLAGS,
+  LIVING_SOURCES as CAREER_ENGINE_LIVING_SOURCES,
+  type CareerEngineSnapshot,
+  type CareerRecommendation,
+  type CareerEngineEvaluation,
+  type LivingProfessionalCareerEngineSection,
+  toCareerEngineSectionView,
+  toCareerEngineSectionsView,
+} from "./professional-career-engine/domain/career-engine-sections.js";
+export {
+  buildLivingProfessionalCareerEngineExperience,
+  buildLivingProfessionalCareerEngineStatistics,
+  validateLivingProfessionalCareerEngineContext,
+  toLivingProfessionalCareerEngineView,
+  toLivingProfessionalCareerEngineStatisticsView,
+  findCareerEngineSection,
+  type LivingProfessionalCareerEngineExperience,
+  type LivingProfessionalCareerEngineStatistics,
+} from "./professional-career-engine/domain/career-engine-experience.js";
+export {
+  collectLivingProfessionalCareerEngineSnapshot,
+  type LivingProfessionalCareerEngineEngineDeps,
+} from "./professional-career-engine/application/career-engine-collector.js";
+export {
+  LivingProfessionalCareerEngineService,
+  createLivingProfessionalCareerEngineModule,
+  createLivingProfessionalCareerEngineService,
+  type LivingProfessionalCareerEngineModule,
+} from "./professional-career-engine/application/living-professional-career-engine-service.js";
+export {
+  LivingProfessionalCareerEngineRepository,
+  createLivingProfessionalCareerEngineRepository,
+  livingProfessionalCareerEngineRepository,
+} from "./professional-career-engine/infrastructure/living-professional-career-engine-repository.js";
