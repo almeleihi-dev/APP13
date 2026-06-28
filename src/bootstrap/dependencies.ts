@@ -90,6 +90,7 @@ import type { ActionOntologyService } from "../action-ontology/application/actio
 import type { ActionPlanningService } from "../action-planning/application/action-planning-service.js";
 import type { DynamicPricingService } from "../dynamic-pricing/application/dynamic-pricing-service.js";
 import type { ContractIntelligenceEngineService } from "../contract-intelligence/application/contract-intelligence-service.js";
+import type { ExecutionIntelligenceEngineService } from "../execution-intelligence/application/execution-intelligence-service.js";
 import type { LivingOnboardingService } from "../living-experience/onboarding/application/living-onboarding-service.js";
 import type { ProfessionalHomeService } from "../living-experience/professional-home/application/professional-home-service.js";
 import type { LivingPassportService } from "../living-experience/professional-passport/application/living-passport-service.js";
@@ -210,6 +211,7 @@ export interface IntelligenceDependencies {
   actionPlanning: ActionPlanningService;
   dynamicPricing: DynamicPricingService;
   contractIntelligenceEngine: ContractIntelligenceEngineService;
+  executionIntelligenceEngine: ExecutionIntelligenceEngineService;
 }
 
 export interface ExperienceDependencies {
