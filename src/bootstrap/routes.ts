@@ -93,6 +93,7 @@ import { registerExecutionIntelligenceRoutes } from "../api/routes/execution-int
 import { registerOutcomeIntelligenceRoutes } from "../api/routes/outcome-intelligence.js";
 import { registerTrustIntelligenceRoutes } from "../api/routes/trust-intelligence.js";
 import { registerDecisionIntelligenceRoutes } from "../api/routes/decision-intelligence.js";
+import { registerRecommendationIntelligenceRoutes } from "../api/routes/recommendation-intelligence.js";
 import { registerBrowserSurfaceRoutes } from "../api/routes/browser-surface.js";
 import { registerBrowserStaticRoutes } from "../api/routes/browser-static.js";
 import { registerLivingOnboardingRoutes } from "../api/routes/living-onboarding.js";
@@ -249,6 +250,7 @@ export async function registerAppRoutes(
   await registerOutcomeIntelligenceRoutes(app, deps.outcomeIntelligenceEngine);
   await registerTrustIntelligenceRoutes(app, deps.trustIntelligenceEngine);
   await registerDecisionIntelligenceRoutes(app, deps.decisionIntelligenceEngine);
+  await registerRecommendationIntelligenceRoutes(app, deps.recommendationIntelligenceEngine);
   await registerLivingOnboardingRoutes(app, deps.livingOnboarding);
   await registerProfessionalHomeRoutes(app, deps.professionalHome);
   await registerLivingPassportRoutes(app, deps.livingPassport);

@@ -23,6 +23,7 @@ import { createExecutionIntelligenceEngineModule } from "../execution-intelligen
 import { createOutcomeIntelligenceEngineModule } from "../outcome-intelligence/module.js";
 import { createTrustIntelligenceEngineModule } from "../trust-intelligence/module.js";
 import { createDecisionIntelligenceEngineModule } from "../decision-intelligence/module.js";
+import { createRecommendationIntelligenceEngineModule } from "../recommendation-intelligence/module.js";
 import { createActionIntelligenceService } from "../action/intelligence/action-intelligence-service.js";
 import { createRequirementIntelligenceService } from "../action/intelligence/requirement/requirement-intelligence-service.js";
 import { createContractIntelligenceService } from "../contract/intelligence/contract-intelligence-service.js";
@@ -61,6 +62,7 @@ export function bootstrapIntelligenceModules(): Pick<
   | "outcomeIntelligenceEngine"
   | "trustIntelligenceEngine"
   | "decisionIntelligenceEngine"
+  | "recommendationIntelligenceEngine"
 > {
   const { actionBlueprint } = createActionBlueprintModule();
   const { professionOntology } = createProfessionOntologyModule();
@@ -87,6 +89,7 @@ export function bootstrapIntelligenceModules(): Pick<
   const { outcomeIntelligenceEngine } = createOutcomeIntelligenceEngineModule();
   const { trustIntelligenceEngine } = createTrustIntelligenceEngineModule();
   const { decisionIntelligenceEngine } = createDecisionIntelligenceEngineModule();
+  const { recommendationIntelligenceEngine } = createRecommendationIntelligenceEngineModule();
 
   return {
     actionBlueprint,
@@ -114,6 +117,7 @@ export function bootstrapIntelligenceModules(): Pick<
     outcomeIntelligenceEngine,
     trustIntelligenceEngine,
     decisionIntelligenceEngine,
+    recommendationIntelligenceEngine,
   };
 }
 
