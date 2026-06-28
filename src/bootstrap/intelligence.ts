@@ -20,6 +20,7 @@ import { createActionPlanningModule } from "../action-planning/module.js";
 import { createDynamicPricingModule } from "../dynamic-pricing/module.js";
 import { createContractIntelligenceEngineModule } from "../contract-intelligence/module.js";
 import { createExecutionIntelligenceEngineModule } from "../execution-intelligence/module.js";
+import { createOutcomeIntelligenceEngineModule } from "../outcome-intelligence/module.js";
 import { createActionIntelligenceService } from "../action/intelligence/action-intelligence-service.js";
 import { createRequirementIntelligenceService } from "../action/intelligence/requirement/requirement-intelligence-service.js";
 import { createContractIntelligenceService } from "../contract/intelligence/contract-intelligence-service.js";
@@ -55,6 +56,7 @@ export function bootstrapIntelligenceModules(): Pick<
   | "dynamicPricing"
   | "contractIntelligenceEngine"
   | "executionIntelligenceEngine"
+  | "outcomeIntelligenceEngine"
 > {
   const { actionBlueprint } = createActionBlueprintModule();
   const { professionOntology } = createProfessionOntologyModule();
@@ -78,6 +80,7 @@ export function bootstrapIntelligenceModules(): Pick<
   const { dynamicPricing } = createDynamicPricingModule();
   const { contractIntelligenceEngine } = createContractIntelligenceEngineModule();
   const { executionIntelligenceEngine } = createExecutionIntelligenceEngineModule();
+  const { outcomeIntelligenceEngine } = createOutcomeIntelligenceEngineModule();
 
   return {
     actionBlueprint,
@@ -102,6 +105,7 @@ export function bootstrapIntelligenceModules(): Pick<
     dynamicPricing,
     contractIntelligenceEngine,
     executionIntelligenceEngine,
+    outcomeIntelligenceEngine,
   };
 }
 
