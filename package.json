@@ -326,6 +326,8 @@
     "verify:ch3-x28": "bash scripts/verify-ch3-x28.sh",
     "test:ch3-x29-runtime-launch-readiness-authority": "node --import tsx --test --test-concurrency=1 test/ch3-x29-runtime-launch-readiness-authority.test.ts",
     "verify:ch3-x29": "bash scripts/verify-ch3-x29.sh",
+    "test:ch3-x30-runtime-executive-launch-authority": "node --import tsx --test --test-concurrency=1 test/ch3-x30-runtime-executive-launch-authority.test.ts",
+    "verify:ch3-x30": "bash scripts/verify-ch3-x30.sh",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
     "test:b5": "node --import tsx --test test/b5-execution-integration.test.ts",
     "test:b6": "node --import tsx --test --test-concurrency=1 test/b6-financial-migration.test.ts test/b6-ledger-service-integration.test.ts test/b6-escrow-service-integration.test.ts",
