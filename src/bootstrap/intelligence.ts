@@ -37,6 +37,7 @@ import { createExecutiveIntelligenceCenterModule } from "../executive-intelligen
 import { createActionIntelligenceCertificationModule } from "../action-intelligence-certification/module.js";
 import { createActionIntelligenceFinalClosureModule } from "../action-intelligence-final-closure/module.js";
 import { createAiExperienceFoundationModule } from "../ai-experience/module.js";
+import { createAiConversationExperienceModule } from "../ai-conversation-experience/module.js";
 import { createActionIntelligenceService } from "../action/intelligence/action-intelligence-service.js";
 import { createRequirementIntelligenceService } from "../action/intelligence/requirement/requirement-intelligence-service.js";
 import { createContractIntelligenceService } from "../contract/intelligence/contract-intelligence-service.js";
@@ -89,6 +90,7 @@ export function bootstrapIntelligenceModules(): Pick<
   | "actionIntelligenceCertification"
   | "actionIntelligenceFinalClosure"
   | "aiExperienceFoundation"
+  | "aiConversationExperience"
 > {
   const { actionBlueprint } = createActionBlueprintModule();
   const { professionOntology } = createProfessionOntologyModule();
@@ -135,6 +137,9 @@ export function bootstrapIntelligenceModules(): Pick<
   const { aiExperienceFoundation } = createAiExperienceFoundationModule({
     actionIntelligenceFinalClosure,
   });
+  const { aiConversationExperience } = createAiConversationExperienceModule({
+    aiExperienceFoundation,
+  });
 
   return {
     actionBlueprint,
@@ -176,6 +181,7 @@ export function bootstrapIntelligenceModules(): Pick<
     actionIntelligenceCertification,
     actionIntelligenceFinalClosure,
     aiExperienceFoundation,
+    aiConversationExperience,
   };
 }
 
