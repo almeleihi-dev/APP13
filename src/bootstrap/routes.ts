@@ -101,6 +101,7 @@ import { registerLearningIntelligenceRoutes } from "../api/routes/learning-intel
 import { registerOptimizationIntelligenceRoutes } from "../api/routes/optimization-intelligence.js";
 import { registerEvolutionIntelligenceRoutes } from "../api/routes/evolution-intelligence.js";
 import { registerOrchestrationIntelligenceRoutes } from "../api/routes/orchestration-intelligence.js";
+import { registerActionIntelligenceExperienceRoutes } from "../api/routes/action-intelligence-experience.js";
 import { registerBrowserSurfaceRoutes } from "../api/routes/browser-surface.js";
 import { registerBrowserStaticRoutes } from "../api/routes/browser-static.js";
 import { registerLivingOnboardingRoutes } from "../api/routes/living-onboarding.js";
@@ -265,6 +266,7 @@ export async function registerAppRoutes(
   await registerOptimizationIntelligenceRoutes(app, deps.optimizationIntelligenceEngine);
   await registerEvolutionIntelligenceRoutes(app, deps.evolutionIntelligenceEngine);
   await registerOrchestrationIntelligenceRoutes(app, deps.orchestrationIntelligenceEngine);
+  await registerActionIntelligenceExperienceRoutes(app, deps.actionIntelligenceExperience);
   await registerLivingOnboardingRoutes(app, deps.livingOnboarding);
   await registerProfessionalHomeRoutes(app, deps.professionalHome);
   await registerLivingPassportRoutes(app, deps.livingPassport);
