@@ -108,6 +108,7 @@ import { registerActionIntelligenceCertificationRoutes } from "../api/routes/act
 import { registerActionIntelligenceFinalClosureRoutes } from "../api/routes/action-intelligence-final-closure.js";
 import { registerAiExperienceFoundationRoutes } from "../api/routes/ai-experience-foundation.js";
 import { registerAiConversationExperienceRoutes } from "../api/routes/ai-conversation-experience.js";
+import { registerAiGuidanceExperienceRoutes } from "../api/routes/ai-guidance-experience.js";
 import { registerBrowserSurfaceRoutes } from "../api/routes/browser-surface.js";
 import { registerBrowserStaticRoutes } from "../api/routes/browser-static.js";
 import { registerLivingOnboardingRoutes } from "../api/routes/living-onboarding.js";
@@ -279,6 +280,7 @@ export async function registerAppRoutes(
   await registerActionIntelligenceFinalClosureRoutes(app, deps.actionIntelligenceFinalClosure);
   await registerAiExperienceFoundationRoutes(app, deps.aiExperienceFoundation);
   await registerAiConversationExperienceRoutes(app, deps.aiConversationExperience);
+  await registerAiGuidanceExperienceRoutes(app, deps.aiGuidanceExperience);
   await registerLivingOnboardingRoutes(app, deps.livingOnboarding);
   await registerProfessionalHomeRoutes(app, deps.professionalHome);
   await registerLivingPassportRoutes(app, deps.livingPassport);
