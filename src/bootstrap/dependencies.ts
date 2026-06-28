@@ -95,6 +95,7 @@ import type { OutcomeIntelligenceEngineService } from "../outcome-intelligence/a
 import type { TrustIntelligenceEngineService } from "../trust-intelligence/application/trust-intelligence-service.js";
 import type { DecisionIntelligenceEngineService } from "../decision-intelligence/application/decision-intelligence-service.js";
 import type { RecommendationIntelligenceEngineService } from "../recommendation-intelligence/application/recommendation-intelligence-service.js";
+import type { InsightIntelligenceEngineService } from "../insight-intelligence/application/insight-intelligence-service.js";
 import type { LivingOnboardingService } from "../living-experience/onboarding/application/living-onboarding-service.js";
 import type { ProfessionalHomeService } from "../living-experience/professional-home/application/professional-home-service.js";
 import type { LivingPassportService } from "../living-experience/professional-passport/application/living-passport-service.js";
@@ -220,6 +221,7 @@ export interface IntelligenceDependencies {
   trustIntelligenceEngine: TrustIntelligenceEngineService;
   decisionIntelligenceEngine: DecisionIntelligenceEngineService;
   recommendationIntelligenceEngine: RecommendationIntelligenceEngineService;
+  insightIntelligenceEngine: InsightIntelligenceEngineService;
 }
 
 export interface ExperienceDependencies {
