@@ -91,6 +91,7 @@ import { registerDynamicPricingRoutes } from "../api/routes/dynamic-pricing.js";
 import { registerContractIntelligenceRoutes } from "../api/routes/contract-intelligence.js";
 import { registerExecutionIntelligenceRoutes } from "../api/routes/execution-intelligence.js";
 import { registerOutcomeIntelligenceRoutes } from "../api/routes/outcome-intelligence.js";
+import { registerTrustIntelligenceRoutes } from "../api/routes/trust-intelligence.js";
 import { registerBrowserSurfaceRoutes } from "../api/routes/browser-surface.js";
 import { registerBrowserStaticRoutes } from "../api/routes/browser-static.js";
 import { registerLivingOnboardingRoutes } from "../api/routes/living-onboarding.js";
@@ -245,6 +246,7 @@ export async function registerAppRoutes(
   await registerContractIntelligenceRoutes(app, deps.contractIntelligenceEngine);
   await registerExecutionIntelligenceRoutes(app, deps.executionIntelligenceEngine);
   await registerOutcomeIntelligenceRoutes(app, deps.outcomeIntelligenceEngine);
+  await registerTrustIntelligenceRoutes(app, deps.trustIntelligenceEngine);
   await registerLivingOnboardingRoutes(app, deps.livingOnboarding);
   await registerProfessionalHomeRoutes(app, deps.professionalHome);
   await registerLivingPassportRoutes(app, deps.livingPassport);

@@ -92,6 +92,7 @@ import type { DynamicPricingService } from "../dynamic-pricing/application/dynam
 import type { ContractIntelligenceEngineService } from "../contract-intelligence/application/contract-intelligence-service.js";
 import type { ExecutionIntelligenceEngineService } from "../execution-intelligence/application/execution-intelligence-service.js";
 import type { OutcomeIntelligenceEngineService } from "../outcome-intelligence/application/outcome-intelligence-service.js";
+import type { TrustIntelligenceEngineService } from "../trust-intelligence/application/trust-intelligence-service.js";
 import type { LivingOnboardingService } from "../living-experience/onboarding/application/living-onboarding-service.js";
 import type { ProfessionalHomeService } from "../living-experience/professional-home/application/professional-home-service.js";
 import type { LivingPassportService } from "../living-experience/professional-passport/application/living-passport-service.js";
@@ -214,6 +215,7 @@ export interface IntelligenceDependencies {
   contractIntelligenceEngine: ContractIntelligenceEngineService;
   executionIntelligenceEngine: ExecutionIntelligenceEngineService;
   outcomeIntelligenceEngine: OutcomeIntelligenceEngineService;
+  trustIntelligenceEngine: TrustIntelligenceEngineService;
 }
 
 export interface ExperienceDependencies {
