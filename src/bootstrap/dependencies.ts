@@ -104,6 +104,7 @@ import type { EvolutionIntelligenceEngineService } from "../evolution-intelligen
 import type { OrchestrationIntelligenceEngineService } from "../orchestration-intelligence/application/orchestration-intelligence-service.js";
 import type { ActionIntelligenceExperienceService } from "../action-intelligence-experience/application/action-intelligence-experience-service.js";
 import type { IntelligenceDashboardService } from "../intelligence-dashboard/application/intelligence-dashboard-service.js";
+import type { ExecutiveIntelligenceCenterService } from "../executive-intelligence-center/application/executive-intelligence-center-service.js";
 import type { LivingOnboardingService } from "../living-experience/onboarding/application/living-onboarding-service.js";
 import type { ProfessionalHomeService } from "../living-experience/professional-home/application/professional-home-service.js";
 import type { LivingPassportService } from "../living-experience/professional-passport/application/living-passport-service.js";
@@ -238,6 +239,7 @@ export interface IntelligenceDependencies {
   orchestrationIntelligenceEngine: OrchestrationIntelligenceEngineService;
   actionIntelligenceExperience: ActionIntelligenceExperienceService;
   intelligenceDashboard: IntelligenceDashboardService;
+  executiveIntelligenceCenter: ExecutiveIntelligenceCenterService;
 }
 
 export interface ExperienceDependencies {
