@@ -231,6 +231,7 @@ import { registerRuntimeCertificationRoutes } from "./routes/runtime-certificati
 import { registerRuntimeFinalReadinessRoutes } from "./routes/runtime-final-readiness.js";
 import { registerRuntimeProductionApprovalRoutes } from "./routes/runtime-production-approval.js";
 import { registerRuntimeOperationsCenterRoutes } from "./routes/runtime-operations-center.js";
+import { registerRuntimeLaunchControlRoutes } from "./routes/runtime-launch-control.js";
 import type { NeedExperienceService } from "../runtime-experience/need/application/need-experience-service.js";
 import type { ActionExperienceService } from "../runtime-experience/action/application/action-experience-service.js";
 import type { ContractExperienceService } from "../runtime-experience/contract/application/contract-experience-service.js";
@@ -254,6 +255,7 @@ import type { RuntimeCertificationService } from "../runtime-experience/runtime-
 import type { RuntimeFinalReadinessService } from "../runtime-experience/runtime-final-readiness/application/runtime-final-readiness-service.js";
 import type { RuntimeProductionApprovalService } from "../runtime-experience/runtime-production-approval/application/runtime-production-approval-service.js";
 import type { RuntimeOperationsCenterService } from "../runtime-experience/runtime-operations-center/application/runtime-operations-center-service.js";
+import type { RuntimeLaunchControlService } from "../runtime-experience/runtime-launch-control/application/runtime-launch-control-service.js";
 import type { BrowserSurfaceService } from "../browser-surface/application/browser-surface-service.js";
 import type { BrowserStaticService } from "../browser-static/application/browser-static-service.js";
 import type { InvestorReadinessService } from "../experience/investor-readiness/application/investor-readiness-service.js";
@@ -409,6 +411,7 @@ export interface AppDependencies {
   runtimeFinalReadiness: RuntimeFinalReadinessService;
   runtimeProductionApproval: RuntimeProductionApprovalService;
   runtimeOperationsCenter: RuntimeOperationsCenterService;
+  runtimeLaunchControl: RuntimeLaunchControlService;
   browserSurface: BrowserSurfaceService;
   browserStatic: BrowserStaticService;
   releaseReadinessCenter: ReleaseReadinessCenterService;
@@ -576,6 +579,7 @@ export async function buildServer(deps: AppDependencies) {
   await registerRuntimeFinalReadinessRoutes(app, deps.runtimeFinalReadiness);
   await registerRuntimeProductionApprovalRoutes(app, deps.runtimeProductionApproval);
   await registerRuntimeOperationsCenterRoutes(app, deps.runtimeOperationsCenter);
+  await registerRuntimeLaunchControlRoutes(app, deps.runtimeLaunchControl);
   await registerReleaseReadinessRoutes(app, deps.releaseReadinessCenter);
   await registerPlatformExperienceRoutes(app, deps.experience.platform);
 
