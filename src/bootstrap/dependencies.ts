@@ -122,6 +122,7 @@ import type { AiExecutiveIntelligenceExperienceService } from "../ai-executive-i
 import type { AiOrchestrationExperienceService } from "../ai-orchestration-experience/application/ai-orchestration-experience-service.js";
 import type { AiDecisionIntelligenceExperienceService } from "../ai-decision-intelligence-experience/application/ai-decision-intelligence-experience-service.js";
 import type { AiStrategicIntelligenceExperienceService } from "../ai-strategic-intelligence-experience/application/ai-strategic-intelligence-experience-service.js";
+import type { AiPredictiveForecastExperienceService } from "../ai-predictive-forecast-experience/application/ai-predictive-forecast-experience-service.js";
 import type { LivingOnboardingService } from "../living-experience/onboarding/application/living-onboarding-service.js";
 import type { ProfessionalHomeService } from "../living-experience/professional-home/application/professional-home-service.js";
 import type { LivingPassportService } from "../living-experience/professional-passport/application/living-passport-service.js";
@@ -274,6 +275,7 @@ export interface IntelligenceDependencies {
   aiOrchestrationExperience: AiOrchestrationExperienceService;
   aiDecisionIntelligenceExperience: AiDecisionIntelligenceExperienceService;
   aiStrategicIntelligenceExperience: AiStrategicIntelligenceExperienceService;
+  aiPredictiveForecastExperience: AiPredictiveForecastExperienceService;
 }
 
 export interface ExperienceDependencies {
