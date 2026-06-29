@@ -410,6 +410,8 @@
     "verify:ch5-x16": "bash scripts/verify-ch5-x16.sh",
     "test:ch5-x17-ai-executive-advisory-experience": "node --import tsx --test test/ch5-x17-ai-executive-advisory-experience.test.ts",
     "verify:ch5-x17": "bash scripts/verify-ch5-x17.sh",
+    "test:ch5-x18-ai-governance-assurance-experience": "node --import tsx --test test/ch5-x18-ai-governance-assurance-experience.test.ts",
+    "verify:ch5-x18": "bash scripts/verify-ch5-x18.sh",
     "test:integration": "node --import tsx --test test/b4-contract-integration.test.ts",
     "test:b5": "node --import tsx --test test/b5-execution-integration.test.ts",
     "test:b6": "node --import tsx --test --test-concurrency=1 test/b6-financial-migration.test.ts test/b6-ledger-service-integration.test.ts test/b6-escrow-service-integration.test.ts",
