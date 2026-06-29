@@ -44,6 +44,7 @@ import { createAiActionPlanningExperienceModule } from "../ai-action-planning-ex
 import { createAiExecutionCompanionExperienceModule } from "../ai-execution-companion-experience/module.js";
 import { createAiProgressIntelligenceExperienceModule } from "../ai-progress-intelligence-experience/module.js";
 import { createAiAdaptiveCoachingExperienceModule } from "../ai-adaptive-coaching-experience/module.js";
+import { createAiInsightGenerationExperienceModule } from "../ai-insight-generation-experience/module.js";
 import { createActionIntelligenceService } from "../action/intelligence/action-intelligence-service.js";
 import { createRequirementIntelligenceService } from "../action/intelligence/requirement/requirement-intelligence-service.js";
 import { createContractIntelligenceService } from "../contract/intelligence/contract-intelligence-service.js";
@@ -103,6 +104,7 @@ export function bootstrapIntelligenceModules(): Pick<
   | "aiExecutionCompanionExperience"
   | "aiProgressIntelligenceExperience"
   | "aiAdaptiveCoachingExperience"
+  | "aiInsightGenerationExperience"
 > {
   const { actionBlueprint } = createActionBlueprintModule();
   const { professionOntology } = createProfessionOntologyModule();
@@ -170,6 +172,9 @@ export function bootstrapIntelligenceModules(): Pick<
   const { aiAdaptiveCoachingExperience } = createAiAdaptiveCoachingExperienceModule({
     aiProgressIntelligenceExperience,
   });
+  const { aiInsightGenerationExperience } = createAiInsightGenerationExperienceModule({
+    aiAdaptiveCoachingExperience,
+  });
 
   return {
     actionBlueprint,
@@ -218,6 +223,7 @@ export function bootstrapIntelligenceModules(): Pick<
     aiExecutionCompanionExperience,
     aiProgressIntelligenceExperience,
     aiAdaptiveCoachingExperience,
+    aiInsightGenerationExperience,
   };
 }
 
