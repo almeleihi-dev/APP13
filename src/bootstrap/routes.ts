@@ -126,6 +126,7 @@ import { registerAiExecutiveAdvisoryExperienceRoutes } from "../api/routes/ai-ex
 import { registerAiGovernanceAssuranceExperienceRoutes } from "../api/routes/ai-governance-assurance-experience.js";
 import { registerAiAccountabilityLedgerExperienceRoutes } from "../api/routes/ai-accountability-ledger-experience.js";
 import { registerAiConformanceValidationExperienceRoutes } from "../api/routes/ai-conformance-validation-experience.js";
+import { registerAiOperationalOversightExperienceRoutes } from "../api/routes/ai-operational-oversight-experience.js";
 import { registerBrowserSurfaceRoutes } from "../api/routes/browser-surface.js";
 import { registerBrowserStaticRoutes } from "../api/routes/browser-static.js";
 import { registerLivingOnboardingRoutes } from "../api/routes/living-onboarding.js";
@@ -330,6 +331,7 @@ export async function registerAppRoutes(
   await registerAiGovernanceAssuranceExperienceRoutes(app, deps.aiGovernanceAssuranceExperience);
   await registerAiAccountabilityLedgerExperienceRoutes(app, deps.aiAccountabilityLedgerExperience);
   await registerAiConformanceValidationExperienceRoutes(app, deps.aiConformanceValidationExperience);
+  await registerAiOperationalOversightExperienceRoutes(app, deps.aiOperationalOversightExperience);
   await registerLivingOnboardingRoutes(app, deps.livingOnboarding);
   await registerProfessionalHomeRoutes(app, deps.professionalHome);
   await registerLivingPassportRoutes(app, deps.livingPassport);

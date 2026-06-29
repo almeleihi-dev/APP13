@@ -56,6 +56,7 @@ import { createAiExecutiveAdvisoryExperienceModule } from "../ai-executive-advis
 import { createAiGovernanceAssuranceExperienceModule } from "../ai-governance-assurance-experience/module.js";
 import { createAiAccountabilityLedgerExperienceModule } from "../ai-accountability-ledger-experience/module.js";
 import { createAiConformanceValidationExperienceModule } from "../ai-conformance-validation-experience/module.js";
+import { createAiOperationalOversightExperienceModule } from "../ai-operational-oversight-experience/module.js";
 import { createActionIntelligenceService } from "../action/intelligence/action-intelligence-service.js";
 import { createRequirementIntelligenceService } from "../action/intelligence/requirement/requirement-intelligence-service.js";
 import { createContractIntelligenceService } from "../contract/intelligence/contract-intelligence-service.js";
@@ -127,6 +128,7 @@ export function bootstrapIntelligenceModules(): Pick<
   | "aiGovernanceAssuranceExperience"
   | "aiAccountabilityLedgerExperience"
   | "aiConformanceValidationExperience"
+  | "aiOperationalOversightExperience"
 > {
   const { actionBlueprint } = createActionBlueprintModule();
   const { professionOntology } = createProfessionOntologyModule();
@@ -231,6 +233,9 @@ export function bootstrapIntelligenceModules(): Pick<
   const { aiConformanceValidationExperience } = createAiConformanceValidationExperienceModule({
     aiAccountabilityLedgerExperience,
   });
+  const { aiOperationalOversightExperience } = createAiOperationalOversightExperienceModule({
+    aiConformanceValidationExperience,
+  });
 
   return {
     actionBlueprint,
@@ -291,6 +296,7 @@ export function bootstrapIntelligenceModules(): Pick<
     aiGovernanceAssuranceExperience,
     aiAccountabilityLedgerExperience,
     aiConformanceValidationExperience,
+    aiOperationalOversightExperience,
   };
 }
 
