@@ -115,6 +115,7 @@ import { registerAiExecutionCompanionExperienceRoutes } from "../api/routes/ai-e
 import { registerAiProgressIntelligenceExperienceRoutes } from "../api/routes/ai-progress-intelligence-experience.js";
 import { registerAiAdaptiveCoachingExperienceRoutes } from "../api/routes/ai-adaptive-coaching-experience.js";
 import { registerAiInsightGenerationExperienceRoutes } from "../api/routes/ai-insight-generation-experience.js";
+import { registerAiRecommendationIntelligenceExperienceRoutes } from "../api/routes/ai-recommendation-intelligence-experience.js";
 import { registerBrowserSurfaceRoutes } from "../api/routes/browser-surface.js";
 import { registerBrowserStaticRoutes } from "../api/routes/browser-static.js";
 import { registerLivingOnboardingRoutes } from "../api/routes/living-onboarding.js";
@@ -293,6 +294,10 @@ export async function registerAppRoutes(
   await registerAiProgressIntelligenceExperienceRoutes(app, deps.aiProgressIntelligenceExperience);
   await registerAiAdaptiveCoachingExperienceRoutes(app, deps.aiAdaptiveCoachingExperience);
   await registerAiInsightGenerationExperienceRoutes(app, deps.aiInsightGenerationExperience);
+  await registerAiRecommendationIntelligenceExperienceRoutes(
+    app,
+    deps.aiRecommendationIntelligenceExperience
+  );
   await registerLivingOnboardingRoutes(app, deps.livingOnboarding);
   await registerProfessionalHomeRoutes(app, deps.professionalHome);
   await registerLivingPassportRoutes(app, deps.livingPassport);
