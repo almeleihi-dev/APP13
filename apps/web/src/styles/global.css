@@ -1,4 +1,5 @@
 @import "@an-act/runtime-ui/brand.css";
+@import "@an-act/runtime-ui/production.css";
 
 :root {
   font-family: var(--an-act-font-sans, "Inter", "SF Pro Text", system-ui, -apple-system, sans-serif);

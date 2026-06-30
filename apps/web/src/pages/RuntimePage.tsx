@@ -53,6 +53,13 @@ export function RuntimePage({ bootstrapping = false }: RuntimePageProps) {
     }
   }, [mode]);
 
+  const statusBanner =
+    (loading || relaying) && !transitionActive ? (
+      <div className="an-act-inline-status" role="status" data-compact="true">
+        {relaying ? "Relaying action..." : "Loading experience..."}
+      </div>
+    ) : null;
+
   if (bootstrapping && !screen && loading) {
     return (
       <ThemeProvider mode="need">
@@ -98,11 +105,9 @@ export function RuntimePage({ bootstrapping = false }: RuntimePageProps) {
   return (
     <ThemeProvider mode={mode} transitioning={transitionActive}>
       <AnActAppShell logoUrl={AN_ACT_BRAND.logoUrl} modeLabel={modeLabel(mode)}>
-        {(loading || relaying) && !transitionActive ? (
-          <AnActBrandLoading stageText={relaying ? "Relaying action..." : "Loading experience..."} compact />
-        ) : null}
+        {statusBanner}
         {error ? (
-          <div className="an-act-screen">
+          <div className="an-act-screen an-act-error-panel">
             <AnActError
               node={{
                 key: "runtime-error",

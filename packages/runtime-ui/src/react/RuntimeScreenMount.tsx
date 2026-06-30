@@ -76,7 +76,13 @@ export function RuntimeScreenMount({ screen, onRelay }: RuntimeScreenMountProps)
 
 function AnActEmptyStateWrapper({ children, label }: { children: React.ReactNode; label: string }) {
   return (
-    <div data-component-id="core-ui-empty-state" className="an-act-card" role="status" aria-label={label} style={{ textAlign: "center", borderStyle: "dashed", boxShadow: "var(--an-act-elevation-none)" }}>
+    <div
+      data-component-id="core-ui-empty-state"
+      className="an-act-card an-act-empty-state"
+      role="status"
+      aria-label={label}
+      style={{ borderStyle: "dashed", boxShadow: "var(--an-act-elevation-none)" }}
+    >
       {children}
     </div>
   );

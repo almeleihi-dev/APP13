@@ -2,6 +2,8 @@ export { AnActAppShell } from "./brand/AnActAppShell.js";
 export type { AnActAppShellProps } from "./brand/AnActAppShell.js";
 export { AnActBrandLoading } from "./brand/AnActBrandLoading.js";
 export type { AnActBrandLoadingProps } from "./brand/AnActBrandLoading.js";
+export { AnActSplash, AN_ACT_TRANSITION_DURATION_MS as SPLASH_TRANSITION_MS } from "./brand/AnActSplash.js";
+export type { AnActSplashProps } from "./brand/AnActSplash.js";
 export { AnActWordmark } from "./brand/AnActWordmark.js";
 export type { AnActWordmarkProps } from "./brand/AnActWordmark.js";
 

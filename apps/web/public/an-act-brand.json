@@ -2,5 +2,6 @@
   "productName": "AN ACT",
   "wordmark": "an act",
   "logoUrl": null,
-  "comment": "Set logoUrl to a public asset path (e.g. /brand/an-act-logo.svg) to replace the typographic wordmark without code changes."
+  "splashBackground": "#000000",
+  "comment": "Set logoUrl to a public asset path (e.g. /brand/an-act-logo.svg) or VITE_AN_ACT_LOGO_URL to replace the typographic wordmark without code changes."
 }

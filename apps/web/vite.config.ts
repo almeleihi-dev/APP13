@@ -11,6 +11,7 @@ export default defineConfig({
       "@an-act/runtime-client": path.resolve(__dirname, "../../packages/runtime-client/src/index.ts"),
       "@an-act/runtime-ui/react": path.resolve(__dirname, "../../packages/runtime-ui/src/react/index.ts"),
       "@an-act/runtime-ui/brand.css": path.resolve(__dirname, "../../packages/runtime-ui/src/react/styles/an-act-brand.css"),
+      "@an-act/runtime-ui/production.css": path.resolve(__dirname, "../../packages/runtime-ui/src/react/styles/an-act-production.css"),
       "@an-act/runtime-ui": path.resolve(__dirname, "../../packages/runtime-ui/src/index.ts"),
     },
   },

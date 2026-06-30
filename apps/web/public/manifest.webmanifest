@@ -1,13 +1,25 @@
 {
+  "id": "an-act",
   "name": "AN ACT",
   "short_name": "AN ACT",
-  "description": "Official AN ACT Runtime experience — Need and Action modes.",
+  "description": "Official AN ACT production experience — Need and Action modes powered by Runtime JSON.",
+  "lang": "en",
+  "dir": "ltr",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#FFFFFF",
+  "display_override": ["standalone", "browser"],
+  "background_color": "#000000",
   "theme_color": "#FFFFFF",
   "orientation": "portrait-primary",
+  "categories": ["productivity", "business"],
   "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
     {
       "src": "/icons/an-act-icon-192.svg",
       "sizes": "192x192",
@@ -19,6 +31,12 @@
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/an-act-apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }
