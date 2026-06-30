@@ -74,7 +74,7 @@ export function RuntimePage({ bootstrapping = false }: RuntimePageProps) {
     return (
       <ThemeProvider mode="need">
         <AnActAppShell logoUrl={AN_ACT_BRAND.logoUrl} modeLabel="Need Mode">
-          <div className="an-act-screen">
+          <div className="an-act-screen an-act-error-panel">
             <AnActError
               node={{
                 key: "offline",
@@ -86,6 +86,9 @@ export function RuntimePage({ bootstrapping = false }: RuntimePageProps) {
                 },
               }}
             />
+            <button type="button" className="an-act-button an-act-button--secondary" onClick={() => void reload()}>
+              Try again
+            </button>
           </div>
         </AnActAppShell>
       </ThemeProvider>

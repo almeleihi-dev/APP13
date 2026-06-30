@@ -9,6 +9,7 @@ import {
 } from "react";
 import {
   createRuntimeClient,
+  LocalStorageAuthStorage,
   RuntimeClientError,
   type ActionExperienceEnvelope,
   type NeedExperienceEnvelope,
@@ -87,7 +88,14 @@ function mergeDraftIntoScreen(
 }
 
 export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps) {
-  const client = useMemo(() => createRuntimeClient({ baseUrl }), [baseUrl]);
+  const client = useMemo(
+    () =>
+      createRuntimeClient({
+        baseUrl,
+        authStorage: typeof localStorage !== "undefined" ? new LocalStorageAuthStorage() : undefined,
+      }),
+    [baseUrl]
+  );
   const [envelope, setEnvelope] = useState<NeedExperienceEnvelope | ActionExperienceEnvelope | null>(null);
   const [experienceKind, setExperienceKind] = useState<"need" | "action">("need");
   const [loading, setLoading] = useState(false);

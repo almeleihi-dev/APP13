@@ -12,6 +12,7 @@ export interface RuntimeClientConfig {
   fetch?: typeof fetch;
   getAccessToken?: () => string | null;
   onUnauthorized?: () => void;
+  authStorage?: import("./auth-client.js").AuthStorage;
 }
 
 export interface RuntimeProblemDetails {

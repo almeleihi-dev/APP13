@@ -38,6 +38,7 @@ export class RuntimeClient {
     this.auth = new AuthClient({
       baseUrl: config.baseUrl,
       fetch: config.fetch,
+      storage: config.authStorage,
     });
     this.http = new HttpClient({
       ...config,
