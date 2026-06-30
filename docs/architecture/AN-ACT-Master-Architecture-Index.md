@@ -9,7 +9,7 @@
 ## How to Use This Index
 
 1. **New to AN ACT?** Start with the [Product Bible](./AN-ACT-Product-Bible.md) (Sections 1–9).
-2. **Building UI?** Read CH3 identity docs, then Section 45 of the Product Bible (Future Render Layer).
+2. **Building UI?** Read [Runtime JSON Contract](./AN-ACT-Runtime-JSON-Contract.md), CH3 identity docs, then Section 45 of the Product Bible (Future Render Layer).
 3. **Building intelligence features?** Read CH4 + CH5 architecture books and registries.
 4. **Implementing a module?** Find your chapter registry in the appendices of the Product Bible.
 
@@ -73,6 +73,24 @@
 |----------|---------|-----------|
 | [**Live Frame v1.0 Specification**](./AN-ACT-Live-Frame-v1.0-Specification.md) | Official unified Live Frame SSOT — trust formula, tiers, colors, JSON schema, render contracts | Building Render Layer, trust rings, profile cards, or any Live Frame surface |
 | [**Live Frame Migration Plan**](./AN-ACT-Live-Frame-Migration-Plan.md) | Consolidation from 11+ implementations — official vs deprecated, phases, verification | Before wiring runtime demos, adapter module, or deprecating legacy classifiers |
+
+---
+
+## Tier 1.6 — Runtime JSON (Client Consumption Standard)
+
+| Document | Purpose | Read when |
+|----------|---------|-----------|
+| [**Runtime JSON Contract**](./AN-ACT-Runtime-JSON-Contract.md) | Official canonical schema — screen contract, components, navigation, themes, auth, errors, platform consumption strategies | Building any frontend (React, Flutter, SwiftUI, Bubble, Web) |
+| [**Runtime JSON Examples**](./AN-ACT-Runtime-JSON-Examples.md) | Complete example payloads — Login, Home, Need, Provider, Live Frame, Marketplace, Contract, AI, Executive Dashboard | Implementing renderers or API integration tests |
+
+---
+
+## Tier 1.7 — Design Tokens
+
+| Document | Purpose | Read when |
+|----------|---------|-----------|
+| [**Design Tokens Specification**](./AN-ACT-Design-Tokens-Specification.md) | Official token catalog — colors, typography, spacing, motion, Live Frame, accessibility, naming, versioning | Implementing `@an-act/tokens` or any Render Layer theme |
+| [**Design Tokens Export Plan**](./AN-ACT-Design-Tokens-Export-Plan.md) | React, RN, Flutter, SwiftUI, Bubble, CSS, JSON, and NPM package strategy | Exporting tokens or bootstrapping the tokens package |
 
 ---
 
@@ -152,21 +170,25 @@ Referenced by architecture docs (typically under `docs/` root):
 
 ### For Designers
 
-1. [CH3 Experience Identity Review](./AN-ACT-CH3-Experience-Identity-Review.md) — Full visual identity  
-2. [CH3 Design System Registry](./AN-ACT-CH3-Design-System-Registry.md) — Token and component catalog  
-3. [Product Bible §18–29](./AN-ACT-Product-Bible.md) — Unified Live Frame, identity, visual language, screen rules  
-4. [Design System Candidates](./AN-ACT-Design-System-Candidates.md) — Consolidation gaps  
-5. `docs/design-system/CH3-X4-Visual-Prototype-Library.md` — Screen blueprints  
+1. [CH3 Experience Identity Review](./AN-ACT-CH3-Experience-Identity-Review.md) — Full visual identity
+2. [Design Tokens Specification](./AN-ACT-Design-Tokens-Specification.md) — Complete color, type, spacing tables
+3. [CH3 Design System Registry](./AN-ACT-CH3-Design-System-Registry.md) — Token and component catalog
+4. [Product Bible §18–29](./AN-ACT-Product-Bible.md) — Unified Live Frame, identity, visual language, screen rules
+5. [Design System Candidates](./AN-ACT-Design-System-Candidates.md) — Consolidation gaps
+6. `docs/design-system/CH3-X4-Visual-Prototype-Library.md` — Screen blueprints  
 
 ### For Frontend / Mobile Engineers
 
-1. [Live Frame v1.0 Specification](./AN-ACT-Live-Frame-v1.0-Specification.md) — Trust tier → UI tier mapping, render contracts (React, Flutter, SwiftUI, Bubble)
-2. [Transition To MVP Plan](./AN-ACT-Transition-To-MVP-Plan.md) — Full render roadmap (React, Flutter, Bubble)  
-2. [Platform MVP Readiness Assessment §33–38](./AN-ACT-Platform-MVP-Readiness-Assessment.md) — Per-platform readiness  
-3. [Product Bible §30–33](./AN-ACT-Product-Bible.md) — Runtime JSON, prototypes, tokens, components  
-4. [Product Bible §45](./AN-ACT-Product-Bible.md) — Future render layer consumption guide  
-5. [CH3 Design System Registry §6–8](./AN-ACT-CH3-Design-System-Registry.md) — Runtime screens, tokens, prototypes  
-6. Source: `src/design-system/tokens/design-tokens.ts`, `src/runtime-experience/need/presentation/screen-builder.ts`  
+1. [Design Tokens Specification](./AN-ACT-Design-Tokens-Specification.md) — Semantic colors, dual-mode themes, full token tables
+2. [Design Tokens Export Plan](./AN-ACT-Design-Tokens-Export-Plan.md) — `@an-act/tokens` package and platform export strategy
+3. [Live Frame v1.0 Specification](./AN-ACT-Live-Frame-v1.0-Specification.md) — Trust tier → UI tier mapping, render contracts
+4. [Runtime JSON Contract](./AN-ACT-Runtime-JSON-Contract.md) — Canonical screen schema and client consumption rules
+5. [Runtime JSON Examples](./AN-ACT-Runtime-JSON-Examples.md) — Full payloads for MVP screens
+6. [Transition To MVP Plan](./AN-ACT-Transition-To-MVP-Plan.md) — Full render roadmap (React, Flutter, Bubble)
+7. [Platform MVP Readiness Assessment §33–38](./AN-ACT-Platform-MVP-Readiness-Assessment.md) — Per-platform readiness
+8. [Product Bible §30–33](./AN-ACT-Product-Bible.md) — Runtime JSON, prototypes, tokens, components
+9. [Product Bible §45](./AN-ACT-Product-Bible.md) — Future render layer consumption guide
+10. [CH3 Design System Registry §6–8](./AN-ACT-CH3-Design-System-Registry.md) — Runtime screens, tokens, prototypes  
 
 ### For Backend Engineers
 
