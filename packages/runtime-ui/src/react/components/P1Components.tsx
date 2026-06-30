@@ -1,6 +1,7 @@
 import React, { type CSSProperties, type FormEvent, type ReactNode } from "react";
 import type { RenderNode } from "../../render-node.js";
 import { AnActLiveFrame, type RelayIntent } from "./P0Components.js";
+import { AnActBrandLoading } from "../brand/AnActBrandLoading.js";
 
 export type { RelayIntent };
 
@@ -17,7 +18,7 @@ export function AnActInput({ node, onRelay }: P1ComponentProps) {
   const multiline = Boolean(node.props?.multiline);
 
   return (
-    <label data-component-id={node.componentId} style={{ display: "grid", gap: "8px", ...(style as object) }}>
+    <label className="an-act-field" data-component-id={node.componentId} style={style}>
       <span>{label}</span>
       {multiline ? (
         <textarea
@@ -33,13 +34,14 @@ export function AnActInput({ node, onRelay }: P1ComponentProps) {
             })
           }
           style={{
-            padding: "12px 16px",
-            borderRadius: "12px",
-            border: `1px solid ${style.borderColor ?? "currentColor"}`,
-            background: "transparent",
+            padding: "var(--an-act-spacing-space-12) var(--an-act-spacing-space-16)",
+            borderRadius: "var(--an-act-radius-large)",
+            border: `1px solid var(--an-act-color-border-default)`,
+            background: "var(--an-act-color-surface-primary)",
             color: "inherit",
             font: "inherit",
             resize: "vertical",
+            minHeight: "var(--an-act-touch-target-min)",
           }}
         />
       ) : (
@@ -55,14 +57,6 @@ export function AnActInput({ node, onRelay }: P1ComponentProps) {
               body: { [name]: event.currentTarget.value },
             })
           }
-          style={{
-            padding: "12px 16px",
-            borderRadius: "12px",
-            border: `1px solid ${style.borderColor ?? "currentColor"}`,
-            background: "transparent",
-            color: "inherit",
-            font: "inherit",
-          }}
         />
       )}
     </label>
@@ -82,23 +76,28 @@ export function AnActSearch({ node, onRelay }: P1ComponentProps) {
   };
 
   return (
-    <form data-component-id={node.componentId} onSubmit={submit} style={{ display: "grid", gap: "8px", ...(style as object) }}>
-      <span>{node.accessibility?.label ?? "Search"}</span>
+    <form
+      data-component-id={node.componentId}
+      onSubmit={submit}
+      style={{ display: "grid", gap: "var(--an-act-spacing-space-8)", ...(style as object) }}
+    >
+      <span className="an-act-section__label">{node.accessibility?.label ?? "Search"}</span>
       <input
         name="keyword"
         type="search"
         defaultValue={String(node.props?.value ?? "")}
         placeholder={String(node.props?.placeholder ?? "Search...")}
         style={{
-          padding: "12px 16px",
-          borderRadius: "12px",
-          border: `1px solid ${style.borderColor ?? "currentColor"}`,
-          background: "transparent",
+          minHeight: "var(--an-act-touch-target-min)",
+          padding: "var(--an-act-spacing-space-12) var(--an-act-spacing-space-16)",
+          borderRadius: "var(--an-act-radius-large)",
+          border: `1px solid var(--an-act-color-border-default)`,
+          background: "var(--an-act-color-surface-primary)",
           color: "inherit",
           font: "inherit",
         }}
       />
-      <button type="submit" disabled={loading} style={{ padding: "10px 16px", cursor: "pointer" }}>
+      <button type="submit" className="an-act-button an-act-button--primary" disabled={loading}>
         {loading ? "Searching..." : "Search"}
       </button>
     </form>
@@ -111,14 +110,15 @@ export function AnActChip({ node, onRelay }: P1ComponentProps) {
   return (
     <button
       type="button"
+      className="an-act-button an-act-button--secondary"
       data-component-id={node.componentId}
       aria-pressed={selected}
       style={{
         ...(style as object),
-        border: `1px solid ${selected ? style.borderColor ?? "currentColor" : "currentColor"}`,
-        borderRadius: "999px",
-        cursor: "pointer",
+        minHeight: "44px",
+        borderRadius: "var(--an-act-radius-pill)",
         fontWeight: selected ? 600 : 400,
+        borderColor: selected ? "var(--an-act-color-accent-primary)" : undefined,
       }}
       onClick={() => {
         if (node.props?.query) {
@@ -145,9 +145,13 @@ export function AnActBadge({ node }: P1ComponentProps) {
         display: "inline-flex",
         alignItems: "center",
         padding: "4px 10px",
-        borderRadius: "999px",
-        border: `1px solid ${style.borderColor ?? "currentColor"}`,
-        fontSize: "12px",
+        borderRadius: "var(--an-act-radius-pill)",
+        border: `1px solid var(--an-act-color-border-subtle)`,
+        fontFamily: "var(--an-act-typography-label-font-family)",
+        fontSize: "var(--an-act-typography-label-font-size)",
+        fontWeight: "var(--an-act-typography-label-font-weight)",
+        letterSpacing: "var(--an-act-typography-label-letter-spacing)",
+        textTransform: "uppercase",
       }}
       role="status"
     >
@@ -166,11 +170,13 @@ export function AnActAvatar({ node }: P1ComponentProps) {
         ...(style as object),
         width: "40px",
         height: "40px",
-        borderRadius: "999px",
+        borderRadius: "var(--an-act-radius-pill)",
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
         fontWeight: 600,
+        background: "var(--an-act-color-accent-primary)",
+        color: "var(--an-act-color-text-inverse)",
       }}
       aria-label={node.accessibility?.label}
     >
@@ -180,12 +186,11 @@ export function AnActAvatar({ node }: P1ComponentProps) {
 }
 
 export function AnActList({ node, children }: P1ComponentProps) {
-  const style = node.style as CSSProperties;
   return (
     <div
       data-component-id={node.componentId ?? "core-ui-list"}
       data-runtime-element="an-act-list"
-      style={{ display: "grid", gap: style.gap ?? "12px", ...(style as object) }}
+      className="an-act-section"
       role="list"
       aria-label={node.accessibility?.label ?? String(node.props?.label ?? "List")}
     >
@@ -195,34 +200,29 @@ export function AnActList({ node, children }: P1ComponentProps) {
 }
 
 export function AnActSection({ node, children }: P1ComponentProps) {
-  const style = node.style as CSSProperties;
   return (
     <section
+      className="an-act-section"
       data-component-id="core-ui-section"
       data-section-id={node.props?.sectionId}
       data-section-purpose={node.props?.purpose}
       aria-label={String(node.props?.label ?? "Section")}
-      style={{ display: "grid", gap: style.gap ?? "12px", ...(style as object) }}
     >
-      {node.props?.label ? <h2 style={{ margin: 0, fontSize: "14px", opacity: 0.7 }}>{String(node.props.label)}</h2> : null}
+      {node.props?.label ? <h2 className="an-act-section__label">{String(node.props.label)}</h2> : null}
       {children}
     </section>
   );
 }
 
-export function AnActEmptyState({ node, children, onRelay }: P1ComponentProps) {
-  const style = node.style as CSSProperties;
+export function AnActEmptyState({ node, children }: P1ComponentProps) {
   return (
     <div
       data-component-id="core-ui-empty-state"
+      className="an-act-card"
       style={{
-        ...(style as object),
-        display: "grid",
-        gap: "16px",
-        padding: "24px",
         textAlign: "center",
-        borderRadius: "16px",
-        border: `1px dashed ${style.borderColor ?? "currentColor"}`,
+        borderStyle: "dashed",
+        boxShadow: "var(--an-act-elevation-none)",
       }}
       role="status"
     >
@@ -232,37 +232,33 @@ export function AnActEmptyState({ node, children, onRelay }: P1ComponentProps) {
 }
 
 export function AnActLoading({ node }: P1ComponentProps) {
-  const style = node.style as CSSProperties;
   return (
-    <div
-      data-component-id={node.componentId}
-      role="status"
-      aria-live="polite"
-      style={{ ...(style as object), display: "grid", gap: "8px", padding: "16px" }}
-    >
-      <strong>{String(node.props?.brandLine ?? "an act...")}</strong>
-      <span>{String(node.props?.stageText ?? "Loading...")}</span>
+    <div data-component-id={node.componentId}>
+      <AnActBrandLoading
+        stageText={String(node.props?.stageText ?? "Preparing...")}
+        progress={typeof node.props?.progress === "number" ? node.props.progress : undefined}
+      />
     </div>
   );
 }
 
 export function AnActError({ node }: P1ComponentProps) {
-  const style = node.style as CSSProperties;
   return (
     <div
       data-component-id="core-ui-error"
       role="alert"
+      className="an-act-card"
       style={{
-        ...(style as object),
-        padding: "16px",
-        borderRadius: "12px",
-        border: `1px solid ${style.borderColor ?? "#dc2626"}`,
-        backgroundColor: style.backgroundColor ?? "rgba(220,38,38,0.08)",
+        borderColor: "var(--an-act-color-status-error)",
+        backgroundColor: "color-mix(in srgb, var(--an-act-color-status-error) 8%, transparent)",
+        boxShadow: "var(--an-act-elevation-none)",
       }}
     >
       <strong>{String(node.props?.title ?? "Error")}</strong>
       <p style={{ margin: "8px 0 0" }}>{String(node.props?.detail ?? node.props?.message ?? "Something went wrong")}</p>
-      {node.props?.code ? <code style={{ fontSize: "12px" }}>{String(node.props.code)}</code> : null}
+      {node.props?.code ? (
+        <code style={{ fontSize: "var(--an-act-typography-caption-font-size)" }}>{String(node.props.code)}</code>
+      ) : null}
     </div>
   );
 }
@@ -275,8 +271,9 @@ export function AnActOpportunityCard({ node, onRelay }: P1ComponentProps) {
 
   return (
     <article
+      className={`an-act-card an-act-card--interactive`}
       data-component-id={node.componentId}
-      style={{ ...(style as object), border: `1px solid ${style.borderColor}`, borderRadius: "16px", padding: "16px", display: "grid", gap: "12px", cursor: opportunityId ? "pointer" : "default" }}
+      style={style}
       role="article"
       tabIndex={opportunityId ? 0 : undefined}
       onClick={() => {
@@ -290,8 +287,10 @@ export function AnActOpportunityCard({ node, onRelay }: P1ComponentProps) {
         }
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "12px", justifyContent: "space-between" }}>
-        <strong>{String(node.props?.title ?? "")}</strong>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--an-act-spacing-space-12)", justifyContent: "space-between" }}>
+        <strong style={{ fontFamily: "var(--an-act-typography-title-font-family)", fontSize: "var(--an-act-typography-title-font-size)" }}>
+          {String(node.props?.title ?? "")}
+        </strong>
         {liveFrame?.tier ? (
           <AnActLiveFrame
             node={{
@@ -299,19 +298,27 @@ export function AnActOpportunityCard({ node, onRelay }: P1ComponentProps) {
               element: "an-act-live-frame",
               componentId: "core-ui-live-frame",
               props: { uiTier: liveFrame.tier, label: String(liveFrame.tier) },
-              style: { padding: "4px 12px", borderRadius: "999px" },
+              style: { padding: "4px 12px" },
             }}
           />
         ) : null}
       </div>
-      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", fontSize: "14px", opacity: 0.85 }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "var(--an-act-spacing-space-12)",
+          flexWrap: "wrap",
+          fontSize: "var(--an-act-typography-caption-font-size)",
+          color: "var(--an-act-color-text-secondary)",
+        }}
+      >
         {node.props?.rating != null ? <span>★ {String(node.props.rating)}</span> : null}
         {node.props?.distanceKm != null ? <span>{String(node.props.distanceKm)} km</span> : null}
         {node.props?.availability ? <span>{String(node.props.availability)}</span> : null}
         {node.props?.estimatedCostSar != null ? <span>{String(node.props.estimatedCostSar)} SAR</span> : null}
       </div>
       {badges.length > 0 ? (
-        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "var(--an-act-spacing-space-8)", flexWrap: "wrap" }}>
           {badges.map((badge, index) => (
             <AnActBadge
               key={`${node.key}-badge-${index}`}

@@ -1,10 +1,10 @@
 import {
   resolveColor,
+  resolveElevationCss,
   resolveLiveFramePresentation,
   resolveSpacing,
   resolveTypography,
   type LiveFrameUiTier,
-  type SemanticColorTokenPath,
 } from "@an-act/tokens";
 import type { CoreUiComponentId } from "@an-act/runtime-core";
 import type { ComponentRenderer, RenderContext, RenderNode } from "../../render-node.js";
@@ -38,27 +38,15 @@ function p0Node(
 
 const renderButton: ComponentRenderer = (instance, ctx) => {
   const variant = instance.variant ?? "primary";
-  const bgToken: SemanticColorTokenPath =
-    variant === "secondary" ? "surface.primary" : variant === "ghost" ? "background.primary" : "interactive.default";
-  const textToken: SemanticColorTokenPath =
-    variant === "secondary" || variant === "ghost" ? "text.primary" : "text.inverse";
-  const body = resolveTypography("body");
   return p0Node(instance, "an-act-button", {
+    variant,
     style: {
-      color: ctx.resolveToken(textToken),
-      backgroundColor: ctx.resolveToken(bgToken),
-      borderColor: ctx.resolveToken("border.default"),
-      padding: `${resolveSpacing("space-12")} ${resolveSpacing("space-24")}`,
-      borderRadius: "12px",
-      fontFamily: body.fontFamily,
-      fontSize: body.fontSize,
-      fontWeight: body.fontWeight,
-      lineHeight: body.lineHeight,
-      minHeight: "48px",
+      borderColor: variant === "ghost" ? "transparent" : ctx.resolveToken("border.default"),
     },
     props: {
       ...instance.props,
       label: instance.props.label ?? instance.props.text,
+      variant,
       actionId: instance.props.actionId,
       route: instance.props.route,
     },
@@ -66,7 +54,6 @@ const renderButton: ComponentRenderer = (instance, ctx) => {
 };
 
 const renderCard: ComponentRenderer = (instance, ctx) => {
-  const titleStyle = resolveTypography("title");
   const bodyStyle = resolveTypography("body");
   const element = instance.props.opportunityId ? "an-act-opportunity-card" : "an-act-card";
   const children: RenderNode[] = element === "an-act-card"
@@ -78,19 +65,19 @@ const renderCard: ComponentRenderer = (instance, ctx) => {
   if (element === "an-act-card" && instance.props.summary) {
     children.push(textChild(`${instance.id}-summary`, String(instance.props.summary)));
   }
+  const elevated = instance.variant === "elevated";
   return p0Node(instance, element, {
+    variant: instance.variant,
     style: {
       color: ctx.resolveToken("text.primary"),
-      backgroundColor: ctx.resolveToken(instance.variant === "elevated" ? "surface.elevated" : "surface.primary"),
+      backgroundColor: ctx.resolveToken(elevated ? "surface.elevated" : "surface.primary"),
       borderColor: ctx.resolveToken("border.default"),
-      padding: resolveSpacing("space-24"),
-      borderRadius: "16px",
-      fontFamily: bodyStyle.fontFamily,
+      boxShadow: elevated ? resolveElevationCss("high", ctx.mode === "action" ? "action" : "need") : resolveElevationCss("medium", ctx.mode === "action" ? "action" : "need"),
       gap: resolveSpacing("space-8"),
+      fontFamily: bodyStyle.fontFamily,
     },
     props: {
       ...instance.props,
-      titleStyle,
       bodyStyle,
       route: instance.props.route,
       actionId: instance.props.actionId,

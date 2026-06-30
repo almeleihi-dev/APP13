@@ -1,5 +1,7 @@
+@import "@an-act/runtime-ui/brand.css";
+
 :root {
-  font-family: "Inter", "SF Pro Text", system-ui, -apple-system, sans-serif;
+  font-family: var(--an-act-font-sans, "Inter", "SF Pro Text", system-ui, -apple-system, sans-serif);
 }
 
 * {
@@ -14,7 +16,8 @@ body,
 }
 
 button,
-input {
+input,
+textarea {
   font: inherit;
 }
 

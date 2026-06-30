@@ -35,14 +35,18 @@ export function ThemeProvider({ mode, children, transitioning = false }: ThemePr
     color: value.cssVariables["--an-act-color-text-primary"],
     minHeight: "100vh",
     transition: transitioning
-      ? `background-color ${AN_ACT_TRANSITION_DURATION_MS}ms ease, color ${AN_ACT_TRANSITION_DURATION_MS}ms ease`
+      ? `background-color ${AN_ACT_TRANSITION_DURATION_MS}ms var(--an-act-motion-emphasized-easing), color ${AN_ACT_TRANSITION_DURATION_MS}ms var(--an-act-motion-emphasized-easing)`
       : undefined,
-    colorScheme: resolvedMode === "action" ? "dark" : "light",
   };
 
   return (
     <ThemeContext.Provider value={value}>
-      <div className="an-act-theme-root" data-an-act-mode={resolvedMode} style={style}>
+      <div
+        className="an-act-theme-root"
+        data-an-act-mode={resolvedMode}
+        data-an-act-transitioning={transitioning || undefined}
+        style={style}
+      >
         {children}
       </div>
     </ThemeContext.Provider>

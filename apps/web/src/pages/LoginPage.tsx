@@ -1,5 +1,11 @@
+import {
+  ThemeProvider,
+  AnActWordmark,
+  AnActBrandLoading,
+} from "@an-act/runtime-ui/react";
 import { useState, type FormEvent } from "react";
 import { useRuntime } from "../providers/RuntimeProvider.js";
+import { AN_ACT_BRAND } from "../brand/config.js";
 
 export function LoginPage() {
   const { login, loading, error } = useRuntime();
@@ -12,32 +18,42 @@ export function LoginPage() {
   }
 
   return (
-    <main style={{ maxWidth: "420px", margin: "48px auto", padding: "16px" }}>
-      <h1 style={{ marginBottom: "8px" }}>AN ACT</h1>
-      <p style={{ marginTop: 0, opacity: 0.75 }}>Runtime JSON login — server authoritative</p>
-      <form onSubmit={onSubmit} style={{ display: "grid", gap: "12px" }}>
-        <label style={{ display: "grid", gap: "4px" }}>
-          Email
-          <input value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" />
-        </label>
-        <label style={{ display: "grid", gap: "4px" }}>
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-          />
-        </label>
-        <button type="submit" disabled={loading}>
-          {loading ? "Signing in..." : "Sign in"}
-        </button>
-        {error ? (
-          <p role="alert">
-            <strong>{error.title}</strong>: {error.detail}
+    <ThemeProvider mode="need">
+      <div className="an-act-login-shell">
+        <div className="an-act-login-panel">
+          <div style={{ display: "grid", gap: "8px", justifyItems: "start" }}>
+            <AnActWordmark logoUrl={AN_ACT_BRAND.logoUrl} />
+            <span className="an-act-product-name">{AN_ACT_BRAND.productName}</span>
+          </div>
+          <p style={{ margin: 0, color: "var(--an-act-color-text-secondary)" }}>
+            Runtime JSON login — server authoritative
           </p>
-        ) : null}
-      </form>
-    </main>
+          {loading ? <AnActBrandLoading stageText="Signing in..." compact /> : null}
+          <form onSubmit={onSubmit} style={{ display: "grid", gap: "var(--an-act-spacing-space-16)" }}>
+            <label className="an-act-field">
+              Email
+              <input value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" />
+            </label>
+            <label className="an-act-field">
+              Password
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+              />
+            </label>
+            <button type="submit" className="an-act-button an-act-button--primary" disabled={loading}>
+              {loading ? "Signing in..." : "Sign in"}
+            </button>
+            {error ? (
+              <p role="alert" style={{ margin: 0, color: "var(--an-act-color-status-error)" }}>
+                <strong>{error.title}</strong>: {error.detail}
+              </p>
+            ) : null}
+          </form>
+        </div>
+      </div>
+    </ThemeProvider>
   );
 }

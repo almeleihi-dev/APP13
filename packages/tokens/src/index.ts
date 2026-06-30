@@ -16,14 +16,27 @@ export { SEMANTIC_COLOR_TOKEN_PATHS } from "./types.js";
 export { loadTokensPayload, getTokensVersion } from "./load-tokens.js";
 
 export {
+  formatShadowCss,
   resolveColor,
+  resolveElevationCss,
   resolveMotion,
   resolveRadius,
   resolveSemanticColor,
   resolveShadow,
+  resolveShadowCss,
   resolveSpacing,
   resolveTypography,
 } from "./token-resolver.js";
+export type { ShadowDefinition } from "./token-resolver.js";
+
+export {
+  AN_ACT_BRAND_LINE,
+  AN_ACT_DEFAULT_STAGE_TEXT,
+  AN_ACT_PRODUCT_NAME,
+  AN_ACT_TRANSITION_DURATION_MS,
+  AN_ACT_TRANSITION_STAGE_TEXTS,
+  AN_ACT_WORDMARK,
+} from "./brand.js";
 
 export { modeToThemeId, resolveTheme, resolveThemeColors } from "./theme-resolver.js";
 
@@ -35,6 +48,6 @@ export {
   resolveLiveFrameUiTier,
 } from "./live-frame-resolver.js";
 
-export { buildThemeCssVariables, AN_ACT_TRANSITION_DURATION_MS } from "./theme-css.js";
+export { buildThemeCssVariables, typographyCss } from "./theme-css.js";
 
 export type { LiveFrameInput } from "./live-frame-resolver.js";

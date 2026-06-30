@@ -28,24 +28,12 @@ export function RuntimeScreenMount({ screen, onRelay }: RuntimeScreenMountProps)
 
   return (
     <div
+      className="an-act-screen"
       data-screen-id={rendered.screenId}
       data-route={rendered.route}
       data-mode={rendered.mode}
-      style={{
-        display: "grid",
-        gap: "16px",
-        padding: "16px",
-        maxWidth: "960px",
-        margin: "0 auto",
-      }}
     >
       {rendered.sections.map((section) => {
-        const sectionNode = {
-          key: section.id,
-          element: "an-act-section",
-          props: { sectionId: section.id, label: section.label, purpose: section.purpose },
-          style: { gap: "12px" },
-        };
         const nodes = section.nodes.map((node) => (
           <RenderNodeTree key={node.key} node={node} onRelay={onRelay} screenId={rendered.screenId} />
         ));
@@ -60,9 +48,9 @@ export function RuntimeScreenMount({ screen, onRelay }: RuntimeScreenMountProps)
 
         if (isListSection(section.id) && section.nodes.length > 1) {
           return (
-            <section key={section.id} data-section-id={section.id} aria-label={section.label} style={{ display: "grid", gap: "12px" }}>
-              <h2 style={{ margin: 0, fontSize: "14px", opacity: 0.7 }}>{section.label}</h2>
-              <div data-component-id="core-ui-list" role="list" style={{ display: "grid", gap: "12px" }}>
+            <section key={section.id} className="an-act-section" data-section-id={section.id} aria-label={section.label}>
+              <h2 className="an-act-section__label">{section.label}</h2>
+              <div data-component-id="core-ui-list" role="list" className="an-act-section">
                 {nodes}
               </div>
             </section>
@@ -70,8 +58,14 @@ export function RuntimeScreenMount({ screen, onRelay }: RuntimeScreenMountProps)
         }
 
         return (
-          <section key={section.id} data-section-id={section.id} data-section-purpose={section.purpose} aria-label={section.label} style={{ display: "grid", gap: "12px" }}>
-            <h2 style={{ margin: 0, fontSize: "14px", opacity: 0.7 }}>{section.label}</h2>
+          <section
+            key={section.id}
+            className="an-act-section"
+            data-section-id={section.id}
+            data-section-purpose={section.purpose}
+            aria-label={section.label}
+          >
+            <h2 className="an-act-section__label">{section.label}</h2>
             {nodes}
           </section>
         );
@@ -82,7 +76,7 @@ export function RuntimeScreenMount({ screen, onRelay }: RuntimeScreenMountProps)
 
 function AnActEmptyStateWrapper({ children, label }: { children: React.ReactNode; label: string }) {
   return (
-    <div data-component-id="core-ui-empty-state" role="status" aria-label={label} style={{ display: "grid", gap: "16px", padding: "24px", borderRadius: "16px", border: "1px dashed currentColor" }}>
+    <div data-component-id="core-ui-empty-state" className="an-act-card" role="status" aria-label={label} style={{ textAlign: "center", borderStyle: "dashed", boxShadow: "var(--an-act-elevation-none)" }}>
       {children}
     </div>
   );

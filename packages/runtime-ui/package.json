@@ -13,11 +13,12 @@
     "./react": {
       "types": "./dist/react/index.d.ts",
       "import": "./dist/react/index.js"
-    }
+    },
+    "./brand.css": "./dist/react/styles/an-act-brand.css"
   },
   "files": ["dist"],
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json && mkdir -p dist/react/styles && cp src/react/styles/an-act-brand.css dist/react/styles/an-act-brand.css"
   },
   "dependencies": {
     "@an-act/runtime-core": "file:../runtime-core",

@@ -1,9 +1,27 @@
 import { useEffect } from "react";
-import { ThemeProvider, ModeTransitionOverlay, RuntimeScreenMount, AnActError } from "@an-act/runtime-ui/react";
+import {
+  ThemeProvider,
+  ModeTransitionOverlay,
+  RuntimeScreenMount,
+  AnActError,
+  AnActAppShell,
+  AnActBrandLoading,
+} from "@an-act/runtime-ui/react";
 import { useRuntime } from "../providers/RuntimeProvider.js";
+import { AN_ACT_BRAND } from "../brand/config.js";
 
 export interface RuntimePageProps {
   bootstrapping?: boolean;
+}
+
+function modeLabel(mode: string): string {
+  if (mode === "action") {
+    return "Action Mode";
+  }
+  if (mode === "transition") {
+    return "Transition";
+  }
+  return "Need Mode";
 }
 
 export function RuntimePage({ bootstrapping = false }: RuntimePageProps) {
@@ -28,58 +46,77 @@ export function RuntimePage({ bootstrapping = false }: RuntimePageProps) {
     }
   }, [bootstrapping, reload]);
 
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      meta.setAttribute("content", mode === "action" ? AN_ACT_BRAND.themeColorAction : AN_ACT_BRAND.themeColorNeed);
+    }
+  }, [mode]);
+
   if (bootstrapping && !screen && loading) {
     return (
-      <div style={{ padding: "24px" }} role="status">
-        Loading Need Experience...
-      </div>
+      <ThemeProvider mode="need">
+        <AnActAppShell logoUrl={AN_ACT_BRAND.logoUrl} modeLabel="Need Mode">
+          <AnActBrandLoading stageText="Loading Need Experience..." />
+        </AnActAppShell>
+      </ThemeProvider>
     );
   }
 
   if (offline) {
     return (
-      <div style={{ padding: "24px", maxWidth: "480px", margin: "0 auto" }}>
-        <AnActError
-          node={{
-            key: "offline",
-            element: "an-act-error",
-            props: {
-              title: "Offline",
-              detail: "AN ACT requires a connection to load Runtime JSON from the server.",
-              code: "OFFLINE",
-            },
-          }}
-        />
-      </div>
+      <ThemeProvider mode="need">
+        <AnActAppShell logoUrl={AN_ACT_BRAND.logoUrl} modeLabel="Need Mode">
+          <div className="an-act-screen">
+            <AnActError
+              node={{
+                key: "offline",
+                element: "an-act-error",
+                props: {
+                  title: "Offline",
+                  detail: "AN ACT requires a connection to load Runtime JSON from the server.",
+                  code: "OFFLINE",
+                },
+              }}
+            />
+          </div>
+        </AnActAppShell>
+      </ThemeProvider>
     );
   }
 
   if (!screen) {
-    return <div style={{ padding: "24px" }}>No runtime screen available.</div>;
+    return (
+      <ThemeProvider mode="need">
+        <AnActAppShell logoUrl={AN_ACT_BRAND.logoUrl} modeLabel="Need Mode">
+          <AnActBrandLoading stageText="Preparing..." />
+        </AnActAppShell>
+      </ThemeProvider>
+    );
   }
 
   return (
     <ThemeProvider mode={mode} transitioning={transitionActive}>
-      {loading || relaying ? (
-        <div style={{ padding: "8px 16px", opacity: 0.7 }} role="status">
-          {relaying ? "Relaying action..." : "Loading experience..."}
-        </div>
-      ) : null}
-      {error ? (
-        <div style={{ padding: "16px" }}>
-          <AnActError
-            node={{
-              key: "runtime-error",
-              element: "an-act-error",
-              props: { title: error.title, detail: error.detail, code: error.code },
-            }}
-          />
-          <button type="button" onClick={clearError} style={{ marginTop: "8px" }}>
-            Dismiss
-          </button>
-        </div>
-      ) : null}
-      <RuntimeScreenMount screen={screen} onRelay={(intent) => void relay(intent)} />
+      <AnActAppShell logoUrl={AN_ACT_BRAND.logoUrl} modeLabel={modeLabel(mode)}>
+        {(loading || relaying) && !transitionActive ? (
+          <AnActBrandLoading stageText={relaying ? "Relaying action..." : "Loading experience..."} compact />
+        ) : null}
+        {error ? (
+          <div className="an-act-screen">
+            <AnActError
+              node={{
+                key: "runtime-error",
+                element: "an-act-error",
+                props: { title: error.title, detail: error.detail, code: error.code },
+              }}
+            />
+            <button type="button" className="an-act-button an-act-button--ghost" onClick={clearError}>
+              Dismiss
+            </button>
+          </div>
+        ) : null}
+        <RuntimeScreenMount screen={screen} onRelay={(intent) => void relay(intent)} />
+      </AnActAppShell>
       <ModeTransitionOverlay
         active={transitionActive}
         direction="need-to-action"

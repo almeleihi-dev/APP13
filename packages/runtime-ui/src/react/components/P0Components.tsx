@@ -16,8 +16,9 @@ export interface AnActButtonProps {
 
 export function AnActButton({ node, onRelay, screenId = "" }: AnActButtonProps) {
   const label = String(node.props?.label ?? node.props?.text ?? "");
-  const style = node.style as CSSProperties;
+  const variant = String(node.variant ?? node.props?.variant ?? "primary");
   const disabled = Boolean(node.props?.disabled);
+  const style = node.style as CSSProperties;
 
   const handleClick = () => {
     if (disabled) {
@@ -38,8 +39,10 @@ export function AnActButton({ node, onRelay, screenId = "" }: AnActButtonProps) 
   return (
     <button
       type="button"
+      className={`an-act-button an-act-button--${variant}`}
       data-component-id={node.componentId}
-      style={{ ...style, border: `1px solid ${style.borderColor ?? "transparent"}`, cursor: "pointer" }}
+      data-variant={variant}
+      style={style}
       aria-label={node.accessibility?.label ?? label}
       disabled={disabled}
       onClick={handleClick}
@@ -58,6 +61,7 @@ export interface AnActCardProps {
 
 export function AnActCard({ node, children, onRelay, screenId = "" }: AnActCardProps) {
   const style = node.style as CSSProperties;
+  const elevated = node.variant === "elevated";
   const resolved = resolveComponentRelayIntent(node.props ?? {}, screenId);
   const route = typeof node.props?.route === "string" ? node.props.route : resolved?.route;
   const actionId = resolved?.actionId ?? (typeof node.props?.actionId === "string" ? node.props.actionId : undefined);
@@ -66,16 +70,13 @@ export function AnActCard({ node, children, onRelay, screenId = "" }: AnActCardP
 
   return (
     <article
+      className={`an-act-card${elevated ? " an-act-card--elevated" : ""}${interactive ? " an-act-card--interactive" : ""}`}
       data-component-id={node.componentId}
-      style={{ ...style, border: `1px solid ${style.borderColor}`, display: "grid", gap: style.gap }}
+      style={style}
       role={node.accessibility?.role ?? "article"}
       aria-label={node.accessibility?.label}
       tabIndex={interactive ? 0 : undefined}
-      onClick={
-        interactive
-          ? () => onRelay?.({ route, actionId, body: relayBody })
-          : undefined
-      }
+      onClick={interactive ? () => onRelay?.({ route, actionId, body: relayBody }) : undefined}
       onKeyDown={
         interactive
           ? (event) => {
@@ -101,9 +102,10 @@ export function AnActLiveFrame({ node, children }: AnActLiveFrameProps) {
   const uiTier = String(node.props?.uiTier ?? "silver");
   return (
     <div
+      className="an-act-live-frame"
       data-component-id={node.componentId}
       data-ui-tier={uiTier}
-      style={{ ...style, border: `2px solid ${style.borderColor}`, display: "inline-flex", alignItems: "center" }}
+      style={{ ...style, borderColor: style.borderColor ?? "currentColor", color: style.borderColor ?? "inherit" }}
       role="img"
       aria-label={node.accessibility?.label ?? String(node.props?.label ?? "Live Frame")}
     >
@@ -119,14 +121,28 @@ export interface AnActHeaderProps {
 
 export function AnActHeader({ node, children }: AnActHeaderProps) {
   const style = node.style as CSSProperties;
+  const titleStyle = node.props?.titleStyle as CSSProperties | undefined;
+  const captionStyle = node.props?.captionStyle as CSSProperties | undefined;
+  const childArray = React.Children.toArray(children);
+
   return (
     <header
       data-component-id={node.componentId}
-      style={{ ...style, borderBottom: `1px solid ${style.borderColor}`, display: "grid", gap: "4px" }}
+      className="an-act-app-shell__header"
+      style={{ position: "relative", ...style }}
       role="banner"
       aria-label={node.accessibility?.label}
     >
-      {children}
+      {childArray[0] ? (
+        <div style={{ ...(titleStyle as object), margin: 0, fontSize: titleStyle?.fontSize ?? "var(--an-act-typography-title-font-size)" }}>
+          {childArray[0]}
+        </div>
+      ) : null}
+      {childArray[1] ? (
+        <div style={{ ...(captionStyle as object), margin: 0, opacity: 0.75 }}>
+          {childArray[1]}
+        </div>
+      ) : null}
     </header>
   );
 }
@@ -140,20 +156,14 @@ export function AnActNavigation({ node, onRelay }: AnActNavigationProps) {
   const style = node.style as CSSProperties;
   const layout = String(node.props?.layout ?? "top");
   const items = Array.isArray(node.props?.items) ? (node.props.items as Array<Record<string, unknown>>) : [];
+  const layoutClass = layout === "bottom" ? "an-act-navigation--bottom" : "an-act-navigation--top";
 
   return (
     <nav
+      className={`an-act-navigation ${layoutClass}`}
       data-component-id={node.componentId}
       data-layout={layout}
-      style={{
-        ...style,
-        borderTop: layout === "bottom" ? `1px solid ${style.borderColor}` : undefined,
-        borderBottom: layout === "top" ? `1px solid ${style.borderColor}` : undefined,
-        display: "flex",
-        alignItems: "center",
-        gap: style.gap,
-        justifyContent: layout === "bottom" ? "space-around" : "flex-start",
-      }}
+      style={style}
       aria-label={node.accessibility?.label ?? "Navigation"}
     >
       {items.map((item) => {
@@ -164,16 +174,9 @@ export function AnActNavigation({ node, onRelay }: AnActNavigationProps) {
           <button
             key={id}
             type="button"
+            className="an-act-navigation__item"
             data-nav-id={id}
             aria-current={item.id === node.props?.activeId ? "page" : undefined}
-            style={{
-              background: "transparent",
-              border: "none",
-              color: "inherit",
-              cursor: "pointer",
-              padding: "8px 12px",
-              font: "inherit",
-            }}
             onClick={() => route && onRelay?.({ route })}
           >
             {label}
