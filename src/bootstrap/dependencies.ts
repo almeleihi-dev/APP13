@@ -128,6 +128,7 @@ import type { AiGovernanceAssuranceExperienceService } from "../ai-governance-as
 import type { AiAccountabilityLedgerExperienceService } from "../ai-accountability-ledger-experience/application/ai-accountability-ledger-experience-service.js";
 import type { AiConformanceValidationExperienceService } from "../ai-conformance-validation-experience/application/ai-conformance-validation-experience-service.js";
 import type { AiOperationalOversightExperienceService } from "../ai-operational-oversight-experience/application/ai-operational-oversight-experience-service.js";
+import type { AiExperienceFinalClosureService } from "../ai-experience-final-closure/application/ai-experience-final-closure-service.js";
 import type { LivingOnboardingService } from "../living-experience/onboarding/application/living-onboarding-service.js";
 import type { ProfessionalHomeService } from "../living-experience/professional-home/application/professional-home-service.js";
 import type { LivingPassportService } from "../living-experience/professional-passport/application/living-passport-service.js";
@@ -286,6 +287,7 @@ export interface IntelligenceDependencies {
   aiAccountabilityLedgerExperience: AiAccountabilityLedgerExperienceService;
   aiConformanceValidationExperience: AiConformanceValidationExperienceService;
   aiOperationalOversightExperience: AiOperationalOversightExperienceService;
+  aiExperienceFinalClosure: AiExperienceFinalClosureService;
 }
 
 export interface ExperienceDependencies {
