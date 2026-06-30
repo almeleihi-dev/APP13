@@ -30,6 +30,23 @@ export interface NeedTransitionResponse {
   mode?: string;
 }
 
+export interface ActionScreenResponse {
+  screen: AnActRuntimeScreenView;
+}
+
+export interface ActionReturnResponse {
+  transition: Record<string, unknown>;
+  screen: AnActRuntimeScreenView;
+  next_mode: string;
+}
+
+export interface ActionTransitionAdvanceResponse {
+  transition: Record<string, unknown>;
+  screen: AnActRuntimeScreenView;
+  complete?: boolean;
+  mode?: string;
+}
+
 export class RuntimeClient {
   readonly auth: AuthClient;
   private readonly http: HttpClient;
@@ -43,6 +60,18 @@ export class RuntimeClient {
     this.http = new HttpClient({
       ...config,
       getAccessToken: () => config.getAccessToken?.() ?? this.auth.getAccessToken(),
+      onRefresh: async () => {
+        try {
+          await this.auth.refresh();
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      onRefreshFailure: () => {
+        this.auth.logout();
+        config.onRefreshFailure?.();
+      },
     });
   }
 
@@ -90,14 +119,56 @@ export class RuntimeClient {
     return this.http.post<ActionExperienceEnvelope>("/action-experience/enter", body);
   }
 
+  async loadActionHome(generatedAt?: string): Promise<AnActRuntimeScreenView> {
+    return this.http.get<AnActRuntimeScreenView>("/action-experience/home", { generated_at: generatedAt });
+  }
+
   async loadContractPreview(generatedAt?: string): Promise<AnActRuntimeScreenView> {
     return this.http.get<AnActRuntimeScreenView>("/action-experience/contract", {
       generated_at: generatedAt,
     });
   }
 
+  async loadActiveAction(generatedAt?: string): Promise<AnActRuntimeScreenView> {
+    return this.http.get<AnActRuntimeScreenView>("/action-experience/active", { generated_at: generatedAt });
+  }
+
+  async loadProgress(generatedAt?: string): Promise<AnActRuntimeScreenView> {
+    return this.http.get<AnActRuntimeScreenView>("/action-experience/progress", { generated_at: generatedAt });
+  }
+
+  async loadCompletion(generatedAt?: string): Promise<AnActRuntimeScreenView> {
+    return this.http.get<AnActRuntimeScreenView>("/action-experience/completion", { generated_at: generatedAt });
+  }
+
+  async continueContract(generatedAt?: string): Promise<ActionScreenResponse> {
+    return this.http.post<ActionScreenResponse>("/action-experience/contract/continue", { generated_at: generatedAt });
+  }
+
+  async completeAction(generatedAt?: string): Promise<ActionScreenResponse> {
+    return this.http.post<ActionScreenResponse>("/action-experience/complete", { generated_at: generatedAt });
+  }
+
+  async startReturnTransition(generatedAt?: string): Promise<ActionReturnResponse> {
+    return this.http.post<ActionReturnResponse>("/action-experience/return", { generated_at: generatedAt });
+  }
+
+  async advanceActionTransition(progress: number, generatedAt?: string): Promise<ActionTransitionAdvanceResponse> {
+    return this.http.post<ActionTransitionAdvanceResponse>("/action-experience/transition/advance", {
+      progress,
+      generated_at: generatedAt,
+    });
+  }
+
   async relay(payload: RelayPayload): Promise<
-    RuntimeExperienceEnvelope | ScreenRelayResponse | NeedSearchResponse | NeedContinueResponse | NeedTransitionResponse
+    | RuntimeExperienceEnvelope
+    | ScreenRelayResponse
+    | NeedSearchResponse
+    | NeedContinueResponse
+    | NeedTransitionResponse
+    | ActionScreenResponse
+    | ActionReturnResponse
+    | ActionTransitionAdvanceResponse
   > {
     if (payload.actionId) {
       const relay = resolveActionRelay({

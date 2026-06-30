@@ -10,6 +10,9 @@ const ACTION_PROP_MAP: Record<string, string> = {
   "continue-request": "need.continue-request",
   "navigate-search": "need.navigate-search",
   "continue-contract": "action.continue-contract",
+  "start-action": "action.continue-contract",
+  "complete-action": "action.complete",
+  "start-return-transition": "action.return",
 };
 
 /** Maps Runtime JSON component props to transport intents. No business logic. */

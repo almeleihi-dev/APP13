@@ -7,18 +7,27 @@ import { useState, type FormEvent } from "react";
 import { useRuntime } from "../providers/RuntimeProvider.js";
 import { AN_ACT_BRAND } from "../brand/config.js";
 
-export interface LoginPageProps {
-  onRegister?: () => void;
+export interface RegisterPageProps {
+  onLogin: () => void;
+  onSuccess: () => void;
 }
 
-export function LoginPage({ onRegister }: LoginPageProps) {
-  const { login, loading, error } = useRuntime();
-  const [email, setEmail] = useState("customer.demo@anact.local");
-  const [password, setPassword] = useState("demo-password-123");
+export function RegisterPage({ onLogin, onSuccess }: RegisterPageProps) {
+  const { register, loading, error } = useRuntime();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
-    await login(email, password);
+    const ok = await register({
+      email: email.trim(),
+      password,
+      display_name: displayName.trim(),
+    });
+    if (ok) {
+      onSuccess();
+    }
   }
 
   return (
@@ -30,13 +39,28 @@ export function LoginPage({ onRegister }: LoginPageProps) {
             <span className="an-act-product-name">{AN_ACT_BRAND.productName}</span>
           </div>
           <p style={{ margin: 0, color: "var(--an-act-color-text-secondary)" }}>
-            Runtime JSON login — server authoritative
+            Create your account — validation is server authoritative
           </p>
-          {loading ? <AnActBrandLoading stageText="Signing in..." compact /> : null}
+          {loading ? <AnActBrandLoading stageText="Creating account..." compact /> : null}
           <form onSubmit={onSubmit} style={{ display: "grid", gap: "var(--an-act-spacing-space-16)" }}>
             <label className="an-act-field">
+              Display name
+              <input
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                autoComplete="name"
+                required
+              />
+            </label>
+            <label className="an-act-field">
               Email
-              <input value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+                required
+              />
             </label>
             <label className="an-act-field">
               Password
@@ -44,11 +68,12 @@ export function LoginPage({ onRegister }: LoginPageProps) {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
+                autoComplete="new-password"
+                required
               />
             </label>
             <button type="submit" className="an-act-button an-act-button--primary" disabled={loading}>
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? "Creating account..." : "Create account"}
             </button>
             {error ? (
               <p role="alert" style={{ margin: 0, color: "var(--an-act-color-status-error)" }}>
@@ -56,11 +81,9 @@ export function LoginPage({ onRegister }: LoginPageProps) {
               </p>
             ) : null}
           </form>
-          {onRegister ? (
-            <button type="button" className="an-act-button an-act-button--ghost" onClick={onRegister}>
-              Create an account
-            </button>
-          ) : null}
+          <button type="button" className="an-act-button an-act-button--ghost" onClick={onLogin}>
+            Already have an account? Sign in
+          </button>
         </div>
       </div>
     </ThemeProvider>

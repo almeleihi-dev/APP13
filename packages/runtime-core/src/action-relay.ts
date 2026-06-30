@@ -52,6 +52,36 @@ const EXPERIENCE_ACTION_MAP: Record<string, ActionRelayTarget> = {
     path: "/action-experience/contract/continue",
     experienceId: "action-experience",
   },
+  "action.complete": {
+    method: "POST",
+    path: "/action-experience/complete",
+    experienceId: "action-experience",
+  },
+  "action.return": {
+    method: "POST",
+    path: "/action-experience/return",
+    experienceId: "action-experience",
+  },
+  "action.advance-transition": {
+    method: "POST",
+    path: "/action-experience/transition/advance",
+    experienceId: "action-experience",
+  },
+  "action.active": {
+    method: "GET",
+    path: "/action-experience/active",
+    experienceId: "action-experience",
+  },
+  "action.progress": {
+    method: "GET",
+    path: "/action-experience/progress",
+    experienceId: "action-experience",
+  },
+  "action.completion": {
+    method: "GET",
+    path: "/action-experience/completion",
+    experienceId: "action-experience",
+  },
   "contract.navigate": {
     method: "GET",
     path: "/contract-experience",
@@ -107,6 +137,8 @@ const ROUTE_RELAY_MAP: Record<string, ActionRelayTarget> = {
   "/action/home": { method: "GET", path: "/action-experience/home", experienceId: "action-experience" },
   "/action/contract": { method: "GET", path: "/action-experience/contract", experienceId: "action-experience" },
   "/action/active": { method: "GET", path: "/action-experience/active", experienceId: "action-experience" },
+  "/action/progress": { method: "GET", path: "/action-experience/progress", experienceId: "action-experience" },
+  "/action/completion": { method: "POST", path: "/action-experience/complete", experienceId: "action-experience" },
 };
 
 export function listActionRelayTargets(): readonly string[] {

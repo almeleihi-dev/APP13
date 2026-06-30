@@ -18,7 +18,7 @@ export {
   LocalStorageAuthStorage,
   MemoryAuthStorage,
 } from "./auth-client.js";
-export type { AuthClientConfig, AuthStorage } from "./auth-client.js";
+export type { AuthClientConfig, AuthStorage, RegisterCustomerInput, RegisterProviderInput } from "./auth-client.js";
 
 export { HttpClient } from "./http-client.js";
 export type { HttpRequestOptions } from "./http-client.js";

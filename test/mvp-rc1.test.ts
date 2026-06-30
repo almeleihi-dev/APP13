@@ -207,9 +207,10 @@ describe("MVP RC1 — Authentication & registration readiness", () => {
     assert.match(provider, /LocalStorageAuthStorage/);
   });
 
-  it("documents registration gap — no web registration UI yet", () => {
+  it("RC1 documented registration gap (resolved in RC2)", () => {
+    const rc1Doc = readFileSync(join(ROOT, "docs/architecture/AN-ACT-MVP-Launch-Candidate-RC1.md"), "utf8");
+    assert.match(rc1Doc, /No web registration UI/);
     const app = readFileSync(join(ROOT, "apps/web/src/App.tsx"), "utf8");
-    assert.doesNotMatch(app, /RegisterPage/);
     assert.match(app, /LoginPage/);
   });
 });

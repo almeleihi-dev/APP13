@@ -238,6 +238,21 @@ export function createReactComponentRenderers(): Record<CoreUiComponentId, Compo
       props: instance.props,
       children: [textChild(`${instance.id}-title`, String(instance.props.title ?? "Contract"))],
     });
+  renderers["core-ui-floating-action-button"] = (instance, ctx) =>
+    p0Node(instance, "an-act-button", {
+      style: {
+        color: ctx.resolveToken("text.inverse"),
+        backgroundColor: ctx.resolveToken("interactive.default"),
+        padding: resolveSpacing("space-16"),
+        borderRadius: "999px",
+      },
+      props: {
+        ...instance.props,
+        label: String(instance.props.label ?? "Start action"),
+        action: "start-action",
+        variant: "primary",
+      },
+    });
   return renderers;
 }
 

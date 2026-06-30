@@ -13,6 +13,7 @@ import {
   RuntimeClientError,
   type ActionExperienceEnvelope,
   type NeedExperienceEnvelope,
+  type RegisterCustomerInput,
   type RuntimeClient,
 } from "@an-act/runtime-client";
 import type { AnActRuntimeScreenView } from "@an-act/runtime-core";
@@ -35,11 +36,15 @@ export interface RuntimeContextValue {
   relaying: boolean;
   error: { title: string; detail: string; code?: string } | null;
   offline: boolean;
+  sessionExpired: boolean;
   transitionActive: boolean;
   transitionProgress: number;
   transitionStageText?: string;
   requestDraft: RequestDraftFields;
   login: (email: string, password: string) => Promise<void>;
+  register: (input: RegisterCustomerInput) => Promise<boolean>;
+  logout: () => Promise<void>;
+  finishRegistration: () => Promise<void>;
   reload: () => Promise<void>;
   relay: (intent: RelayIntent) => Promise<void>;
   clearError: () => void;
@@ -88,11 +93,16 @@ function mergeDraftIntoScreen(
 }
 
 export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps) {
+  const [sessionExpired, setSessionExpired] = useState(false);
   const client = useMemo(
     () =>
       createRuntimeClient({
         baseUrl,
         authStorage: typeof localStorage !== "undefined" ? new LocalStorageAuthStorage() : undefined,
+        onRefreshFailure: () => {
+          setSessionExpired(true);
+          setEnvelope(null);
+        },
       }),
     [baseUrl]
   );
@@ -121,6 +131,7 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
   const applyNeedEnvelope = useCallback((next: NeedExperienceEnvelope) => {
     setEnvelope(next);
     setExperienceKind("need");
+    setSessionExpired(false);
     if (next.request_draft) {
       setRequestDraft({
         location: String((next.request_draft as RequestDraftFields).location ?? ""),
@@ -143,11 +154,41 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
   const applyActionEnvelope = useCallback((next: ActionExperienceEnvelope) => {
     setEnvelope(next);
     setExperienceKind("action");
-    setTransitionActive(false);
+    setSessionExpired(false);
+    if (next.mode === "transition" || next.current_screen === "transition") {
+      const progress = Number((next.transition as { progress?: number } | undefined)?.progress ?? 0);
+      setTransitionActive(true);
+      setTransitionProgress(progress);
+      setTransitionStageText(String((next.transition as { stageText?: string } | undefined)?.stageText ?? ""));
+    } else {
+      setTransitionActive(false);
+      setTransitionProgress(0);
+      setTransitionStageText(undefined);
+    }
   }, []);
+
+  const applyActionScreen = useCallback(
+    (screen: AnActRuntimeScreenView, extras?: Partial<ActionExperienceEnvelope>) => {
+      applyActionEnvelope({
+        version: "an-act-action-experience-v1",
+        current_screen: screen.screenId,
+        mode: screen.screenId === "transition" ? "transition" : "action",
+        screen,
+        navigation: envelope && experienceKind === "action" ? (envelope as ActionExperienceEnvelope).navigation : {},
+        generated_at: new Date().toISOString(),
+        runtime_experience: true,
+        ...extras,
+      });
+    },
+    [applyActionEnvelope, envelope, experienceKind]
+  );
 
   const handleClientError = useCallback((err: unknown) => {
     if (err instanceof RuntimeClientError) {
+      if (err.status === 401) {
+        setSessionExpired(true);
+        setEnvelope(null);
+      }
       setError({
         title: err.problem?.title ?? "Runtime Error",
         detail: err.problem?.detail ?? err.message,
@@ -159,7 +200,7 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
   }, []);
 
   const reload = useCallback(async () => {
-    if (offline) {
+    if (offline || !client.auth.hasSession()) {
       return;
     }
     setLoading(true);
@@ -183,6 +224,7 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
     async (email: string, password: string) => {
       setLoading(true);
       setError(null);
+      setSessionExpired(false);
       try {
         await client.auth.login(email, password);
         const next = await client.loadNeedExperience();
@@ -196,9 +238,52 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
     [applyNeedEnvelope, client, handleClientError]
   );
 
+  const register = useCallback(
+    async (input: RegisterCustomerInput): Promise<boolean> => {
+      setLoading(true);
+      setError(null);
+      setSessionExpired(false);
+      try {
+        await client.auth.registerCustomer(input);
+        return true;
+      } catch (err) {
+        handleClientError(err);
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [client, handleClientError]
+  );
+
+  const finishRegistration = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const next = await client.loadNeedExperience();
+      applyNeedEnvelope(next);
+    } catch (err) {
+      handleClientError(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [applyNeedEnvelope, client, handleClientError]);
+
+  const logout = useCallback(async () => {
+    setLoading(true);
+    try {
+      await client.auth.logoutServer();
+    } finally {
+      setEnvelope(null);
+      setSessionExpired(false);
+      setError(null);
+      setLoading(false);
+    }
+  }, [client]);
+
   const completeJourneyToContract = useCallback(
     async (needHandoff: Record<string, unknown>) => {
-      await client.enterActionExperience({
+      const entered = await client.enterActionExperience({
         need_handoff: {
           opportunity_id: needHandoff.opportunityId,
           action_summary: needHandoff.actionSummary,
@@ -208,16 +293,7 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
           estimated_cost: needHandoff.estimatedCost,
         },
       });
-      const contractScreen = await client.loadContractPreview();
-      applyActionEnvelope({
-        version: "an-act-action-experience-v1",
-        current_screen: "contract-preview",
-        mode: "action",
-        screen: contractScreen,
-        navigation: {},
-        generated_at: new Date().toISOString(),
-        runtime_experience: true,
-      });
+      applyActionEnvelope(entered);
     },
     [applyActionEnvelope, client]
   );
@@ -251,6 +327,30 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
     },
     [applyNeedEnvelope, client, completeJourneyToContract, envelope]
   );
+
+  const runActionReturnTransitionSequence = useCallback(async () => {
+    setTransitionActive(true);
+    setTransitionProgress(0);
+    const steps = [0, 0.35, 0.7, 1];
+    for (const progress of steps) {
+      setTransitionProgress(progress);
+      const next = await client.advanceActionTransition(progress);
+      setTransitionStageText(String((next.transition as { stageText?: string } | undefined)?.stageText ?? ""));
+      applyActionScreen(next.screen, {
+        current_screen: "transition",
+        mode: "transition",
+        transition: next.transition,
+      });
+      await sleep(AN_ACT_TRANSITION_DURATION_MS / steps.length);
+      if (progress >= 1 || next.complete || next.mode === "need") {
+        const need = await client.loadNeedExperience();
+        applyNeedEnvelope(need);
+        setTransitionActive(false);
+        return;
+      }
+    }
+    setTransitionActive(false);
+  }, [applyActionScreen, applyNeedEnvelope, client]);
 
   const relay = useCallback(
     async (intent: RelayIntent) => {
@@ -328,17 +428,50 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
           return;
         }
 
-        if (intent.actionId === "action.contract" || intent.route === "/action/contract") {
-          const screen = await client.loadContractPreview();
-          applyActionEnvelope({
-            version: "an-act-action-experience-v1",
-            current_screen: "contract-preview",
-            mode: "action",
-            screen,
-            navigation: {},
-            generated_at: new Date().toISOString(),
-            runtime_experience: true,
+        if (intent.actionId === "action.continue-contract") {
+          const result = await client.continueContract();
+          applyActionScreen(result.screen);
+          return;
+        }
+
+        if (intent.actionId === "action.complete") {
+          const result = await client.completeAction();
+          applyActionScreen(result.screen);
+          return;
+        }
+
+        if (intent.actionId === "action.return") {
+          const result = await client.startReturnTransition();
+          applyActionScreen(result.screen, {
+            current_screen: "transition",
+            mode: "transition",
+            transition: result.transition,
           });
+          await runActionReturnTransitionSequence();
+          return;
+        }
+
+        if (intent.route === "/action/home") {
+          const screen = await client.loadActionHome();
+          applyActionScreen(screen);
+          return;
+        }
+
+        if (intent.route === "/action/contract") {
+          const screen = await client.loadContractPreview();
+          applyActionScreen(screen);
+          return;
+        }
+
+        if (intent.route === "/action/active") {
+          const screen = await client.loadActiveAction();
+          applyActionScreen(screen);
+          return;
+        }
+
+        if (intent.route === "/action/progress") {
+          const screen = await client.loadProgress();
+          applyActionScreen(screen);
           return;
         }
 
@@ -349,17 +482,31 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
           body: intent.body,
         });
 
-        if ("screen" in result && result.screen && !("version" in result)) {
-          if (experienceKind === "action") {
-            applyActionEnvelope({ ...(envelope as ActionExperienceEnvelope), screen: result.screen, current_screen: result.screen.screenId });
+        if ("screen" in result && result.screen) {
+          if ("next_mode" in result && result.next_mode === "need" && "transition" in result) {
+            applyActionScreen(result.screen, {
+              current_screen: "transition",
+              mode: "transition",
+              transition: result.transition as Record<string, unknown>,
+            });
+            await runActionReturnTransitionSequence();
+            return;
+          }
+
+          if (experienceKind === "action" || (result.screen.mode ?? "action") === "action") {
+            applyActionScreen(result.screen);
           } else {
-            applyNeedEnvelope({ ...(envelope as NeedExperienceEnvelope), screen: result.screen, current_screen: result.screen.screenId });
+            applyNeedEnvelope({
+              ...(envelope as NeedExperienceEnvelope),
+              screen: result.screen,
+              current_screen: result.screen.screenId,
+            });
           }
           return;
         }
 
         if ("version" in result) {
-          if ((result as ActionExperienceEnvelope).mode === "action") {
+          if ((result as ActionExperienceEnvelope).mode === "action" || (result as ActionExperienceEnvelope).mode === "transition") {
             applyActionEnvelope(result as ActionExperienceEnvelope);
           } else {
             applyNeedEnvelope(result as NeedExperienceEnvelope);
@@ -373,6 +520,7 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
     },
     [
       applyActionEnvelope,
+      applyActionScreen,
       applyNeedEnvelope,
       client,
       envelope,
@@ -380,6 +528,7 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
       handleClientError,
       offline,
       requestDraft,
+      runActionReturnTransitionSequence,
       runTransitionSequence,
     ]
   );
@@ -397,14 +546,18 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
     relaying,
     error,
     offline,
+    sessionExpired,
+    login,
+    register,
+    logout,
+    finishRegistration,
+    reload,
+    relay,
+    clearError: () => setError(null),
     transitionActive,
     transitionProgress,
     transitionStageText,
     requestDraft,
-    login,
-    reload,
-    relay,
-    clearError: () => setError(null),
   };
 
   return <RuntimeContext.Provider value={value}>{children}</RuntimeContext.Provider>;

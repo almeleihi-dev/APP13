@@ -35,6 +35,7 @@ export function RuntimePage({ bootstrapping = false }: RuntimePageProps) {
     reload,
     relay,
     clearError,
+    logout,
     transitionActive,
     transitionProgress,
     transitionStageText,
@@ -60,10 +61,16 @@ export function RuntimePage({ bootstrapping = false }: RuntimePageProps) {
       </div>
     ) : null;
 
+  const logoutFooter = (
+    <button type="button" className="an-act-button an-act-button--ghost" onClick={() => void logout()}>
+      Sign out
+    </button>
+  );
+
   if (bootstrapping && !screen && loading) {
     return (
       <ThemeProvider mode="need">
-        <AnActAppShell logoUrl={AN_ACT_BRAND.logoUrl} modeLabel="Need Mode">
+        <AnActAppShell logoUrl={AN_ACT_BRAND.logoUrl} modeLabel="Need Mode" footer={logoutFooter}>
           <AnActBrandLoading stageText="Loading Need Experience..." />
         </AnActAppShell>
       </ThemeProvider>
@@ -73,7 +80,7 @@ export function RuntimePage({ bootstrapping = false }: RuntimePageProps) {
   if (offline) {
     return (
       <ThemeProvider mode="need">
-        <AnActAppShell logoUrl={AN_ACT_BRAND.logoUrl} modeLabel="Need Mode">
+        <AnActAppShell logoUrl={AN_ACT_BRAND.logoUrl} modeLabel="Need Mode" footer={logoutFooter}>
           <div className="an-act-screen an-act-error-panel">
             <AnActError
               node={{
@@ -98,7 +105,7 @@ export function RuntimePage({ bootstrapping = false }: RuntimePageProps) {
   if (!screen) {
     return (
       <ThemeProvider mode="need">
-        <AnActAppShell logoUrl={AN_ACT_BRAND.logoUrl} modeLabel="Need Mode">
+        <AnActAppShell logoUrl={AN_ACT_BRAND.logoUrl} modeLabel="Need Mode" footer={logoutFooter}>
           <AnActBrandLoading stageText="Preparing..." />
         </AnActAppShell>
       </ThemeProvider>
@@ -107,7 +114,7 @@ export function RuntimePage({ bootstrapping = false }: RuntimePageProps) {
 
   return (
     <ThemeProvider mode={mode} transitioning={transitionActive}>
-      <AnActAppShell logoUrl={AN_ACT_BRAND.logoUrl} modeLabel={modeLabel(mode)}>
+      <AnActAppShell logoUrl={AN_ACT_BRAND.logoUrl} modeLabel={modeLabel(mode)} footer={logoutFooter}>
         {statusBanner}
         {error ? (
           <div className="an-act-screen an-act-error-panel">

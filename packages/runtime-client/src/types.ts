@@ -11,7 +11,10 @@ export interface RuntimeClientConfig {
   baseUrl: string;
   fetch?: typeof fetch;
   getAccessToken?: () => string | null;
-  onUnauthorized?: () => void;
+  /** Returns true when tokens were refreshed and the caller may retry. */
+  onRefresh?: () => Promise<boolean>;
+  /** Called when refresh fails — clear session and redirect to login. */
+  onRefreshFailure?: () => void;
   authStorage?: import("./auth-client.js").AuthStorage;
 }
 

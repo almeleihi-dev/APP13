@@ -6,6 +6,8 @@ export interface HttpRequestOptions {
   body?: Record<string, unknown>;
   query?: Record<string, string | undefined>;
   auth?: boolean;
+  /** Internal flag to prevent infinite refresh loops. */
+  _retried?: boolean;
 }
 
 export class HttpClient {
@@ -16,6 +18,27 @@ export class HttpClient {
   }
 
   async request<T>(path: string, options: HttpRequestOptions = {}): Promise<T> {
+    try {
+      return await this.executeRequest<T>(path, options);
+    } catch (err) {
+      if (
+        err instanceof RuntimeClientError &&
+        err.status === 401 &&
+        options.auth !== false &&
+        !options._retried &&
+        this.config.onRefresh
+      ) {
+        const refreshed = await this.config.onRefresh();
+        if (refreshed) {
+          return this.executeRequest<T>(path, { ...options, _retried: true });
+        }
+        this.config.onRefreshFailure?.();
+      }
+      throw err;
+    }
+  }
+
+  private async executeRequest<T>(path: string, options: HttpRequestOptions): Promise<T> {
     const url = new URL(path, this.config.baseUrl);
     if (options.query) {
       for (const [key, value] of Object.entries(options.query)) {
@@ -47,7 +70,6 @@ export class HttpClient {
     });
 
     if (response.status === 401) {
-      this.config.onUnauthorized?.();
       throw new RuntimeClientError("Unauthorized", undefined, 401);
     }
 
