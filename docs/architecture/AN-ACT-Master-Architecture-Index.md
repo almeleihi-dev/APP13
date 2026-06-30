@@ -29,6 +29,8 @@
 | Document | Purpose | Primary audience |
 |----------|---------|------------------|
 | [**AN ACT — Product Bible v1.0**](./AN-ACT-Product-Bible.md) | Highest-level product specification unifying CH3, CH4, CH5 | Everyone |
+| [**Platform MVP Readiness Assessment**](./AN-ACT-Platform-MVP-Readiness-Assessment.md) | Official Go / No-Go report before Render Layer | Leadership, architects |
+| [**Transition To MVP Plan**](./AN-ACT-Transition-To-MVP-Plan.md) | Render Layer roadmap and build order | Frontend, product, architects |
 | [**Master Architecture Index**](./AN-ACT-Master-Architecture-Index.md) | This document — navigation hub | Everyone |
 
 ---
@@ -62,6 +64,15 @@
 |----------|---------|-----------|
 | [AI Experience Architecture Book](./AN-ACT-AI-Experience-Architecture-Book.md) | Complete CH5 architecture: chain, delegation, patterns, lessons | Building or extending CH5 modules |
 | [CH5 AI Experience Registry](./CH5-AI-Experience-Registry.md) | Full X1–X22 registry table, namespaces, routes, bootstrap | Module lookup and collision prevention |
+
+---
+
+## Tier 1.5 — Live Frame (Trust Visualization Standard)
+
+| Document | Purpose | Read when |
+|----------|---------|-----------|
+| [**Live Frame v1.0 Specification**](./AN-ACT-Live-Frame-v1.0-Specification.md) | Official unified Live Frame SSOT — trust formula, tiers, colors, JSON schema, render contracts | Building Render Layer, trust rings, profile cards, or any Live Frame surface |
+| [**Live Frame Migration Plan**](./AN-ACT-Live-Frame-Migration-Plan.md) | Consolidation from 11+ implementations — official vs deprecated, phases, verification | Before wiring runtime demos, adapter module, or deprecating legacy classifiers |
 
 ---
 
@@ -123,11 +134,13 @@ Referenced by architecture docs (typically under `docs/` root):
 
 ### For Product Owners
 
-1. [Product Bible §1–4](./AN-ACT-Product-Bible.md) — Vision, philosophy, problem, principles  
-2. [Product Bible §15–17](./AN-ACT-Product-Bible.md) — Marketplace, trust, Live Frame  
-3. [Product Bible §41–43](./AN-ACT-Product-Bible.md) — Roadmap and MVP  
-4. [ADR-001 Action Only](./adr/ADR-001-Action-Only.md)  
-5. [CH4 Design Identity Review §4](./AN-ACT-CH4-Design-Identity-Review.md) — Experience philosophy  
+1. [Platform MVP Readiness Assessment §1, §44–45](./AN-ACT-Platform-MVP-Readiness-Assessment.md) — Go/No-Go and scores  
+2. [Transition To MVP Plan §8–12](./AN-ACT-Transition-To-MVP-Plan.md) — Milestones and final recommendation  
+3. [Product Bible §1–4](./AN-ACT-Product-Bible.md) — Vision, philosophy, problem, principles  
+4. [Product Bible §15–17](./AN-ACT-Product-Bible.md) — Marketplace, trust, Live Frame  
+5. [Product Bible §41–43](./AN-ACT-Product-Bible.md) — Roadmap and MVP  
+6. [ADR-001 Action Only](./adr/ADR-001-Action-Only.md)  
+7. [CH4 Design Identity Review §4](./AN-ACT-CH4-Design-Identity-Review.md) — Experience philosophy  
 
 ### For Architects
 
@@ -147,10 +160,13 @@ Referenced by architecture docs (typically under `docs/` root):
 
 ### For Frontend / Mobile Engineers
 
-1. [Product Bible §30–33](./AN-ACT-Product-Bible.md) — Runtime JSON, prototypes, tokens, components  
-2. [Product Bible §45](./AN-ACT-Product-Bible.md) — Future render layer consumption guide  
-3. [CH3 Design System Registry §6–8](./AN-ACT-CH3-Design-System-Registry.md) — Runtime screens, tokens, prototypes  
-4. Source: `src/design-system/tokens/design-tokens.ts`, `src/runtime-experience/need/presentation/screen-builder.ts`  
+1. [Live Frame v1.0 Specification](./AN-ACT-Live-Frame-v1.0-Specification.md) — Trust tier → UI tier mapping, render contracts (React, Flutter, SwiftUI, Bubble)
+2. [Transition To MVP Plan](./AN-ACT-Transition-To-MVP-Plan.md) — Full render roadmap (React, Flutter, Bubble)  
+2. [Platform MVP Readiness Assessment §33–38](./AN-ACT-Platform-MVP-Readiness-Assessment.md) — Per-platform readiness  
+3. [Product Bible §30–33](./AN-ACT-Product-Bible.md) — Runtime JSON, prototypes, tokens, components  
+4. [Product Bible §45](./AN-ACT-Product-Bible.md) — Future render layer consumption guide  
+5. [CH3 Design System Registry §6–8](./AN-ACT-CH3-Design-System-Registry.md) — Runtime screens, tokens, prototypes  
+6. Source: `src/design-system/tokens/design-tokens.ts`, `src/runtime-experience/need/presentation/screen-builder.ts`  
 
 ### For Backend Engineers
 
