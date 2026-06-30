@@ -14,6 +14,19 @@ export {
   AnActLiveFrame,
   AnActNavigation,
 } from "./components/P0Components.js";
+export {
+  AnActAvatar,
+  AnActBadge,
+  AnActChip,
+  AnActEmptyState,
+  AnActError,
+  AnActInput,
+  AnActList,
+  AnActLoading,
+  AnActOpportunityCard,
+  AnActSearch,
+  AnActSection,
+} from "./components/P1Components.js";
 export type {
   AnActButtonProps,
   AnActCardProps,
@@ -22,6 +35,7 @@ export type {
   AnActNavigationProps,
   RelayIntent,
 } from "./components/P0Components.js";
+export type { P1ComponentProps } from "./components/P1Components.js";
 
 export { RenderNodeTree } from "./RenderNodeTree.js";
 export type { RenderNodeTreeProps } from "./RenderNodeTree.js";

@@ -106,7 +106,12 @@ export async function registerNeedExperienceRoutes(
     "/need-experience/request/continue",
     { config: { authRequired: true } },
     async (request, reply) => {
-      const body = (request.body ?? {}) as { generated_at?: string };
+      const body = (request.body ?? {}) as {
+        generated_at?: string;
+        location?: string;
+        schedule?: string;
+        notes?: string;
+      };
       return reply.send(needExperience.continueRequest(request.authContext!, body));
     }
   );

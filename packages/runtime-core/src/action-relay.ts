@@ -12,6 +12,11 @@ const EXPERIENCE_ACTION_MAP: Record<string, ActionRelayTarget> = {
     path: "/need-experience/search",
     experienceId: "need-experience",
   },
+  "need.select-opportunity": {
+    method: "GET",
+    path: "/need-experience/request",
+    experienceId: "need-experience",
+  },
   "need.continue-request": {
     method: "POST",
     path: "/need-experience/request/continue",
@@ -22,14 +27,29 @@ const EXPERIENCE_ACTION_MAP: Record<string, ActionRelayTarget> = {
     path: "/need-experience/transition/advance",
     experienceId: "need-experience",
   },
+  "need.navigate-search": {
+    method: "GET",
+    path: "/need-experience/search",
+    experienceId: "need-experience",
+  },
   "action.navigate": {
     method: "GET",
     path: "/action-experience",
     experienceId: "action-experience",
   },
-  "action.accept-opportunity": {
+  "action.enter": {
     method: "POST",
-    path: "/action-experience/accept",
+    path: "/action-experience/enter",
+    experienceId: "action-experience",
+  },
+  "action.contract": {
+    method: "GET",
+    path: "/action-experience/contract",
+    experienceId: "action-experience",
+  },
+  "action.continue-contract": {
+    method: "POST",
+    path: "/action-experience/contract/continue",
     experienceId: "action-experience",
   },
   "contract.navigate": {
@@ -85,6 +105,8 @@ const ROUTE_RELAY_MAP: Record<string, ActionRelayTarget> = {
     experienceId: "need-experience",
   },
   "/action/home": { method: "GET", path: "/action-experience/home", experienceId: "action-experience" },
+  "/action/contract": { method: "GET", path: "/action-experience/contract", experienceId: "action-experience" },
+  "/action/active": { method: "GET", path: "/action-experience/active", experienceId: "action-experience" },
 };
 
 export function listActionRelayTargets(): readonly string[] {

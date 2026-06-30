@@ -37,3 +37,10 @@ export {
   resolveActionRelay,
   resolveRouteRelay,
 } from "./action-relay.js";
+
+export {
+  resolveComponentRelayIntent,
+  resolveInputRelayIntent,
+  resolveSearchRelayIntent,
+} from "./action-intent-resolver.js";
+export type { ComponentRelayIntent } from "./action-intent-resolver.js";

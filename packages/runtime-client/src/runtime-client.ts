@@ -11,6 +11,25 @@ import type {
   ScreenRelayResponse,
 } from "./types.js";
 
+export interface NeedSearchResponse {
+  search: Record<string, unknown>;
+  screen: AnActRuntimeScreenView;
+  opportunity_count: number;
+}
+
+export interface NeedContinueResponse {
+  transition: Record<string, unknown>;
+  screen: AnActRuntimeScreenView;
+  next_mode: string;
+}
+
+export interface NeedTransitionResponse {
+  transition: Record<string, unknown>;
+  screen: AnActRuntimeScreenView;
+  complete?: boolean;
+  mode?: string;
+}
+
 export class RuntimeClient {
   readonly auth: AuthClient;
   private readonly http: HttpClient;
@@ -39,13 +58,46 @@ export class RuntimeClient {
     });
   }
 
-  async loadNeedScreen(screenId: string, query?: { generated_at?: string }): Promise<AnActRuntimeScreenView> {
-    return this.http.get<AnActRuntimeScreenView>(`/need-experience/screen/${screenId}`, {
-      generated_at: query?.generated_at,
+  async loadNeedScreen(screenId: string, query?: Record<string, string | undefined>): Promise<AnActRuntimeScreenView> {
+    return this.http.get<AnActRuntimeScreenView>(`/need-experience/screen/${screenId}`, query);
+  }
+
+  async performSearch(body: { keyword?: string; category?: string; generated_at?: string }): Promise<NeedSearchResponse> {
+    return this.http.post<NeedSearchResponse>("/need-experience/search", body);
+  }
+
+  async selectOpportunity(opportunityId: string, generatedAt?: string): Promise<AnActRuntimeScreenView> {
+    return this.http.get<AnActRuntimeScreenView>("/need-experience/request", {
+      opportunity_id: opportunityId,
+      generated_at: generatedAt,
     });
   }
 
-  async relay(payload: RelayPayload): Promise<RuntimeExperienceEnvelope | ScreenRelayResponse> {
+  async continueRequest(body: {
+    location?: string;
+    schedule?: string;
+    notes?: string;
+    generated_at?: string;
+  }): Promise<NeedContinueResponse> {
+    return this.http.post<NeedContinueResponse>("/need-experience/request/continue", body);
+  }
+
+  async enterActionExperience(body?: {
+    generated_at?: string;
+    need_handoff?: Record<string, unknown>;
+  }): Promise<ActionExperienceEnvelope> {
+    return this.http.post<ActionExperienceEnvelope>("/action-experience/enter", body);
+  }
+
+  async loadContractPreview(generatedAt?: string): Promise<AnActRuntimeScreenView> {
+    return this.http.get<AnActRuntimeScreenView>("/action-experience/contract", {
+      generated_at: generatedAt,
+    });
+  }
+
+  async relay(payload: RelayPayload): Promise<
+    RuntimeExperienceEnvelope | ScreenRelayResponse | NeedSearchResponse | NeedContinueResponse | NeedTransitionResponse
+  > {
     if (payload.actionId) {
       const relay = resolveActionRelay({
         actionId: payload.actionId,
@@ -54,10 +106,9 @@ export class RuntimeClient {
         payload: payload.body,
       });
       const path = relay.target.path;
+      const query = payload.body as Record<string, string | undefined> | undefined;
       if (relay.target.method === "GET") {
-        return this.http.get(path, {
-          generated_at: payload.body?.generated_at as string | undefined,
-        });
+        return this.http.get(path, query);
       }
       return this.http.post(path, payload.body);
     }
@@ -75,8 +126,8 @@ export class RuntimeClient {
     throw new Error("Relay payload requires actionId or route");
   }
 
-  async advanceTransition(progress: number, generatedAt?: string): Promise<NeedExperienceEnvelope> {
-    return this.http.post<NeedExperienceEnvelope>("/need-experience/transition/advance", {
+  async advanceTransition(progress: number, generatedAt?: string): Promise<NeedTransitionResponse> {
+    return this.http.post<NeedTransitionResponse>("/need-experience/transition/advance", {
       progress,
       generated_at: generatedAt,
     });

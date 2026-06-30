@@ -68,16 +68,17 @@ const renderButton: ComponentRenderer = (instance, ctx) => {
 const renderCard: ComponentRenderer = (instance, ctx) => {
   const titleStyle = resolveTypography("title");
   const bodyStyle = resolveTypography("body");
-  const children: RenderNode[] = [
-    textChild(`${instance.id}-title`, String(instance.props.title ?? instance.props.label ?? "")),
-  ];
-  if (instance.props.description) {
+  const element = instance.props.opportunityId ? "an-act-opportunity-card" : "an-act-card";
+  const children: RenderNode[] = element === "an-act-card"
+    ? [textChild(`${instance.id}-title`, String(instance.props.title ?? instance.props.label ?? ""))]
+    : [];
+  if (element === "an-act-card" && instance.props.description) {
     children.push(textChild(`${instance.id}-desc`, String(instance.props.description)));
   }
-  if (instance.props.summary) {
+  if (element === "an-act-card" && instance.props.summary) {
     children.push(textChild(`${instance.id}-summary`, String(instance.props.summary)));
   }
-  return p0Node(instance, "an-act-card", {
+  return p0Node(instance, element, {
     style: {
       color: ctx.resolveToken("text.primary"),
       backgroundColor: ctx.resolveToken(instance.variant === "elevated" ? "surface.elevated" : "surface.primary"),
@@ -183,13 +184,72 @@ export function createReactComponentRenderers(): Record<CoreUiComponentId, Compo
   renderers["core-ui-bottom-navigation"] = renderNavigation;
   renderers["core-ui-side-navigation"] = renderNavigation;
   renderers["core-ui-chip"] = (instance, ctx) =>
-    p0Node(instance, "chip", {
+    p0Node(instance, "an-act-chip", {
+      style: {
+        color: ctx.resolveToken("text.primary"),
+        backgroundColor: ctx.resolveToken(instance.props.selected ? "surface.elevated" : "surface.secondary"),
+        borderColor: ctx.resolveToken(instance.props.selected ? "accent.primary" : "border.default"),
+        padding: `${resolveSpacing("space-8")} ${resolveSpacing("space-16")}`,
+      },
+      props: instance.props,
+    });
+  renderers["core-ui-input"] = (instance, ctx) =>
+    p0Node(instance, "an-act-input", {
+      style: {
+        color: ctx.resolveToken("text.primary"),
+        borderColor: ctx.resolveToken("border.default"),
+        gap: resolveSpacing("space-8"),
+      },
+      props: instance.props,
+    });
+  renderers["core-ui-search"] = (instance, ctx) =>
+    p0Node(instance, "an-act-search", {
       style: {
         color: ctx.resolveToken("text.primary"),
         backgroundColor: ctx.resolveToken("surface.secondary"),
+        borderColor: ctx.resolveToken("border.default"),
         padding: resolveSpacing("space-8"),
       },
       props: instance.props,
+    });
+  renderers["core-ui-badge"] = (instance, ctx) =>
+    p0Node(instance, "an-act-badge", {
+      style: {
+        color: ctx.resolveToken("text.primary"),
+        backgroundColor: ctx.resolveToken("surface.muted"),
+        borderColor: ctx.resolveToken("border.subtle"),
+      },
+      props: instance.props,
+    });
+  renderers["core-ui-avatar"] = (instance, ctx) =>
+    p0Node(instance, "an-act-avatar", {
+      style: {
+        color: ctx.resolveToken("text.inverse"),
+        backgroundColor: ctx.resolveToken("accent.primary"),
+      },
+      props: instance.props,
+    });
+  renderers["core-ui-loading"] = (instance, ctx) =>
+    p0Node(instance, "an-act-loading", {
+      style: { color: ctx.resolveToken("text.primary"), backgroundColor: ctx.resolveToken("surface.secondary") },
+      props: instance.props,
+    });
+  renderers["core-ui-progress"] = (instance, ctx) =>
+    p0Node(instance, "an-act-progress", {
+      style: { color: ctx.resolveToken("text.primary"), backgroundColor: ctx.resolveToken("surface.muted") },
+      props: instance.props,
+    });
+  renderers["core-ui-contract-card"] = (instance, ctx) =>
+    p0Node(instance, "an-act-card", {
+      style: {
+        color: ctx.resolveToken("text.primary"),
+        backgroundColor: ctx.resolveToken("surface.elevated"),
+        borderColor: ctx.resolveToken("accent.primary"),
+        padding: resolveSpacing("space-24"),
+        borderRadius: "16px",
+      },
+      props: instance.props,
+      children: [textChild(`${instance.id}-title`, String(instance.props.title ?? "Contract"))],
     });
   return renderers;
 }

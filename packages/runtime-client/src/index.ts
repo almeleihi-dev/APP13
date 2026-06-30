@@ -9,6 +9,8 @@ export type {
   ScreenRelayResponse,
 } from "./types.js";
 
+import { RuntimeClientError } from "./types.js";
+
 export { RuntimeClientError } from "./types.js";
 
 export {
@@ -22,3 +24,8 @@ export { HttpClient } from "./http-client.js";
 export type { HttpRequestOptions } from "./http-client.js";
 
 export { RuntimeClient, createRuntimeClient } from "./runtime-client.js";
+export type {
+  NeedContinueResponse,
+  NeedSearchResponse,
+  NeedTransitionResponse,
+} from "./runtime-client.js";

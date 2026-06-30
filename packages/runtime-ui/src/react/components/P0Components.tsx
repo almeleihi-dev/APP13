@@ -1,5 +1,6 @@
 import React, { type CSSProperties, type ReactNode } from "react";
 import type { RenderNode } from "../../render-node.js";
+import { resolveComponentRelayIntent } from "@an-act/runtime-core";
 
 export interface RelayIntent {
   actionId?: string;
@@ -10,12 +11,23 @@ export interface RelayIntent {
 export interface AnActButtonProps {
   node: RenderNode;
   onRelay?: (intent: RelayIntent) => void;
+  screenId?: string;
 }
 
-export function AnActButton({ node, onRelay }: AnActButtonProps) {
+export function AnActButton({ node, onRelay, screenId = "" }: AnActButtonProps) {
   const label = String(node.props?.label ?? node.props?.text ?? "");
   const style = node.style as CSSProperties;
+  const disabled = Boolean(node.props?.disabled);
+
   const handleClick = () => {
+    if (disabled) {
+      return;
+    }
+    const resolved = resolveComponentRelayIntent(node.props ?? {}, screenId);
+    if (resolved) {
+      onRelay?.(resolved);
+      return;
+    }
     onRelay?.({
       actionId: typeof node.props?.actionId === "string" ? node.props.actionId : undefined,
       route: typeof node.props?.route === "string" ? node.props.route : undefined,
@@ -29,6 +41,7 @@ export function AnActButton({ node, onRelay }: AnActButtonProps) {
       data-component-id={node.componentId}
       style={{ ...style, border: `1px solid ${style.borderColor ?? "transparent"}`, cursor: "pointer" }}
       aria-label={node.accessibility?.label ?? label}
+      disabled={disabled}
       onClick={handleClick}
     >
       {label}
@@ -40,12 +53,16 @@ export interface AnActCardProps {
   node: RenderNode;
   children?: ReactNode;
   onRelay?: (intent: RelayIntent) => void;
+  screenId?: string;
 }
 
-export function AnActCard({ node, children, onRelay }: AnActCardProps) {
+export function AnActCard({ node, children, onRelay, screenId = "" }: AnActCardProps) {
   const style = node.style as CSSProperties;
-  const route = typeof node.props?.route === "string" ? node.props.route : undefined;
-  const interactive = Boolean(route || node.props?.actionId);
+  const resolved = resolveComponentRelayIntent(node.props ?? {}, screenId);
+  const route = typeof node.props?.route === "string" ? node.props.route : resolved?.route;
+  const actionId = resolved?.actionId ?? (typeof node.props?.actionId === "string" ? node.props.actionId : undefined);
+  const relayBody = resolved?.body;
+  const interactive = Boolean(route || actionId || node.props?.opportunityId);
 
   return (
     <article
@@ -56,18 +73,14 @@ export function AnActCard({ node, children, onRelay }: AnActCardProps) {
       tabIndex={interactive ? 0 : undefined}
       onClick={
         interactive
-          ? () =>
-              onRelay?.({
-                route,
-                actionId: typeof node.props?.actionId === "string" ? node.props.actionId : undefined,
-              })
+          ? () => onRelay?.({ route, actionId, body: relayBody })
           : undefined
       }
       onKeyDown={
         interactive
           ? (event) => {
               if (event.key === "Enter" || event.key === " ") {
-                onRelay?.({ route, actionId: typeof node.props?.actionId === "string" ? node.props.actionId : undefined });
+                onRelay?.({ route, actionId, body: relayBody });
               }
             }
           : undefined

@@ -32,7 +32,11 @@ export function LoginPage() {
         <button type="submit" disabled={loading}>
           {loading ? "Signing in..." : "Sign in"}
         </button>
-        {error ? <p role="alert">{error}</p> : null}
+        {error ? (
+          <p role="alert">
+            <strong>{error.title}</strong>: {error.detail}
+          </p>
+        ) : null}
       </form>
     </main>
   );

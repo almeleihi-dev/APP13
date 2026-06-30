@@ -6,77 +6,87 @@ import {
   AnActHeader,
   AnActLiveFrame,
   AnActNavigation,
-  type RelayIntent,
 } from "./components/P0Components.js";
+import {
+  AnActAvatar,
+  AnActBadge,
+  AnActChip,
+  AnActEmptyState,
+  AnActError,
+  AnActInput,
+  AnActList,
+  AnActLoading,
+  AnActOpportunityCard,
+  AnActSearch,
+  AnActSection,
+  type RelayIntent,
+} from "./components/P1Components.js";
 
 export interface RenderNodeTreeProps {
   node: RenderNode;
   onRelay?: (intent: RelayIntent) => void;
+  screenId?: string;
 }
 
-export function RenderNodeTree({ node, onRelay }: RenderNodeTreeProps): ReactNode {
+export function RenderNodeTree({ node, onRelay, screenId = "" }: RenderNodeTreeProps): ReactNode {
   const children = node.children?.map((child) => (
-    <RenderNodeTree key={child.key} node={child} onRelay={onRelay} />
+    <RenderNodeTree key={child.key} node={child} onRelay={onRelay} screenId={screenId} />
   ));
 
   switch (node.element) {
     case "an-act-button":
-      return <AnActButton node={node} onRelay={onRelay} />;
+      return <AnActButton node={node} onRelay={onRelay} screenId={screenId} />;
     case "an-act-card":
       return (
-        <AnActCard node={node} onRelay={onRelay}>
+        <AnActCard node={node} onRelay={onRelay} screenId={screenId}>
           {children}
         </AnActCard>
       );
+    case "an-act-opportunity-card":
+      return <AnActOpportunityCard node={node} onRelay={onRelay} />;
     case "an-act-live-frame":
       return <AnActLiveFrame node={node}>{children}</AnActLiveFrame>;
     case "an-act-header":
       return <AnActHeader node={node}>{children}</AnActHeader>;
     case "an-act-navigation":
       return <AnActNavigation node={node} onRelay={onRelay} />;
+    case "an-act-input":
+      return <AnActInput node={node} onRelay={onRelay} />;
+    case "an-act-search":
+      return <AnActSearch node={node} onRelay={onRelay} />;
+    case "an-act-chip":
+      return <AnActChip node={node} onRelay={onRelay} />;
+    case "an-act-badge":
+      return <AnActBadge node={node} />;
+    case "an-act-avatar":
+      return <AnActAvatar node={node} />;
+    case "an-act-list":
+      return <AnActList node={node}>{children}</AnActList>;
+    case "an-act-section":
+      return <AnActSection node={node}>{children}</AnActSection>;
+    case "an-act-empty-state":
+      return (
+        <AnActEmptyState node={node} onRelay={onRelay}>
+          {children}
+        </AnActEmptyState>
+      );
+    case "an-act-loading":
+      return <AnActLoading node={node} />;
+    case "an-act-error":
+      return <AnActError node={node} />;
+    case "an-act-progress": {
+      const value = Number(node.props?.value ?? 0);
+      return (
+        <div data-component-id={node.componentId} role="progressbar" aria-valuenow={value} style={node.style as object}>
+          <div style={{ height: "4px", background: "currentColor", opacity: 0.2, borderRadius: "999px" }}>
+            <div style={{ width: `${Math.round(value * 100)}%`, height: "100%", background: "currentColor", borderRadius: "999px" }} />
+          </div>
+          {node.props?.stageTexts ? <span style={{ fontSize: "12px" }}>{String(node.props.stageText ?? "")}</span> : null}
+        </div>
+      );
+    }
     case "text":
       return <span data-runtime-text={node.key}>{String(node.props?.text ?? "")}</span>;
-    case "search":
-      return (
-        <label data-component-id={node.componentId} style={{ display: "grid", gap: "8px", ...(node.style as object) }}>
-          <span>{node.accessibility?.label ?? "Search"}</span>
-          <input
-            type="search"
-            placeholder={String(node.props?.placeholder ?? "")}
-            readOnly
-            onClick={() => {
-              const route = typeof node.props?.route === "string" ? node.props.route : undefined;
-              if (route) {
-                onRelay?.({ route });
-              }
-            }}
-            style={{
-              padding: "12px 16px",
-              borderRadius: "12px",
-              border: `1px solid ${node.style?.borderColor ?? "currentColor"}`,
-              background: "transparent",
-              color: "inherit",
-              font: "inherit",
-            }}
-          />
-        </label>
-      );
-    case "chip":
-      return (
-        <button
-          type="button"
-          data-component-id={node.componentId}
-          style={{ ...(node.style as object), border: "1px solid currentColor", borderRadius: "999px", cursor: "pointer" }}
-          onClick={() => {
-            const category = node.props?.category;
-            if (category) {
-              onRelay?.({ actionId: "need.search", body: { category: String(category) } });
-            }
-          }}
-        >
-          {String(node.props?.label ?? "")}
-        </button>
-      );
     default:
       return (
         <div

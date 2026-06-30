@@ -18,6 +18,7 @@ export default defineConfig({
     proxy: {
       "/need-experience": { target: "http://127.0.0.1:3000", changeOrigin: true },
       "/action-experience": { target: "http://127.0.0.1:3000", changeOrigin: true },
+      "/contract-experience": { target: "http://127.0.0.1:3000", changeOrigin: true },
       "/v1/auth": { target: "http://127.0.0.1:3000", changeOrigin: true },
     },
   },

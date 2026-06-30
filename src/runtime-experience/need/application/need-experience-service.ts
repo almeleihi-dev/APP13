@@ -158,9 +158,23 @@ export class NeedExperienceService {
     };
   }
 
-  continueRequest(authContext: AuthContext, input?: { generated_at?: string }) {
+  continueRequest(authContext: AuthContext, input?: {
+    generated_at?: string;
+    location?: string;
+    schedule?: string;
+    notes?: string;
+  }) {
     requireAuth(authContext);
     const session = this.getOrCreateSession(authContext.userId, input?.generated_at);
+    if (input?.location) {
+      session.requestDraft = { ...session.requestDraft, location: input.location };
+    }
+    if (input?.schedule) {
+      session.requestDraft = { ...session.requestDraft, schedule: input.schedule };
+    }
+    if (input?.notes !== undefined) {
+      session.requestDraft = { ...session.requestDraft, notes: input.notes };
+    }
     if (!session.requestDraft.location || !session.requestDraft.schedule) {
       throw new Error("Location and schedule are required before continuing");
     }
