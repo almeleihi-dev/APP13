@@ -14,6 +14,13 @@ export interface RenderStyle {
   lineHeight?: string;
   borderRadius?: string;
   boxShadow?: string;
+  minHeight?: string;
+  border?: string;
+  display?: string;
+  alignItems?: string;
+  justifyContent?: string;
+  flexDirection?: string;
+  width?: string;
 }
 
 export interface RenderAccessibility {

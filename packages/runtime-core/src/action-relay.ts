@@ -1,59 +1,90 @@
 import type { ActionRelayRequest, ActionRelayResult, ActionRelayTarget } from "./types.js";
 
 /** Experience route map — transport only; no business logic. */
-const EXPERIENCE_ROUTE_PREFIX = "/api/experience";
-
 const EXPERIENCE_ACTION_MAP: Record<string, ActionRelayTarget> = {
   "need.navigate": {
     method: "GET",
-    path: `${EXPERIENCE_ROUTE_PREFIX}/need-experience`,
+    path: "/need-experience",
+    experienceId: "need-experience",
+  },
+  "need.search": {
+    method: "POST",
+    path: "/need-experience/search",
+    experienceId: "need-experience",
+  },
+  "need.continue-request": {
+    method: "POST",
+    path: "/need-experience/request/continue",
+    experienceId: "need-experience",
+  },
+  "need.advance-transition": {
+    method: "POST",
+    path: "/need-experience/transition/advance",
     experienceId: "need-experience",
   },
   "action.navigate": {
     method: "GET",
-    path: `${EXPERIENCE_ROUTE_PREFIX}/action-experience`,
+    path: "/action-experience",
+    experienceId: "action-experience",
+  },
+  "action.accept-opportunity": {
+    method: "POST",
+    path: "/action-experience/accept",
     experienceId: "action-experience",
   },
   "contract.navigate": {
     method: "GET",
-    path: `${EXPERIENCE_ROUTE_PREFIX}/contract-experience`,
+    path: "/contract-experience",
     experienceId: "contract-experience",
   },
   "chat.navigate": {
     method: "GET",
-    path: `${EXPERIENCE_ROUTE_PREFIX}/chat-experience`,
+    path: "/chat-experience",
     experienceId: "chat-experience",
   },
   "timeline.navigate": {
     method: "GET",
-    path: `${EXPERIENCE_ROUTE_PREFIX}/timeline-experience`,
+    path: "/timeline-experience",
     experienceId: "timeline-experience",
   },
   "notification.navigate": {
     method: "GET",
-    path: `${EXPERIENCE_ROUTE_PREFIX}/notification-experience`,
+    path: "/notification-experience",
     experienceId: "notification-experience",
   },
   "profile.navigate": {
     method: "GET",
-    path: `${EXPERIENCE_ROUTE_PREFIX}/profile-experience`,
+    path: "/profile-experience",
     experienceId: "profile-experience",
   },
   "runtime.journey": {
     method: "GET",
-    path: `${EXPERIENCE_ROUTE_PREFIX}/runtime-journey`,
+    path: "/runtime-journey",
     experienceId: "runtime-journey",
   },
-  "need.submit-request": {
-    method: "POST",
-    path: `${EXPERIENCE_ROUTE_PREFIX}/need-experience/request`,
+};
+
+/** Canonical route → experience API transport map. */
+const ROUTE_RELAY_MAP: Record<string, ActionRelayTarget> = {
+  "/need/home": { method: "GET", path: "/need-experience/home", experienceId: "need-experience" },
+  "/need/search": { method: "GET", path: "/need-experience/search", experienceId: "need-experience" },
+  "/need/opportunities": {
+    method: "GET",
+    path: "/need-experience/opportunities",
     experienceId: "need-experience",
   },
-  "action.accept-opportunity": {
-    method: "POST",
-    path: `${EXPERIENCE_ROUTE_PREFIX}/action-experience/accept`,
-    experienceId: "action-experience",
+  "/need/request/create": {
+    method: "GET",
+    path: "/need-experience/request",
+    experienceId: "need-experience",
   },
+  "/need/empty": { method: "GET", path: "/need-experience/screen/empty-state", experienceId: "need-experience" },
+  "/system/transition": {
+    method: "GET",
+    path: "/need-experience/transition",
+    experienceId: "need-experience",
+  },
+  "/action/home": { method: "GET", path: "/action-experience/home", experienceId: "action-experience" },
 };
 
 export function listActionRelayTargets(): readonly string[] {
@@ -76,11 +107,30 @@ export function resolveActionRelay(request: ActionRelayRequest): ActionRelayResu
   };
 }
 
+export function resolveRouteRelay(route: string): ActionRelayTarget {
+  const target = ROUTE_RELAY_MAP[route];
+  if (!target) {
+    throw new Error(`Unknown route relay: ${route}`);
+  }
+  return target;
+}
+
 export function buildActionRelayUrl(
   result: ActionRelayResult,
   query?: Record<string, string>
 ): string {
   const url = new URL(result.target.path, "http://localhost");
+  if (query) {
+    for (const [key, value] of Object.entries(query)) {
+      url.searchParams.set(key, value);
+    }
+  }
+  return `${url.pathname}${url.search}`;
+}
+
+export function buildRouteRelayUrl(route: string, query?: Record<string, string>): string {
+  const target = resolveRouteRelay(route);
+  const url = new URL(target.path, "http://localhost");
   if (query) {
     for (const [key, value] of Object.entries(query)) {
       url.searchParams.set(key, value);

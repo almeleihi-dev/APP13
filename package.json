@@ -429,9 +429,14 @@
     "build:tokens": "npm run sync:tokens && npm --prefix packages/tokens run build",
     "build:runtime-core": "npm --prefix packages/runtime-core run build",
     "build:runtime-ui": "npm --prefix packages/runtime-ui run build",
-    "build:render-layer": "npm run build:tokens && npm run build:runtime-core && npm run build:runtime-ui",
+    "build:runtime-client": "npm --prefix packages/runtime-client run build",
+    "build:render-layer": "npm run build:tokens && npm run build:runtime-core && npm run build:runtime-ui && npm run build:runtime-client",
+    "build:web": "npm install --prefix apps/web && npm --prefix apps/web run build",
+    "dev:web": "npm install --prefix apps/web && npm --prefix apps/web run dev",
     "test:render-layer-foundation": "node --import tsx --test --test-concurrency=1 test/render-layer-foundation.test.ts",
-    "verify:render-layer-foundation": "bash scripts/verify-render-layer-foundation.sh"
+    "test:render-layer-phase2": "node --import tsx --test --test-concurrency=1 test/render-layer-phase2.test.ts",
+    "verify:render-layer-foundation": "bash scripts/verify-render-layer-foundation.sh",
+    "verify:render-layer-phase2": "bash scripts/verify-render-layer-phase2.sh"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1073.0",
@@ -449,7 +454,11 @@
   "devDependencies": {
     "@types/node": "^22.10.5",
     "@types/pg": "^8.11.10",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
     "dependency-cruiser": "^16.9.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }

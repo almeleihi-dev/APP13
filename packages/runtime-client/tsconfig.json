@@ -5,7 +5,6 @@
     "outDir": "dist",
     "declaration": true,
     "declarationMap": true,
-    "resolveJsonModule": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false
   },

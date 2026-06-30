@@ -35,4 +35,6 @@ export {
   resolveLiveFrameUiTier,
 } from "./live-frame-resolver.js";
 
+export { buildThemeCssVariables, AN_ACT_TRANSITION_DURATION_MS } from "./theme-css.js";
+
 export type { LiveFrameInput } from "./live-frame-resolver.js";

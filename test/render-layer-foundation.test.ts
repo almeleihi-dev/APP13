@@ -97,7 +97,7 @@ describe("Render Layer Foundation — @an-act/runtime-core", () => {
     assert.equal(relay.target.experienceId, "need-experience");
     assert.equal(relay.target.method, "GET");
     const url = buildActionRelayUrl(relay, { screen: "need-home" });
-    assert.ok(url.includes("/api/experience/need-experience"));
+    assert.ok(url.includes("/need-experience"));
   });
 });
 

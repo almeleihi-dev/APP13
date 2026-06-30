@@ -47,11 +47,11 @@ const renderCard: ComponentRenderer = (instance, ctx) =>
   });
 
 const renderLiveFrame: ComponentRenderer = (instance, ctx) => {
-  const presentation = resolveLiveFramePresentation({
-    trustTier: typeof instance.props.trustTier === "string" ? instance.props.trustTier : undefined,
-    uiTier: typeof instance.props.uiTier === "string" ? (instance.props.uiTier as import("@an-act/tokens").LiveFrameUiTier) : undefined,
-    mode: ctx.mode,
-  });
+  const uiTier =
+    typeof instance.props.uiTier === "string"
+      ? (instance.props.uiTier as import("@an-act/tokens").LiveFrameUiTier)
+      : "silver";
+  const presentation = resolveLiveFramePresentation({ uiTier, mode: ctx.mode });
   return baseNode(instance, "live-frame", {
     style: {
       borderColor: presentation.accentColor,

@@ -32,6 +32,8 @@ export type { LiveFrameInput, LiveFramePresentation } from "./live-frame-resolve
 
 export {
   buildActionRelayUrl,
+  buildRouteRelayUrl,
   listActionRelayTargets,
   resolveActionRelay,
+  resolveRouteRelay,
 } from "./action-relay.js";
