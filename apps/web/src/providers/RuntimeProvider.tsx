@@ -14,6 +14,7 @@ import {
   type ActionExperienceEnvelope,
   type NeedExperienceEnvelope,
   type RegisterCustomerInput,
+  type RegisterProviderInput,
   type RuntimeClient,
 } from "@an-act/runtime-client";
 import type { AnActRuntimeScreenView } from "@an-act/runtime-core";
@@ -26,12 +27,22 @@ export interface RequestDraftFields {
   notes?: string;
 }
 
+export interface UserProfile {
+  userId: string;
+  roles: string[];
+  providerId?: string;
+  customerId?: string;
+  displayName?: string;
+  isProvider: boolean;
+}
+
 export interface RuntimeContextValue {
   client: RuntimeClient;
   envelope: NeedExperienceEnvelope | ActionExperienceEnvelope | null;
   screen: AnActRuntimeScreenView | null;
   mode: "need" | "action" | "transition";
   experienceKind: "need" | "action";
+  userProfile: UserProfile | null;
   loading: boolean;
   relaying: boolean;
   error: { title: string; detail: string; code?: string } | null;
@@ -43,8 +54,16 @@ export interface RuntimeContextValue {
   requestDraft: RequestDraftFields;
   login: (email: string, password: string) => Promise<void>;
   register: (input: RegisterCustomerInput) => Promise<boolean>;
+  registerProvider: (input: RegisterProviderInput) => Promise<boolean>;
+  updateProviderProfile: (
+    providerId: string,
+    body: { display_name?: string; bio?: string; business_name?: string }
+  ) => Promise<boolean>;
+  declineRequest: () => Promise<void>;
+  cancelAction: () => Promise<void>;
   logout: () => Promise<void>;
   finishRegistration: () => Promise<void>;
+  finishProviderSetup: () => Promise<void>;
   reload: () => Promise<void>;
   relay: (intent: RelayIntent) => Promise<void>;
   clearError: () => void;
@@ -116,6 +135,24 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
   const [transitionProgress, setTransitionProgress] = useState(0);
   const [transitionStageText, setTransitionStageText] = useState<string | undefined>();
   const [requestDraft, setRequestDraft] = useState<RequestDraftFields>({});
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
+  const loadUserProfile = useCallback(async () => {
+    try {
+      const me = await client.getMe();
+      const roles = Array.isArray(me.roles) ? (me.roles as string[]) : [];
+      setUserProfile({
+        userId: String(me.user_id ?? me.id ?? ""),
+        roles,
+        providerId: me.provider_id ? String(me.provider_id) : undefined,
+        customerId: me.customer_id ? String(me.customer_id) : undefined,
+        displayName: me.display_name ? String(me.display_name) : undefined,
+        isProvider: roles.includes("provider"),
+      });
+    } catch {
+      setUserProfile(null);
+    }
+  }, [client]);
 
   useEffect(() => {
     const onOnline = () => setOffline(false);
@@ -227,6 +264,7 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
       setSessionExpired(false);
       try {
         await client.auth.login(email, password);
+        await loadUserProfile();
         const next = await client.loadNeedExperience();
         applyNeedEnvelope(next);
       } catch (err) {
@@ -235,7 +273,7 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
         setLoading(false);
       }
     },
-    [applyNeedEnvelope, client, handleClientError]
+    [applyNeedEnvelope, client, handleClientError, loadUserProfile]
   );
 
   const register = useCallback(
@@ -245,6 +283,7 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
       setSessionExpired(false);
       try {
         await client.auth.registerCustomer(input);
+        await loadUserProfile();
         return true;
       } catch (err) {
         handleClientError(err);
@@ -253,13 +292,54 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
         setLoading(false);
       }
     },
-    [client, handleClientError]
+    [client, handleClientError, loadUserProfile]
+  );
+
+  const registerProvider = useCallback(
+    async (input: RegisterProviderInput): Promise<boolean> => {
+      setLoading(true);
+      setError(null);
+      setSessionExpired(false);
+      try {
+        await client.auth.registerProvider(input);
+        await loadUserProfile();
+        return true;
+      } catch (err) {
+        handleClientError(err);
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [client, handleClientError, loadUserProfile]
+  );
+
+  const updateProviderProfile = useCallback(
+    async (
+      providerId: string,
+      body: { display_name?: string; bio?: string; business_name?: string }
+    ): Promise<boolean> => {
+      setLoading(true);
+      setError(null);
+      try {
+        await client.updateProvider(providerId, body);
+        await loadUserProfile();
+        return true;
+      } catch (err) {
+        handleClientError(err);
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [client, handleClientError, loadUserProfile]
   );
 
   const finishRegistration = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
+      await loadUserProfile();
       const next = await client.loadNeedExperience();
       applyNeedEnvelope(next);
     } catch (err) {
@@ -267,7 +347,21 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
     } finally {
       setLoading(false);
     }
-  }, [applyNeedEnvelope, client, handleClientError]);
+  }, [applyNeedEnvelope, client, handleClientError, loadUserProfile]);
+
+  const finishProviderSetup = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await loadUserProfile();
+      const next = await client.loadActionExperience();
+      applyActionEnvelope(next);
+    } catch (err) {
+      handleClientError(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [applyActionEnvelope, client, handleClientError, loadUserProfile]);
 
   const logout = useCallback(async () => {
     setLoading(true);
@@ -275,6 +369,7 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
       await client.auth.logoutServer();
     } finally {
       setEnvelope(null);
+      setUserProfile(null);
       setSessionExpired(false);
       setError(null);
       setLoading(false);
@@ -352,6 +447,45 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
     setTransitionActive(false);
   }, [applyActionScreen, applyNeedEnvelope, client]);
 
+  const returnToNeed = useCallback(async () => {
+    const result = await client.startReturnTransition();
+    applyActionScreen(result.screen, {
+      current_screen: "transition",
+      mode: "transition",
+      transition: result.transition,
+    });
+    await runActionReturnTransitionSequence();
+  }, [applyActionScreen, client, runActionReturnTransitionSequence]);
+
+  const declineRequest = useCallback(async () => {
+    setRelaying(true);
+    setError(null);
+    try {
+      if (experienceKind === "need") {
+        const next = await client.loadNeedExperience();
+        applyNeedEnvelope(next);
+        return;
+      }
+      await returnToNeed();
+    } catch (err) {
+      handleClientError(err);
+    } finally {
+      setRelaying(false);
+    }
+  }, [applyNeedEnvelope, client, experienceKind, handleClientError, returnToNeed]);
+
+  const cancelAction = useCallback(async () => {
+    setRelaying(true);
+    setError(null);
+    try {
+      await returnToNeed();
+    } catch (err) {
+      handleClientError(err);
+    } finally {
+      setRelaying(false);
+    }
+  }, [handleClientError, returnToNeed]);
+
   const relay = useCallback(
     async (intent: RelayIntent) => {
       if (offline) {
@@ -376,6 +510,17 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
 
         if (intent.actionId === "need.search") {
           const result = await client.performSearch(intent.body ?? {});
+          if (result.opportunity_count === 0) {
+            const emptyScreen = await client.loadNeedEmptyState();
+            applyNeedEnvelope({
+              ...(envelope as NeedExperienceEnvelope),
+              current_screen: emptyScreen.screenId,
+              screen: emptyScreen,
+              search: result.search,
+              mode: "need",
+            });
+            return;
+          }
           applyNeedEnvelope({
             ...(envelope as NeedExperienceEnvelope),
             current_screen: result.screen.screenId,
@@ -542,6 +687,7 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
     screen,
     mode: envelope?.mode ?? "need",
     experienceKind,
+    userProfile,
     loading,
     relaying,
     error,
@@ -549,8 +695,13 @@ export function RuntimeProvider({ children, baseUrl = "" }: RuntimeProviderProps
     sessionExpired,
     login,
     register,
+    registerProvider,
+    updateProviderProfile,
+    declineRequest,
+    cancelAction,
     logout,
     finishRegistration,
+    finishProviderSetup,
     reload,
     relay,
     clearError: () => setError(null),

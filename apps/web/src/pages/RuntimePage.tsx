@@ -9,6 +9,9 @@ import {
 } from "@an-act/runtime-ui/react";
 import { useRuntime } from "../providers/RuntimeProvider.js";
 import { AN_ACT_BRAND } from "../brand/config.js";
+import { AiAssistantPanel } from "../components/AiAssistantPanel.js";
+import { ExecutiveAiPanel } from "../components/ExecutiveAiPanel.js";
+import { MarketplaceActionsBar } from "../components/MarketplaceActionsBar.js";
 
 export interface RuntimePageProps {
   bootstrapping?: boolean;
@@ -28,6 +31,7 @@ export function RuntimePage({ bootstrapping = false }: RuntimePageProps) {
   const {
     screen,
     mode,
+    client,
     loading,
     relaying,
     error,
@@ -36,6 +40,8 @@ export function RuntimePage({ bootstrapping = false }: RuntimePageProps) {
     relay,
     clearError,
     logout,
+    declineRequest,
+    cancelAction,
     transitionActive,
     transitionProgress,
     transitionStageText,
@@ -112,10 +118,25 @@ export function RuntimePage({ bootstrapping = false }: RuntimePageProps) {
     );
   }
 
+  const aiKind =
+    screen.screenId === "contract-preview"
+      ? "contract"
+      : mode === "action" || experienceKindFromScreen(screen.screenId) === "action"
+        ? "action"
+        : "need";
+
   return (
     <ThemeProvider mode={mode} transitioning={transitionActive}>
       <AnActAppShell logoUrl={AN_ACT_BRAND.logoUrl} modeLabel={modeLabel(mode)} footer={logoutFooter}>
         {statusBanner}
+        <MarketplaceActionsBar
+          screenId={screen.screenId}
+          relaying={relaying}
+          onDecline={declineRequest}
+          onCancel={cancelAction}
+        />
+        <AiAssistantPanel client={client} kind={aiKind} collapsed />
+        <ExecutiveAiPanel client={client} />
         {error ? (
           <div className="an-act-screen an-act-error-panel">
             <AnActError
@@ -140,4 +161,17 @@ export function RuntimePage({ bootstrapping = false }: RuntimePageProps) {
       />
     </ThemeProvider>
   );
+}
+
+function experienceKindFromScreen(screenId: string): "need" | "action" {
+  if (
+    screenId.startsWith("action") ||
+    screenId === "contract-preview" ||
+    screenId === "active-action" ||
+    screenId === "progress-screen" ||
+    screenId === "completion-screen"
+  ) {
+    return "action";
+  }
+  return "need";
 }

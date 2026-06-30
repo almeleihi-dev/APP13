@@ -446,7 +446,9 @@
     "test:mvp-rc1": "node --import tsx --test --test-concurrency=1 test/mvp-rc1.test.ts",
     "verify:mvp-rc1": "bash scripts/verify-mvp-rc1.sh",
     "test:mvp-rc2": "node --import tsx --test --test-concurrency=1 test/mvp-rc2.test.ts",
-    "verify:mvp-rc2": "bash scripts/verify-mvp-rc2.sh"
+    "verify:mvp-rc2": "bash scripts/verify-mvp-rc2.sh",
+    "test:mvp-phase8": "node --import tsx --test --test-concurrency=1 test/mvp-phase8.test.ts",
+    "verify:mvp-phase8": "bash scripts/verify-mvp-phase8.sh"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1073.0",

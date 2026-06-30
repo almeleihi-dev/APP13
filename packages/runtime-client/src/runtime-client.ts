@@ -204,6 +204,69 @@ export class RuntimeClient {
       generated_at: generatedAt,
     });
   }
+
+  // --- Phase 8: MVP Evolution transport (no business logic) ---
+
+  async getMe(): Promise<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>("/v1/me");
+  }
+
+  async updateProvider(
+    providerId: string,
+    body: { display_name?: string; bio?: string; business_name?: string }
+  ): Promise<Record<string, unknown>> {
+    return this.http.patch<Record<string, unknown>>(`/v1/providers/${providerId}`, body);
+  }
+
+  async getOnboardingOverview(): Promise<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>("/living-onboarding");
+  }
+
+  async getOnboardingSteps(): Promise<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>("/living-onboarding/steps");
+  }
+
+  async getOnboardingStep(stepId: string): Promise<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>(`/living-onboarding/steps/${stepId}`);
+  }
+
+  async submitOnboardingStep(stepId: string, body: Record<string, unknown>): Promise<Record<string, unknown>> {
+    return this.http.post<Record<string, unknown>>(`/living-onboarding/steps/${stepId}`, body);
+  }
+
+  async completeOnboarding(): Promise<Record<string, unknown>> {
+    return this.http.post<Record<string, unknown>>("/living-onboarding/complete", {});
+  }
+
+  async getProfessionalPassport(): Promise<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>("/professional-passport");
+  }
+
+  async getOnboardingPassport(): Promise<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>("/living-onboarding/passport");
+  }
+
+  async getAiNeedSummary(): Promise<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>("/ai-guidance-experience/summary");
+  }
+
+  async getAiActionCompanion(): Promise<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>("/ai-execution-companion-experience/summary");
+  }
+
+  async getAiContractRecommendation(): Promise<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>("/contract-intelligence/recommendation");
+  }
+
+  async getExecutiveDashboard(): Promise<{ screen: AnActRuntimeScreenView; dashboard: Record<string, unknown> }> {
+    return this.http.get<{ screen: AnActRuntimeScreenView; dashboard: Record<string, unknown> }>(
+      "/runtime-executive/dashboard"
+    );
+  }
+
+  async loadNeedEmptyState(): Promise<AnActRuntimeScreenView> {
+    return this.http.get<AnActRuntimeScreenView>("/need-experience/screen/empty-state");
+  }
 }
 
 export function createRuntimeClient(config: RuntimeClientConfig): RuntimeClient {

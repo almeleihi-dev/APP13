@@ -101,4 +101,8 @@ export class HttpClient {
   post<T>(path: string, body?: Record<string, unknown>, query?: Record<string, string | undefined>): Promise<T> {
     return this.request<T>(path, { method: "POST", body, query });
   }
+
+  patch<T>(path: string, body?: Record<string, unknown>): Promise<T> {
+    return this.request<T>(path, { method: "PATCH", body });
+  }
 }

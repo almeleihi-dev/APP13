@@ -9,9 +9,10 @@ import { AN_ACT_BRAND } from "../brand/config.js";
 
 export interface LoginPageProps {
   onRegister?: () => void;
+  onRegisterProvider?: () => void;
 }
 
-export function LoginPage({ onRegister }: LoginPageProps) {
+export function LoginPage({ onRegister, onRegisterProvider }: LoginPageProps) {
   const { login, loading, error } = useRuntime();
   const [email, setEmail] = useState("customer.demo@anact.local");
   const [password, setPassword] = useState("demo-password-123");
@@ -58,7 +59,12 @@ export function LoginPage({ onRegister }: LoginPageProps) {
           </form>
           {onRegister ? (
             <button type="button" className="an-act-button an-act-button--ghost" onClick={onRegister}>
-              Create an account
+              Create a customer account
+            </button>
+          ) : null}
+          {onRegisterProvider ? (
+            <button type="button" className="an-act-button an-act-button--ghost" onClick={onRegisterProvider}>
+              Register as a provider
             </button>
           ) : null}
         </div>
