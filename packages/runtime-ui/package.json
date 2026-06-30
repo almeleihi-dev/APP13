@@ -1,0 +1,24 @@
+{
+  "name": "@an-act/runtime-ui",
+  "version": "1.0.0",
+  "description": "AN ACT runtime UI — component dispatcher and screen renderer",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@an-act/runtime-core": "file:../runtime-core",
+    "@an-act/tokens": "file:../tokens"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}

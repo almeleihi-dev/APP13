@@ -9,7 +9,7 @@
 ## How to Use This Index
 
 1. **New to AN ACT?** Start with the [Product Bible](./AN-ACT-Product-Bible.md) (Sections 1–9).
-2. **Building UI?** Read [Runtime JSON Contract](./AN-ACT-Runtime-JSON-Contract.md), CH3 identity docs, then Section 45 of the Product Bible (Future Render Layer).
+2. **Building UI?** Read [Render Layer Architecture](./AN-ACT-Render-Layer-Architecture.md), [Runtime JSON Contract](./AN-ACT-Runtime-JSON-Contract.md), and [Design Tokens Specification](./AN-ACT-Design-Tokens-Specification.md).
 3. **Building intelligence features?** Read CH4 + CH5 architecture books and registries.
 4. **Implementing a module?** Find your chapter registry in the appendices of the Product Bible.
 
@@ -91,6 +91,15 @@
 |----------|---------|-----------|
 | [**Design Tokens Specification**](./AN-ACT-Design-Tokens-Specification.md) | Official token catalog — colors, typography, spacing, motion, Live Frame, accessibility, naming, versioning | Implementing `@an-act/tokens` or any Render Layer theme |
 | [**Design Tokens Export Plan**](./AN-ACT-Design-Tokens-Export-Plan.md) | React, RN, Flutter, SwiftUI, Bubble, CSS, JSON, and NPM package strategy | Exporting tokens or bootstrapping the tokens package |
+
+---
+
+## Tier 1.8 — Render Layer Architecture
+
+| Document | Purpose | Read when |
+|----------|---------|-----------|
+| [**Render Layer Architecture**](./AN-ACT-Render-Layer-Architecture.md) | Official frontend architecture — zero business logic, consumption pipeline, resolvers, platform strategies, diagrams | Starting any client implementation |
+| [**Render Layer Implementation Guide**](./AN-ACT-Render-Layer-Implementation-Guide.md) | Monorepo layout, build order, adapter implementations, platform guides, verification checklist | Building `@an-act/runtime-ui` or platform apps |
 
 ---
 
@@ -179,16 +188,18 @@ Referenced by architecture docs (typically under `docs/` root):
 
 ### For Frontend / Mobile Engineers
 
-1. [Design Tokens Specification](./AN-ACT-Design-Tokens-Specification.md) — Semantic colors, dual-mode themes, full token tables
-2. [Design Tokens Export Plan](./AN-ACT-Design-Tokens-Export-Plan.md) — `@an-act/tokens` package and platform export strategy
-3. [Live Frame v1.0 Specification](./AN-ACT-Live-Frame-v1.0-Specification.md) — Trust tier → UI tier mapping, render contracts
-4. [Runtime JSON Contract](./AN-ACT-Runtime-JSON-Contract.md) — Canonical screen schema and client consumption rules
-5. [Runtime JSON Examples](./AN-ACT-Runtime-JSON-Examples.md) — Full payloads for MVP screens
-6. [Transition To MVP Plan](./AN-ACT-Transition-To-MVP-Plan.md) — Full render roadmap (React, Flutter, Bubble)
-7. [Platform MVP Readiness Assessment §33–38](./AN-ACT-Platform-MVP-Readiness-Assessment.md) — Per-platform readiness
-8. [Product Bible §30–33](./AN-ACT-Product-Bible.md) — Runtime JSON, prototypes, tokens, components
-9. [Product Bible §45](./AN-ACT-Product-Bible.md) — Future render layer consumption guide
-10. [CH3 Design System Registry §6–8](./AN-ACT-CH3-Design-System-Registry.md) — Runtime screens, tokens, prototypes  
+1. [Render Layer Architecture](./AN-ACT-Render-Layer-Architecture.md) — Official frontend spec, zero business logic, lifecycle diagrams
+2. [Render Layer Implementation Guide](./AN-ACT-Render-Layer-Implementation-Guide.md) — Package structure, build order, platform guides
+3. [Design Tokens Specification](./AN-ACT-Design-Tokens-Specification.md) — Semantic colors, dual-mode themes, full token tables
+4. [Design Tokens Export Plan](./AN-ACT-Design-Tokens-Export-Plan.md) — `@an-act/tokens` package and platform export strategy
+5. [Live Frame v1.0 Specification](./AN-ACT-Live-Frame-v1.0-Specification.md) — Trust tier → UI tier mapping, render contracts
+6. [Runtime JSON Contract](./AN-ACT-Runtime-JSON-Contract.md) — Canonical screen schema and client consumption rules
+7. [Runtime JSON Examples](./AN-ACT-Runtime-JSON-Examples.md) — Full payloads for MVP screens
+8. [Transition To MVP Plan](./AN-ACT-Transition-To-MVP-Plan.md) — Full render roadmap (React, Flutter, Bubble)
+9. [Platform MVP Readiness Assessment §33–38](./AN-ACT-Platform-MVP-Readiness-Assessment.md) — Per-platform readiness
+10. [Product Bible §30–33](./AN-ACT-Product-Bible.md) — Runtime JSON, prototypes, tokens, components
+11. [Product Bible §45](./AN-ACT-Product-Bible.md) — Future render layer consumption guide
+12. [CH3 Design System Registry §6–8](./AN-ACT-CH3-Design-System-Registry.md) — Runtime screens, tokens, prototypes  
 
 ### For Backend Engineers
 

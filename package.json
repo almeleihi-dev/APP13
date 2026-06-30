@@ -424,7 +424,14 @@
     "test:b5": "node --import tsx --test test/b5-execution-integration.test.ts",
     "test:b6": "node --import tsx --test --test-concurrency=1 test/b6-financial-migration.test.ts test/b6-ledger-service-integration.test.ts test/b6-escrow-service-integration.test.ts",
     "verify:b4": "bash scripts/verify-b4-docker.sh",
-    "verify:b5": "bash scripts/verify-b5-docker.sh"
+    "verify:b5": "bash scripts/verify-b5-docker.sh",
+    "sync:tokens": "tsx scripts/sync-an-act-tokens.ts",
+    "build:tokens": "npm run sync:tokens && npm --prefix packages/tokens run build",
+    "build:runtime-core": "npm --prefix packages/runtime-core run build",
+    "build:runtime-ui": "npm --prefix packages/runtime-ui run build",
+    "build:render-layer": "npm run build:tokens && npm run build:runtime-core && npm run build:runtime-ui",
+    "test:render-layer-foundation": "node --import tsx --test --test-concurrency=1 test/render-layer-foundation.test.ts",
+    "verify:render-layer-foundation": "bash scripts/verify-render-layer-foundation.sh"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1073.0",
