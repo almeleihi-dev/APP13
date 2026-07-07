@@ -57,7 +57,7 @@ export interface AppDependencies {
 
 export async function buildServer(deps: AppDependencies) {
   const app = Fastify({
-    logger: deps.logger,
+    loggerInstance: deps.logger,
     requestIdHeader: "x-request-id",
     genReqId: () => randomUUID(),
   });
