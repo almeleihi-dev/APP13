@@ -25,6 +25,8 @@ export type { HttpRequestOptions } from "./http-client.js";
 
 export { RuntimeClient, createRuntimeClient } from "./runtime-client.js";
 export type {
+  ActionTypeOption,
+  CreateActionInput,
   NeedContinueResponse,
   NeedSearchResponse,
   NeedTransitionResponse,

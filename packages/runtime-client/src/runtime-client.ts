@@ -47,6 +47,21 @@ export interface ActionTransitionAdvanceResponse {
   mode?: string;
 }
 
+/** Action type from the backend catalog (GET /v1/action-types). */
+export interface ActionTypeOption {
+  actionCode: string;
+  actionName: string;
+  domain: string;
+  templateId?: string;
+}
+
+/** Body accepted by POST /v1/actions (the only structured fields persisted). */
+export interface CreateActionInput {
+  action_type_code: string;
+  title: string;
+  description?: string;
+}
+
 export class RuntimeClient {
   readonly auth: AuthClient;
   private readonly http: HttpClient;
@@ -216,6 +231,23 @@ export class RuntimeClient {
     body: { display_name?: string; bio?: string; business_name?: string }
   ): Promise<Record<string, unknown>> {
     return this.http.patch<Record<string, unknown>>(`/v1/providers/${providerId}`, body);
+  }
+
+  // --- Wave 0 / Production Candidate: real action creation transport ---
+
+  /** GET /v1/action-types — the fixed backend action-type catalog. */
+  async listActionTypes(): Promise<ActionTypeOption[]> {
+    return this.http.get<ActionTypeOption[]>("/v1/action-types");
+  }
+
+  /** POST /v1/actions — persist a real action (type + title + description only). */
+  async createAction(input: CreateActionInput): Promise<Record<string, unknown>> {
+    return this.http.post<Record<string, unknown>>("/v1/actions", { ...input });
+  }
+
+  /** POST /v1/auth/verify-email/request — 202, no body. Used for the email gate. */
+  async requestEmailVerification(): Promise<void> {
+    await this.http.post<void>("/v1/auth/verify-email/request", {});
   }
 
   async getOnboardingOverview(): Promise<Record<string, unknown>> {

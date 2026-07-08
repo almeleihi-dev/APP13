@@ -8,7 +8,15 @@ export type ActionCreatorStage =
   | "quality"
   | "complete";
 
+/** Entry intent for the Copilot builder: an ability ("I can…") or a need ("I need…"). */
+export type ActionIntent = "offer" | "need";
+
+/** Location mode — guidance only; not persisted as a structured backend field. */
+export type ActionLocationMode = "near_me" | "same_city" | "country" | "worldwide" | "remote";
+
 export interface ActionBlueprintForm {
+  /** Backend action type code (category/skill/domain) chosen from GET /v1/action-types. Persisted. */
+  actionTypeCode: string;
   name: string;
   purpose: string;
   targetCustomer: string;
@@ -18,9 +26,14 @@ export interface ActionBlueprintForm {
   deliverables: string;
   evidence: string;
   successCriteria: string;
+  /** Guidance-only fields (no backend structured storage yet) — folded into description. */
+  locationMode: ActionLocationMode | "";
+  availability: string;
+  trustRequirement: string;
 }
 
 export const EMPTY_ACTION_BLUEPRINT: ActionBlueprintForm = {
+  actionTypeCode: "",
   name: "",
   purpose: "",
   targetCustomer: "",
@@ -30,6 +43,9 @@ export const EMPTY_ACTION_BLUEPRINT: ActionBlueprintForm = {
   deliverables: "",
   evidence: "",
   successCriteria: "",
+  locationMode: "",
+  availability: "",
+  trustRequirement: "",
 };
 
 export const ACTION_CREATOR_STAGES: ActionCreatorStage[] = [

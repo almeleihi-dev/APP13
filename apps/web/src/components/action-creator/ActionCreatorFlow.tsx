@@ -1,7 +1,8 @@
 import type { ChangeEvent } from "react";
 import { PremiumButton } from "@an-act/runtime-ui/react";
+import type { ActionTypeOption } from "@an-act/runtime-client";
 import { AnalysisProgress } from "../../launch/AnalysisProgress.js";
-import { ACTION_CREATOR_STEP_LABELS } from "./types.js";
+import { ACTION_CREATOR_STEP_LABELS, type ActionBlueprintForm } from "./types.js";
 import { useActionCreatorPresentation } from "./useActionCreatorPresentation.js";
 import type { ActivePersonalIdentity } from "../../passport/personal-identity.js";
 
@@ -20,7 +21,7 @@ export function ActionCreatorFlow({ identity, onComplete, onCancel, onViewMarket
       <CreatorProgress stage={creator.stage} stageIndex={creator.stageIndex} />
 
       {creator.stage === "identity" ? (
-        <IdentityStep form={creator.form} onChange={creator.updateField} />
+        <IdentityStep form={creator.form} onChange={creator.updateField} actionTypes={creator.actionTypes} />
       ) : null}
 
       {creator.stage === "structure" ? (
@@ -61,6 +62,12 @@ export function ActionCreatorFlow({ identity, onComplete, onCancel, onViewMarket
           actionName={creator.form.name}
           score={creator.quality.score}
           published={Boolean(creator.publishedActionId)}
+          canPublish={creator.canPublish}
+          publishing={creator.publishing}
+          publishError={creator.publishError}
+          needsEmailVerification={creator.needsEmailVerification}
+          verificationSent={creator.verificationSent}
+          onRequestVerification={creator.requestVerification}
           onPublish={creator.publishAction}
           onComplete={onComplete}
           onViewMarketplace={onViewMarketplace}
@@ -141,19 +148,43 @@ interface FormStepProps {
   onChange: ReturnType<typeof useActionCreatorPresentation>["updateField"];
 }
 
-function IdentityStep({ form, onChange }: FormStepProps) {
+function IdentityStep({
+  form,
+  onChange,
+  actionTypes,
+}: FormStepProps & { actionTypes: ActionTypeOption[] }) {
   return (
     <section className="an-act-action-creator__panel">
       <header className="an-act-action-creator__header">
-        <span className="an-act-action-creator__badge">Action Creation · Cycle 01</span>
-        <h1 className="an-act-action-creator__title">Define your Action Identity</h1>
+        <span className="an-act-action-creator__badge">Copilot Action Builder</span>
+        <h1 className="an-act-action-creator__title">Tell AN ACT what you can do</h1>
         <p className="an-act-action-creator__lead">
-          Help customers understand what you offer, who it is for, and what success looks like — before they request
-          service.
+          Start from an ability (“I can…”) or a need (“I need…”). AN ACT helps you
+          structure it into a real action — you stay the decision-maker.
         </p>
       </header>
 
       <div className="an-act-action-creator__fields">
+        <label className="an-act-action-creator__field" htmlFor="action-type">
+          <span className="an-act-action-creator__field-label">Category · action type</span>
+          <span className="an-act-action-creator__field-hint">
+            Pick the closest professional action type. This sets your category, domain, and
+            skill, and is saved with your action.
+          </span>
+          <select
+            id="action-type"
+            className="an-act-action-creator__input"
+            value={form.actionTypeCode}
+            onChange={(event) => onChange("actionTypeCode", event.target.value)}
+          >
+            <option value="">Select an action type…</option>
+            {actionTypes.map((type) => (
+              <option key={type.actionCode} value={type.actionCode}>
+                {type.actionName} · {type.domain}
+              </option>
+            ))}
+          </select>
+        </label>
         <Field
           id="action-name"
           label="Action name"
@@ -249,6 +280,47 @@ function StructureStep({ form, onChange }: FormStepProps) {
           placeholder="All circuits tested, hazards documented, customer sign-off captured in Live Frame"
           multiline
         />
+
+        <div className="an-act-action-creator__guidance" role="note">
+          <p className="an-act-action-creator__field-hint">
+            <strong>Guidance only.</strong> The fields below help you think it through but are
+            <strong> not saved as structured fields yet</strong> — a readable summary is folded
+            into your action description.
+          </p>
+          <label className="an-act-action-creator__field" htmlFor="action-location-mode">
+            <span className="an-act-action-creator__field-label">Location mode</span>
+            <select
+              id="action-location-mode"
+              className="an-act-action-creator__input"
+              value={form.locationMode}
+              onChange={(event) =>
+                onChange("locationMode", event.target.value as ActionBlueprintForm["locationMode"])
+              }
+            >
+              <option value="">Not specified</option>
+              <option value="near_me">Near me</option>
+              <option value="same_city">Same city</option>
+              <option value="country">Country-wide</option>
+              <option value="worldwide">Worldwide</option>
+              <option value="remote">Remote</option>
+            </select>
+          </label>
+          <Field
+            id="action-availability"
+            label="Availability / time expectation"
+            value={form.availability}
+            onChange={(value) => onChange("availability", value)}
+            placeholder="e.g. weekdays, 48-hour turnaround"
+          />
+          <Field
+            id="action-trust"
+            label="Trust requirements"
+            value={form.trustRequirement}
+            onChange={(value) => onChange("trustRequirement", value)}
+            placeholder="e.g. licensed only, insured, ID-verified"
+            multiline
+          />
+        </div>
       </div>
     </section>
   );
@@ -445,6 +517,12 @@ function CompleteStep({
   actionName,
   score,
   published,
+  canPublish,
+  publishing,
+  publishError,
+  needsEmailVerification,
+  verificationSent,
+  onRequestVerification,
   onPublish,
   onComplete,
   onViewMarketplace,
@@ -452,6 +530,12 @@ function CompleteStep({
   actionName: string;
   score: number;
   published: boolean;
+  canPublish: boolean;
+  publishing: boolean;
+  publishError: string | null;
+  needsEmailVerification: boolean;
+  verificationSent: boolean;
+  onRequestVerification: () => void;
   onPublish: () => void;
   onComplete: () => void;
   onViewMarketplace?: () => void;
@@ -461,30 +545,57 @@ function CompleteStep({
       <span
         className={`an-act-action-creator__badge${published ? " an-act-action-creator__badge--success" : ""}`}
       >
-        {published ? "Published to marketplace" : "Ready to publish"}
+        {published ? "Saved to your account" : "Ready to create"}
       </span>
       <h1 className="an-act-action-creator__title">{actionName.trim() || "Professional Action"}</h1>
       <p className="an-act-action-creator__lead">
         {published
-          ? `Your action is live in the Action Marketplace with your Professional Passport attached (quality score ${score}/100).`
-          : `Blueprint saved (quality score ${score}/100). Publish to attach your passport and make this action discoverable.`}
+          ? `Your action was created and saved to your AN ACT account (draft quality score ${score}/100). It will still be there when you return.`
+          : `Blueprint ready (quality score ${score}/100). Create it to save a real action to your account.`}
       </p>
+
       {!published ? (
-        <PremiumButton variant="primary" onClick={onPublish}>
-          Publish to marketplace
+        <PremiumButton variant="primary" onClick={onPublish} disabled={!canPublish || publishing}>
+          {publishing ? "Creating…" : "Create action"}
         </PremiumButton>
       ) : null}
+
+      {!published && publishError ? (
+        <p className="an-act-action-blueprint__footnote" role="alert">
+          {publishError}
+        </p>
+      ) : null}
+
+      {!published && needsEmailVerification ? (
+        <div className="an-act-action-creator__guidance" role="note">
+          <p className="an-act-action-creator__field-hint">
+            Creating a real action requires a verified email.{" "}
+            {verificationSent
+              ? "We've sent a verification email — confirm it, then create your action."
+              : "Verify your email to continue."}
+          </p>
+          {!verificationSent ? (
+            <PremiumButton variant="secondary" onClick={onRequestVerification}>
+              Send verification email
+            </PremiumButton>
+          ) : null}
+        </div>
+      ) : null}
+
       {published && onViewMarketplace ? (
         <PremiumButton variant="primary" onClick={onViewMarketplace}>
           View in marketplace
         </PremiumButton>
       ) : null}
-      <PremiumButton variant={published ? "secondary" : "secondary"} onClick={onComplete}>
+
+      <PremiumButton variant="secondary" onClick={onComplete}>
         Return to Personal Home
       </PremiumButton>
-      {!published ? (
+
+      {published ? (
         <p className="an-act-action-blueprint__footnote" role="note">
-          Public beta · actions persist locally until server sync ships
+          Saved fields: action type (category/skill), title, and description. Location,
+          availability, and trust preferences are folded into the description as guidance for now.
         </p>
       ) : null}
     </section>

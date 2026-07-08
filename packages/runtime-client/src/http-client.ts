@@ -94,7 +94,7 @@ export class HttpClient {
       );
     }
 
-    if (response.status === 204) {
+    if (response.status === 204 || response.status === 202) {
       return undefined as T;
     }
 
