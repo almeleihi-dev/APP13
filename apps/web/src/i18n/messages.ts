@@ -2,6 +2,7 @@ import type { SupportedLocale } from "./locale-types.js";
 
 export type MessageKey =
   | "brand.tagline"
+  | "brand.valueProp"
   | "entry.startFirstAct"
   | "entry.continueGuest"
   | "entry.whatCanActDo"
@@ -57,6 +58,7 @@ export type MessageKey =
 
 const EN: Record<MessageKey, string> = {
   "brand.tagline": "One Action Can Change Everything",
+  "brand.valueProp": "AN ACT turns what you intend to do into structured actions, trusted agreements, and a professional identity that grows as you deliver.",
   "entry.startFirstAct": "Start your first act",
   "entry.continueGuest": "Continue as Guest",
   "entry.whatCanActDo": "What can an act do for me?",
@@ -114,6 +116,7 @@ const EN: Record<MessageKey, string> = {
 const DE: Record<MessageKey, string> = {
   ...EN,
   "brand.tagline": "Eine Handlung kann alles verändern",
+  "brand.valueProp": "AN ACT verwandelt deine Absicht in strukturierte Aktionen, vertrauenswürdige Vereinbarungen und eine berufliche Identität, die mit deiner Leistung wächst.",
   "entry.startFirstAct": "Starte deinen ersten Act",
   "entry.continueGuest": "Als Gast fortfahren",
   "entry.whatCanActDo": "Was kann an act für mich tun?",
@@ -167,6 +170,7 @@ const DE: Record<MessageKey, string> = {
 const AR: Record<MessageKey, string> = {
   ...EN,
   "brand.tagline": "فعل واحد يمكن أن يغيّر كل شيء",
+  "brand.valueProp": "يحوّل AN ACT ما تنوي فعله إلى إجراءات منظّمة، واتفاقيات موثوقة، وهوية مهنية تنمو مع إنجازك.",
   "entry.startFirstAct": "ابدأ أول act",
   "entry.continueGuest": "المتابعة كضيف",
   "entry.whatCanActDo": "ماذا يمكن أن يفعل an act من أجلي؟",

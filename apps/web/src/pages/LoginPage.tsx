@@ -56,17 +56,6 @@ export function LoginPage({ onRegister, onRegisterProvider, onBackToLanding }: L
             />
           ) : null}
 
-          <div className="p12-auth__providers" aria-label="Social sign-in (presentation)">
-            <button type="button" className="p12-auth__provider" disabled title="Presentation only">
-              Continue with Apple
-            </button>
-            <button type="button" className="p12-auth__provider" disabled title="Presentation only">
-              Continue with Google
-            </button>
-          </div>
-
-          <div className="p12-auth__divider">or email</div>
-
           <form onSubmit={onSubmit} style={{ display: "grid", gap: 16 }} aria-busy={loading}>
             <label className="p12-field">
               Email

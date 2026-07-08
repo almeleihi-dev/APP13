@@ -11,6 +11,15 @@
   margin: 16px auto 0;
 }
 
+.launch-splash__valueprop {
+  width: min(100%, 420px);
+  margin: 8px auto 0;
+  font-size: clamp(0.9rem, 2.4vw, 1.02rem);
+  line-height: 1.5;
+  text-align: center;
+  opacity: 0.82;
+}
+
 .launch-splash__guest-explainer {
   width: min(100%, 340px);
   margin: 10px auto 0;

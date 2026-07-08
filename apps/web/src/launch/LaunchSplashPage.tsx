@@ -106,6 +106,7 @@ export function LaunchSplashPage() {
             </button>
           </div>
           <p className="launch-splash__subtitle">{t("brand.tagline")}</p>
+          <p className="launch-splash__valueprop">{t("brand.valueProp")}</p>
           {onboardingMode ? (
             <>
               <p className="launch-splash__onboarding-cue">{t("entry.whatCanActDo")}</p>
