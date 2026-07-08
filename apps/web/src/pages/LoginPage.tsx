@@ -17,8 +17,8 @@ export interface LoginPageProps {
 
 export function LoginPage({ onRegister, onRegisterProvider, onBackToLanding }: LoginPageProps) {
   const { login, loading, error, sessionExpired } = useRuntime();
-  const [email, setEmail] = useState("customer.demo@anact.local");
-  const [password, setPassword] = useState("demo-password-123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
 
   async function onSubmit(event: FormEvent) {
@@ -46,7 +46,7 @@ export function LoginPage({ onRegister, onRegisterProvider, onBackToLanding }: L
             </p>
           </div>
           <p style={{ margin: 0, textAlign: "center", color: "var(--an-act-p12-ink-muted)", fontSize: "0.9375rem" }}>
-            Premium access to the authoritative runtime
+            Sign in to your AN ACT account
           </p>
 
           {sessionExpired ? (

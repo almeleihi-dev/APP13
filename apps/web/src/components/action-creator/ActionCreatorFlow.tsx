@@ -359,7 +359,7 @@ function BlueprintStep({
           ))}
         </div>
         <p className="an-act-action-blueprint__footnote" role="note">
-          Presentation preview only · no backend publish in Cycle 01
+          Preview of your blueprint · your action is saved for real on the final step
         </p>
       </div>
     </section>
@@ -434,7 +434,7 @@ function MarketplacePreviewStep({
 
       <article className="an-act-action-marketplace-card">
         <div className="an-act-action-marketplace-card__banner">
-          <span>Draft preview · Public beta</span>
+          <span>Preview · how your listing will look</span>
         </div>
         <div className="an-act-action-marketplace-card__head">
           <div className="an-act-action-marketplace-card__avatar" aria-hidden="true">
@@ -479,7 +479,7 @@ function QualityStep({ report }: { report: ReturnType<typeof useActionCreatorPre
         <span className="an-act-action-creator__badge">Action Quality</span>
         <h1 className="an-act-action-creator__title">Review clarity before publishing</h1>
         <p className="an-act-action-creator__lead">
-          Friendly guidance to strengthen your blueprint — presentation-only scoring in Cycle 01.
+          Friendly guidance to strengthen your blueprint — this score is guidance only and doesn’t affect whether your action is saved.
         </p>
       </header>
 

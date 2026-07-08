@@ -53,7 +53,7 @@ export function RegisterPage({ onLogin, onSuccess, onBackToLanding }: RegisterPa
             </p>
           </div>
           <p style={{ margin: 0, textAlign: "center", color: "var(--an-act-p12-ink-muted)", fontSize: "0.9375rem" }}>
-            Account validation is server authoritative
+            Your account is created securely on AN ACT’s servers. You’ll verify your email before publishing actions.
           </p>
           <form onSubmit={onSubmit} style={{ display: "grid", gap: 16 }} aria-busy={loading}>
             <label className="p12-field">
