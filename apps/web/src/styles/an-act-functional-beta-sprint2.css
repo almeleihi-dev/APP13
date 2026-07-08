@@ -1,0 +1,74 @@
+/**
+ * AN ACT — Functional Beta Sprint 2
+ * Contracted living actions: parties, evidence, passport history.
+ */
+
+.an-act-contract-experience {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.an-act-contract-experience__parties {
+  margin-top: 8px;
+}
+
+.an-act-contract-experience__party-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.an-act-contract-experience__party {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.an-act-contract-experience__details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.an-act-contract-experience__details dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.72;
+}
+
+.an-act-contract-experience__details dd {
+  margin: 4px 0 0;
+}
+
+.an-act-contract-experience__evidence-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.an-act-contract-experience__evidence-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.an-act-contract-experience__evidence-item {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(66, 212, 146, 0.18);
+  background: rgba(66, 212, 146, 0.04);
+}
+
+.an-act-living-s2 .an-act-personal-home__panel .an-act-personal-home__label {
+  letter-spacing: 0.04em;
+}

@@ -1,0 +1,340 @@
+/**
+ * Phase 10 — Premium landing & marketplace flow presentation.
+ */
+
+.ds-landing {
+  min-height: 100vh;
+  display: grid;
+  gap: var(--ds-space-10);
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--ds-space-6) var(--ds-space-6) var(--ds-space-12);
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(37, 99, 235, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(99, 102, 241, 0.08), transparent),
+    var(--ds-color-surface-soft);
+}
+
+.ds-landing__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-4);
+  padding: var(--ds-space-2) 0;
+}
+
+.ds-landing__nav-badge {
+  padding: 6px 12px;
+  border-radius: var(--ds-radius-pill);
+  background: var(--ds-color-surface);
+  border: 1px solid var(--ds-color-border);
+  font-family: var(--ds-font-mono);
+  font-size: var(--ds-text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ds-color-ink-muted);
+}
+
+.ds-landing__hero {
+  display: grid;
+  gap: var(--ds-space-5);
+  padding: var(--ds-space-8) 0 var(--ds-space-4);
+  max-width: 720px;
+}
+
+.ds-landing__lead {
+  max-width: 56ch;
+  font-size: var(--ds-text-lg);
+}
+
+.ds-landing__hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-space-3);
+  padding-top: var(--ds-space-2);
+}
+
+.ds-landing__highlights {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ds-space-4);
+}
+
+.ds-landing__entries {
+  display: grid;
+  gap: var(--ds-space-6);
+}
+
+.ds-landing__entries-header {
+  display: grid;
+  gap: var(--ds-space-2);
+  max-width: 640px;
+}
+
+.ds-landing__entry-grid {
+  display: grid;
+  gap: var(--ds-space-4);
+}
+
+.ds-landing__entry {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--ds-space-4);
+  align-items: center;
+  border: 1px solid var(--ds-color-border);
+}
+
+.ds-landing__entry--featured {
+  border-color: rgba(37, 99, 235, 0.24);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.04), var(--ds-color-surface));
+  box-shadow: var(--ds-shadow-glow);
+}
+
+.ds-landing__entry-icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-color-accent-soft);
+  color: var(--ds-color-accent);
+  font-size: 1.1rem;
+}
+
+.ds-landing__entry-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.ds-landing__entry-arrow {
+  color: var(--ds-color-ink-muted);
+  font-size: 1.25rem;
+  transition: transform var(--ds-motion-fast);
+}
+
+.ds-landing__entry:hover .ds-landing__entry-arrow {
+  transform: translateX(4px);
+  color: var(--ds-color-accent);
+}
+
+.ds-landing__footer {
+  padding-top: var(--ds-space-8);
+  border-top: 1px solid var(--ds-color-border);
+  text-align: center;
+}
+
+/* ── Marketplace flow (Need MVP) ─────────────────────────────── */
+
+.ds-flow {
+  display: grid;
+  gap: var(--ds-space-6);
+  padding-bottom: var(--ds-space-8);
+}
+
+.ds-flow__header {
+  display: grid;
+  gap: var(--ds-space-3);
+}
+
+.ds-flow__hero {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--ds-space-4);
+  align-items: start;
+  padding: var(--ds-space-6);
+  border-radius: var(--ds-radius-2xl);
+  background: linear-gradient(135deg, var(--ds-color-surface) 0%, var(--ds-color-surface-soft) 100%);
+  border: 1px solid var(--ds-color-border);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.ds-flow__price-pill {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  padding: var(--ds-space-3) var(--ds-space-4);
+  border-radius: var(--ds-radius-lg);
+  background: var(--ds-color-ink);
+  color: #fff;
+  min-width: 120px;
+}
+
+.ds-flow__price-pill small {
+  font-size: var(--ds-text-xs);
+  opacity: 0.72;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ds-flow__price-pill strong {
+  font-size: var(--ds-text-xl);
+  letter-spacing: -0.02em;
+}
+
+.ds-flow__trust-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ds-space-3);
+}
+
+.ds-flow__trust-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-space-3);
+  padding: var(--ds-space-3);
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-color-surface-soft);
+}
+
+.ds-flow__trust-icon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: var(--ds-radius-sm);
+  background: var(--ds-color-success-soft);
+  color: var(--ds-color-success);
+  font-size: 0.875rem;
+}
+
+.ds-flow__metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--ds-space-3);
+}
+
+.ds-flow__metric {
+  display: grid;
+  gap: 4px;
+  padding: var(--ds-space-4);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-color-border);
+  background: var(--ds-color-surface);
+}
+
+.ds-flow__metric-label {
+  font-size: var(--ds-text-xs);
+  color: var(--ds-color-ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ds-flow__metric-value {
+  font-size: var(--ds-text-base);
+  font-weight: 600;
+  color: var(--ds-color-ink);
+}
+
+.ds-flow__passport {
+  display: grid;
+  gap: var(--ds-space-3);
+  padding: var(--ds-space-5);
+  border-radius: var(--ds-radius-xl);
+  border: 1px solid var(--ds-color-border);
+  background: linear-gradient(180deg, var(--ds-color-surface-soft), var(--ds-color-surface));
+}
+
+.ds-flow__passport-label {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-2);
+}
+
+.ds-flow__reviews {
+  display: grid;
+  gap: var(--ds-space-4);
+}
+
+.ds-flow__review {
+  padding: var(--ds-space-4);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-color-border);
+  background: var(--ds-color-surface);
+}
+
+.ds-flow__review-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--ds-space-3);
+  margin-bottom: var(--ds-space-2);
+}
+
+.ds-flow__confirm-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: var(--ds-space-5);
+  border-radius: var(--ds-radius-xl);
+  background: var(--ds-color-ink);
+  color: #fff;
+}
+
+.ds-flow__confirm-total strong {
+  font-size: var(--ds-text-2xl);
+  letter-spacing: -0.02em;
+}
+
+.ds-flow__steps {
+  display: flex;
+  gap: var(--ds-space-2);
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ds-flow__step {
+  padding: 6px 12px;
+  border-radius: var(--ds-radius-pill);
+  font-size: var(--ds-text-xs);
+  font-weight: 600;
+  color: var(--ds-color-ink-muted);
+  background: var(--ds-color-surface-muted);
+}
+
+.ds-flow__step--active {
+  color: var(--ds-color-accent);
+  background: var(--ds-color-accent-soft);
+}
+
+.ds-flow__step--done {
+  color: var(--ds-color-success);
+  background: var(--ds-color-success-soft);
+}
+
+@media (max-width: 768px) {
+  .ds-landing__highlights {
+    grid-template-columns: 1fr;
+  }
+
+  .ds-flow__hero {
+    grid-template-columns: 1fr;
+  }
+
+  .ds-flow__price-pill {
+    align-items: flex-start;
+  }
+
+  .ds-flow__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ds-flow__trust-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ds-flow--premium {
+  gap: var(--ds-space-6);
+}
+
+@media (min-width: 720px) {
+  .ds-flow__metrics {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

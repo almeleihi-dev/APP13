@@ -1,0 +1,32 @@
+/**
+ * AN ACT — Functional Beta Sprint 1
+ * Living platform: published actions, request lifecycle, passport-attached ownership.
+ */
+
+.an-act-living-workspace .an-act-personal-home__inline-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: rgba(66, 212, 146, 0.95);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.an-act-marketplace-provider-card__photo {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.an-act-marketplace-provider-card--published {
+  border-color: rgba(66, 212, 146, 0.28);
+}
+
+.an-act-living-published-actions {
+  margin-bottom: 16px;
+}

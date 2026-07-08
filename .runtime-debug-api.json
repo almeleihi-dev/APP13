@@ -1,0 +1,32 @@
+{
+  "needStatus": 401,
+  "need": {
+    "type": "https://app13.dev/problems/UNAUTHORIZED",
+    "title": "Unauthorized",
+    "status": 401,
+    "detail": "Authentication required",
+    "code": "UNAUTHORIZED",
+    "engine": "platform",
+    "request_id": "57f884df-f95e-488b-a06a-ec11b20aea79"
+  },
+  "actionStatus": 401,
+  "action": {
+    "type": "https://app13.dev/problems/UNAUTHORIZED",
+    "title": "Unauthorized",
+    "status": 401,
+    "detail": "Authentication required",
+    "code": "UNAUTHORIZED",
+    "engine": "platform",
+    "request_id": "9eb30fc4-4bad-4f0d-8a12-c57d7a1e74f6"
+  },
+  "homeStatus": 401,
+  "home": {
+    "type": "https://app13.dev/problems/UNAUTHORIZED",
+    "title": "Unauthorized",
+    "status": 401,
+    "detail": "Authentication required",
+    "code": "UNAUTHORIZED",
+    "engine": "platform",
+    "request_id": "76025a04-08f0-459b-a406-68a0b4af961d"
+  }
+}

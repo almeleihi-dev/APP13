@@ -1,0 +1,115 @@
+import type { RuntimeClientConfig, RuntimeProblemDetails } from "./types.js";
+import { RuntimeClientError } from "./types.js";
+import { createIdempotencyKey } from "./idempotency.js";
+import { resolveFetch, resolveRequestUrl } from "./fetch-bind.js";
+
+export interface HttpRequestOptions {
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  body?: Record<string, unknown>;
+  query?: Record<string, string | undefined>;
+  auth?: boolean;
+  /** Internal flag to prevent infinite refresh loops. */
+  _retried?: boolean;
+}
+
+export class HttpClient {
+  private readonly fetchImpl: typeof fetch;
+
+  constructor(private readonly config: RuntimeClientConfig) {
+    this.fetchImpl = resolveFetch(config.fetch);
+  }
+
+  async request<T>(path: string, options: HttpRequestOptions = {}): Promise<T> {
+    try {
+      return await this.executeRequest<T>(path, options);
+    } catch (err) {
+      if (
+        err instanceof RuntimeClientError &&
+        err.status === 401 &&
+        options.auth !== false &&
+        !options._retried &&
+        this.config.onRefresh
+      ) {
+        const refreshed = await this.config.onRefresh();
+        if (refreshed) {
+          return this.executeRequest<T>(path, { ...options, _retried: true });
+        }
+        this.config.onRefreshFailure?.();
+      }
+      throw err;
+    }
+  }
+
+  private async executeRequest<T>(path: string, options: HttpRequestOptions): Promise<T> {
+    const url = resolveRequestUrl(this.config.baseUrl, path);
+    if (options.query) {
+      for (const [key, value] of Object.entries(options.query)) {
+        if (value !== undefined) {
+          url.searchParams.set(key, value);
+        }
+      }
+    }
+
+    const headers: Record<string, string> = {
+      Accept: "application/json",
+    };
+
+    if (options.body) {
+      headers["Content-Type"] = "application/json";
+    }
+
+    const method = options.method ?? "GET";
+    if (method === "POST" || method === "PUT" || method === "PATCH") {
+      headers["Idempotency-Key"] = createIdempotencyKey("runtime");
+    }
+
+    if (options.auth !== false) {
+      const token = this.config.getAccessToken?.();
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+    }
+
+    const response = await this.fetchImpl(url.toString(), {
+      method,
+      headers,
+      body: options.body ? JSON.stringify(options.body) : undefined,
+    });
+
+    if (response.status === 401) {
+      throw new RuntimeClientError("Unauthorized", undefined, 401);
+    }
+
+    if (!response.ok) {
+      let problem: RuntimeProblemDetails | undefined;
+      try {
+        problem = (await response.json()) as RuntimeProblemDetails;
+      } catch {
+        problem = undefined;
+      }
+      throw new RuntimeClientError(
+        problem?.detail ?? problem?.title ?? `HTTP ${response.status}`,
+        problem,
+        response.status
+      );
+    }
+
+    if (response.status === 204) {
+      return undefined as T;
+    }
+
+    return (await response.json()) as T;
+  }
+
+  get<T>(path: string, query?: Record<string, string | undefined>): Promise<T> {
+    return this.request<T>(path, { method: "GET", query });
+  }
+
+  post<T>(path: string, body?: Record<string, unknown>, query?: Record<string, string | undefined>): Promise<T> {
+    return this.request<T>(path, { method: "POST", body, query });
+  }
+
+  patch<T>(path: string, body?: Record<string, unknown>): Promise<T> {
+    return this.request<T>(path, { method: "PATCH", body });
+  }
+}

@@ -1,0 +1,92 @@
+import { buildPrototypeSpec } from "../foundation/prototype-schema.js";
+
+export const SUCCESS_PROTOTYPE = buildPrototypeSpec({
+  id: "prototype-success",
+  name: "Success",
+  purpose: "Action completion success confirmation with next steps.",
+  category: "action",
+  mode: "action",
+  layout: {
+    layoutId: "action-layout",
+    topNavigation: true,
+    bottomNavigation: false,
+    sideNavigation: false,
+    floatingAction: false,
+    route: "/action/success",
+  },
+  navigation: { pattern: "stack", parentScreenId: "prototype-active-action", relatedScreenIds: ["prototype-action-home", "prototype-profile"] },
+  componentsUsed: ["core-ui-navigation-bar", "core-ui-achievement-card", "core-ui-button", "core-ui-badge"],
+  typography: { header: "heading", body: "body" },
+  spacing: { contentPaddingX: "space-24", contentPaddingY: "space-32", gap: "space-16" },
+  motion: "normal",
+  transitionBehavior: { usesOfficialTransition: false },
+  responsive: {
+    compact: { columns: 1, showsBottomNav: false },
+    regular: { columns: 1, showsBottomNav: false },
+    expanded: { columns: 1, showsSideNav: true },
+  },
+  designTokens: ["background.primary", "text.primary", "status.success", "surface.elevated", "accent.highlight"],
+});
+
+export const COMPLETION_PROTOTYPE = buildPrototypeSpec({
+  id: "prototype-completion",
+  name: "Completion",
+  purpose: "Action completion summary before success and rating.",
+  category: "action",
+  mode: "action",
+  layout: {
+    layoutId: "action-layout",
+    topNavigation: true,
+    bottomNavigation: false,
+    sideNavigation: false,
+    floatingAction: false,
+    backBehavior: "pop-stack",
+    route: "/action/completion",
+  },
+  navigation: { pattern: "stack", parentScreenId: "prototype-active-action", relatedScreenIds: ["prototype-success", "prototype-profile"] },
+  componentsUsed: ["core-ui-navigation-bar", "core-ui-card", "core-ui-progress", "core-ui-button", "core-ui-achievement-card"],
+  typography: { header: "title", body: "body" },
+  spacing: { contentPaddingX: "space-20", contentPaddingY: "space-24", gap: "space-16" },
+  motion: "normal",
+  transitionBehavior: { usesOfficialTransition: false },
+  responsive: {
+    compact: { columns: 1, showsBottomNav: false },
+    regular: { columns: 1, showsBottomNav: false },
+    expanded: { columns: 2, showsSideNav: true },
+  },
+  designTokens: ["background.primary", "text.primary", "status.success", "surface.elevated", "accent.primary"],
+});
+
+export const RATING_PROTOTYPE = buildPrototypeSpec({
+  id: "prototype-rating",
+  name: "Rating",
+  purpose: "Post-completion rating and feedback capture.",
+  category: "action",
+  mode: "action",
+  layout: {
+    layoutId: "action-layout",
+    topNavigation: true,
+    bottomNavigation: false,
+    sideNavigation: false,
+    floatingAction: false,
+    route: "/action/rating",
+  },
+  navigation: { pattern: "stack", parentScreenId: "prototype-success", relatedScreenIds: ["prototype-action-home", "prototype-profile"] },
+  componentsUsed: ["core-ui-navigation-bar", "core-ui-input", "core-ui-button", "core-ui-card"],
+  typography: { header: "title", body: "body" },
+  spacing: { contentPaddingX: "space-20", contentPaddingY: "space-20", gap: "space-12" },
+  motion: "fast",
+  transitionBehavior: {
+    usesOfficialTransition: true,
+    direction: "action-to-need",
+    brandLine: "an act...",
+    stageTexts: ["Preparing...", "Matching...", "Building Contract...", "Securing...", "Action Ready."],
+    progressVariant: "terminal",
+  },
+  responsive: {
+    compact: { columns: 1, showsBottomNav: false },
+    regular: { columns: 1, showsBottomNav: false },
+    expanded: { columns: 1, showsSideNav: true },
+  },
+  designTokens: ["background.primary", "text.primary", "accent.highlight", "surface.primary", "border.focus"],
+});

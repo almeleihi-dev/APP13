@@ -1,0 +1,487 @@
+/**
+ * AN ACT — Experience Excellence Sprint 1
+ * Presentation-only UX polish: motion, depth, hierarchy, micro-interactions.
+ */
+
+:root {
+  --an-act-ex-fast: 280ms;
+  --an-act-ex-base: 420ms;
+  --an-act-ex-slow: 640ms;
+  --an-act-ex-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --an-act-ex-spring: cubic-bezier(0.34, 1.28, 0.64, 1);
+  --an-act-ex-green: #42d492;
+  --an-act-ex-green-glow: rgba(66, 212, 146, 0.38);
+  --an-act-ex-green-soft: rgba(66, 212, 146, 0.08);
+  --an-act-ex-graphite: rgba(14, 14, 18, 0.92);
+  --an-act-ex-depth: 0 24px 48px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --an-act-ex-depth-hover: 0 32px 64px rgba(0, 0, 0, 0.48), 0 0 0 1px rgba(66, 212, 146, 0.14);
+}
+
+/* ── 1. Launch — OS entry feel ── */
+
+.an-act-excellence-s1.launch-router {
+  position: relative;
+}
+
+.an-act-excellence-s1 .launch-router__page {
+  animation: an-act-ex-page-enter var(--an-act-ex-base) var(--an-act-ex-ease) both;
+}
+
+@keyframes an-act-ex-page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.992);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.an-act-excellence-s1 .launch-splash__inner {
+  animation-duration: var(--an-act-ex-slow);
+}
+
+.an-act-excellence-s1 .launch-splash__key {
+  transition: transform var(--an-act-ex-fast) var(--an-act-ex-spring);
+}
+
+.an-act-excellence-s1 .launch-splash__key:hover {
+  transform: translateY(-2px) scale(1.015);
+}
+
+.an-act-excellence-s1 .launch-splash__key:active {
+  transform: translateY(1px) scale(0.985);
+  transition-duration: 120ms;
+}
+
+.an-act-excellence-s1 .launch-splash__key-glow {
+  animation: an-act-ex-key-glow 3.2s var(--an-act-ex-ease) infinite alternate;
+}
+
+@keyframes an-act-ex-key-glow {
+  from {
+    opacity: 0.55;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+.an-act-excellence-s1 .launch-splash__tagline {
+  animation: an-act-ex-fade-up var(--an-act-ex-base) var(--an-act-ex-ease) 180ms both;
+}
+
+.an-act-excellence-s1 .launch-builder__panel,
+.an-act-excellence-s1 .launch-preview__card {
+  animation: an-act-ex-fade-up var(--an-act-ex-base) var(--an-act-ex-ease) both;
+}
+
+.an-act-excellence-s1 .launch-ceremony__overlay {
+  backdrop-filter: blur(12px);
+}
+
+.an-act-excellence-s1 .launch-ceremony__content {
+  animation: an-act-ex-ceremony-enter var(--an-act-ex-slow) var(--an-act-ex-ease) both;
+}
+
+@keyframes an-act-ex-ceremony-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes an-act-ex-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Calmer ambient on productivity surfaces */
+.an-act-passport-flow .launch-gm__ambient-green,
+.an-act-personal-home .launch-gm__ambient-green {
+  animation-duration: 18s;
+  opacity: 0.72;
+}
+
+/* ── 2. Professional Passport — world-class credential ── */
+
+.an-act-passport-flow--setup .an-act-passport-flow__shell,
+.an-act-passport-flow--dashboard .an-act-passport-flow__shell {
+  animation: an-act-ex-page-enter var(--an-act-ex-base) var(--an-act-ex-ease) both;
+}
+
+.an-act-passport-flow__shell {
+  width: min(1180px, calc(100% - clamp(24px, 6vw, 48px)));
+}
+
+.an-act-passport-form__panel {
+  box-shadow: var(--an-act-ex-depth);
+  transition:
+    border-color var(--an-act-ex-fast) var(--an-act-ex-ease),
+    box-shadow var(--an-act-ex-fast) var(--an-act-ex-ease),
+    transform var(--an-act-ex-fast) var(--an-act-ex-ease);
+}
+
+.an-act-passport-form__panel:hover {
+  border-color: rgba(66, 212, 146, 0.16);
+  box-shadow: var(--an-act-ex-depth-hover);
+}
+
+.an-act-passport-form__input:hover,
+.an-act-passport-form__textarea:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(8, 8, 10, 0.82);
+}
+
+.an-act-passport-form__photo-preview {
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(66, 212, 146, 0.18),
+    0 12px 32px rgba(0, 0, 0, 0.35);
+  transition:
+    box-shadow var(--an-act-ex-fast) var(--an-act-ex-ease),
+    transform var(--an-act-ex-fast) var(--an-act-ex-ease);
+}
+
+.an-act-passport-form__photo-preview::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 1px solid rgba(66, 212, 146, 0.22);
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.an-act-passport-form__photo-zone:hover .an-act-passport-form__photo-preview {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px rgba(66, 212, 146, 0.32),
+    0 16px 40px rgba(0, 0, 0, 0.42),
+    0 0 24px rgba(66, 212, 146, 0.08);
+}
+
+.an-act-passport-dashboard__passport .p13-passport-preview,
+.an-act-personal-home__passport-preview {
+  box-shadow: var(--an-act-ex-depth);
+  border: 1px solid rgba(66, 212, 146, 0.12);
+  background:
+    linear-gradient(165deg, rgba(66, 212, 146, 0.04) 0%, transparent 42%),
+    var(--an-act-ex-graphite);
+  transition:
+    box-shadow var(--an-act-ex-base) var(--an-act-ex-ease),
+    border-color var(--an-act-ex-base) var(--an-act-ex-ease),
+    transform var(--an-act-ex-base) var(--an-act-ex-ease);
+}
+
+.an-act-passport-dashboard__passport .p13-passport-preview:hover,
+.an-act-personal-home__passport-access:hover .p13-passport-preview {
+  transform: translateY(-3px);
+  border-color: rgba(66, 212, 146, 0.22);
+  box-shadow: var(--an-act-ex-depth-hover);
+}
+
+.an-act-platform-continuity .p13-passport-preview__avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  box-shadow: 0 0 0 1px rgba(66, 212, 146, 0.2);
+}
+
+.an-act-platform-continuity .p13-passport-preview__name {
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 1.2rem;
+  letter-spacing: -0.03em;
+}
+
+.an-act-passport-dashboard__panel {
+  transition:
+    border-color var(--an-act-ex-fast) var(--an-act-ex-ease),
+    box-shadow var(--an-act-ex-fast) var(--an-act-ex-ease);
+}
+
+.an-act-passport-dashboard__panel:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+.an-act-passport-form--submitting {
+  pointer-events: none;
+  opacity: 0.88;
+}
+
+.an-act-passport-form--submitting .an-act-passport-form__submit {
+  position: relative;
+  overflow: hidden;
+}
+
+.an-act-passport-form--submitting .an-act-passport-form__submit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.12) 50%, transparent 70%);
+  animation: an-act-ex-shimmer 1.1s linear infinite;
+}
+
+@keyframes an-act-ex-shimmer {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(120%);
+  }
+}
+
+/* ── 3. Personal Home — premium command center ── */
+
+.an-act-excellence-s1-page .an-act-personal-home__shell {
+  animation: an-act-ex-page-enter var(--an-act-ex-base) var(--an-act-ex-ease) both;
+}
+
+.an-act-personal-home__hero {
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--an-act-ex-depth);
+}
+
+.an-act-personal-home__hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 0% 0%, rgba(66, 212, 146, 0.06), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(66, 212, 146, 0.03), transparent 50%);
+  pointer-events: none;
+}
+
+.an-act-excellence-s1-page .an-act-personal-home__section {
+  animation: an-act-ex-fade-up var(--an-act-ex-base) var(--an-act-ex-ease) both;
+}
+
+.an-act-excellence-s1-page .an-act-personal-home__section:nth-child(3) {
+  animation-delay: 80ms;
+}
+
+.an-act-excellence-s1-page .an-act-personal-home__section:nth-child(4) {
+  animation-delay: 140ms;
+}
+
+.an-act-excellence-s1-page .an-act-personal-home__section:nth-child(5) {
+  animation-delay: 200ms;
+}
+
+.an-act-excellence-s1-page .an-act-personal-home__section:nth-child(6) {
+  animation-delay: 260ms;
+}
+
+.an-act-personal-home__panel {
+  transition:
+    border-color var(--an-act-ex-fast) var(--an-act-ex-ease),
+    box-shadow var(--an-act-ex-fast) var(--an-act-ex-ease),
+    transform var(--an-act-ex-fast) var(--an-act-ex-ease);
+}
+
+.an-act-personal-home .premium-card--interactive,
+.an-act-personal-home .premium-card--featured {
+  transition:
+    border-color var(--an-act-ex-fast) var(--an-act-ex-ease),
+    box-shadow var(--an-act-ex-fast) var(--an-act-ex-ease),
+    transform var(--an-act-ex-fast) var(--an-act-ex-ease);
+}
+
+.an-act-personal-home .premium-card--interactive:hover,
+.an-act-personal-home .premium-card--featured:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--an-act-ex-depth-hover);
+}
+
+.an-act-personal-home__list li,
+.an-act-personal-home__activity li {
+  padding: 8px 10px;
+  margin: -8px -10px;
+  border-radius: 10px;
+  transition: background var(--an-act-ex-fast) var(--an-act-ex-ease);
+}
+
+.an-act-personal-home__list li:hover,
+.an-act-personal-home__activity li:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.an-act-personal-home__progress-fill {
+  transition: width var(--an-act-ex-slow) var(--an-act-ex-ease);
+  box-shadow: 0 0 12px rgba(66, 212, 146, 0.35);
+}
+
+.an-act-personal-home__footer-link {
+  transition: color var(--an-act-ex-fast) var(--an-act-ex-ease);
+}
+
+.an-act-personal-home__section-title {
+  position: relative;
+  padding-left: 14px;
+}
+
+.an-act-personal-home__section-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  bottom: 0.15em;
+  width: 3px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--an-act-ex-green), rgba(66, 212, 146, 0.2));
+}
+
+/* ── 4. Live Frame — elegant status ── */
+
+.an-act-identity-card__live-frame,
+.an-act-identity-nav__tier {
+  position: relative;
+  transition:
+    box-shadow var(--an-act-ex-fast) var(--an-act-ex-ease),
+    border-color var(--an-act-ex-fast) var(--an-act-ex-ease);
+}
+
+.an-act-identity-card__live-frame--silver,
+.an-act-identity-nav__tier--silver {
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.04);
+}
+
+.an-act-identity-card__live-frame--gold,
+.an-act-identity-nav__tier--gold {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.12);
+  animation: an-act-ex-live-frame-pulse 3.6s var(--an-act-ex-ease) infinite;
+}
+
+.an-act-identity-card__live-frame--platinum,
+.an-act-identity-nav__tier--platinum {
+  box-shadow: 0 0 24px rgba(66, 212, 146, 0.18);
+  animation: an-act-ex-live-frame-pulse 2.8s var(--an-act-ex-ease) infinite;
+}
+
+@keyframes an-act-ex-live-frame-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 16px rgba(66, 212, 146, 0.12);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(66, 212, 146, 0.28);
+  }
+}
+
+.an-act-rc-live-frame-item--active {
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color var(--an-act-ex-base) var(--an-act-ex-ease),
+    box-shadow var(--an-act-ex-base) var(--an-act-ex-ease);
+}
+
+.an-act-rc-live-frame-item--active::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 40%, rgba(66, 212, 146, 0.06) 50%, transparent 60%);
+  animation: an-act-ex-shimmer 4s linear infinite;
+  pointer-events: none;
+}
+
+.an-act-identity-runtime-bar {
+  box-shadow: 0 0 0 1px rgba(66, 212, 146, 0.1), 0 8px 24px rgba(0, 0, 0, 0.24);
+}
+
+.an-act-platform-continuity .premium-stat--live .premium-stat__pulse {
+  animation-duration: 2.8s;
+}
+
+/* ── 5. Micro-interactions ── */
+
+.an-act-platform-continuity .premium-button,
+.an-act-passport-flow .premium-button,
+.an-act-personal-home .premium-button {
+  transition:
+    transform var(--an-act-ex-fast) var(--an-act-ex-ease),
+    box-shadow var(--an-act-ex-fast) var(--an-act-ex-ease),
+    border-color var(--an-act-ex-fast) var(--an-act-ex-ease),
+    background var(--an-act-ex-fast) var(--an-act-ex-ease);
+}
+
+.an-act-platform-continuity .premium-button:active:not(:disabled),
+.an-act-passport-flow .premium-button:active:not(:disabled),
+.an-act-personal-home .premium-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.an-act-identity-nav {
+  transition:
+    border-color var(--an-act-ex-fast) var(--an-act-ex-ease),
+    box-shadow var(--an-act-ex-fast) var(--an-act-ex-ease);
+}
+
+.an-act-identity-nav:hover {
+  border-color: rgba(66, 212, 146, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+}
+
+.an-act-identity-card {
+  transition:
+    border-color var(--an-act-ex-fast) var(--an-act-ex-ease),
+    box-shadow var(--an-act-ex-fast) var(--an-act-ex-ease),
+    transform var(--an-act-ex-fast) var(--an-act-ex-ease);
+}
+
+.an-act-identity-card:hover {
+  border-color: rgba(66, 212, 146, 0.14);
+  box-shadow: var(--an-act-ex-depth-hover);
+  transform: translateY(-1px);
+}
+
+.an-act-public-beta-notice {
+  animation: an-act-ex-fade-up var(--an-act-ex-base) var(--an-act-ex-ease) both;
+}
+
+/* ── Reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .an-act-excellence-s1 .launch-router__page,
+  .an-act-excellence-s1-page .an-act-personal-home__shell,
+  .an-act-excellence-s1-page .an-act-personal-home__section,
+  .an-act-passport-flow--setup .an-act-passport-flow__shell,
+  .an-act-passport-flow--dashboard .an-act-passport-flow__shell,
+  .an-act-public-beta-notice {
+    animation: none;
+  }
+
+  .an-act-excellence-s1 .launch-splash__key-glow,
+  .an-act-identity-card__live-frame--gold,
+  .an-act-identity-card__live-frame--platinum,
+  .an-act-identity-nav__tier--gold,
+  .an-act-identity-nav__tier--platinum,
+  .an-act-rc-live-frame-item--active::before,
+  .an-act-passport-form--submitting .an-act-passport-form__submit::after {
+    animation: none;
+  }
+
+  .an-act-personal-home .premium-card--interactive:hover,
+  .an-act-personal-home .premium-card--featured:hover,
+  .an-act-identity-card:hover,
+  .an-act-passport-dashboard__passport .p13-passport-preview:hover {
+    transform: none;
+  }
+}

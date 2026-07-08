@@ -1,0 +1,192 @@
+/**
+ * AN ACT — Functional Beta Sprint 3
+ * Team passports, project decomposition, and living project execution.
+ */
+
+.an-act-living-teams {
+  margin-bottom: 20px;
+}
+
+.an-act-team-passport-section__create {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.an-act-team-passport-section__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.an-act-team-passport {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(66, 212, 146, 0.18);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.an-act-team-passport__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.an-act-team-passport__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.an-act-team-passport__chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.an-act-team-passport__member-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.an-act-team-passport__member-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.an-act-team-passport__indicators {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.an-act-build-project-page__shell {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+.an-act-build-project-page__nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.an-act-build-project__paths {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.an-act-build-project__path {
+  text-align: left;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.an-act-build-project__path--active {
+  border-color: rgba(66, 212, 146, 0.45);
+  box-shadow: 0 0 0 1px rgba(66, 212, 146, 0.12);
+}
+
+.an-act-build-project__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.an-act-project-live-frame__metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.an-act-project-live-frame__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.an-act-project-live-frame__risks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.an-act-project-live-frame__phases {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.an-act-project-live-frame__phase {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.an-act-project-live-frame__phase header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.an-act-project-live-frame__phase--locked {
+  opacity: 0.55;
+}
+
+.an-act-project-live-frame__phase-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.an-act-project-live-frame__subphase {
+  padding-left: 12px;
+  border-left: 2px solid rgba(66, 212, 146, 0.2);
+}
+
+.an-act-project-live-frame__micro-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.an-act-project-live-frame__micro-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.an-act-project-live-frame__micro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.an-act-living-s3 .an-act-personal-home__inline-link {
+  color: rgba(66, 212, 146, 0.95);
+}

@@ -1,0 +1,72 @@
+/**
+ * AN ACT — First Input Experience Sprint
+ * Beta voice + file goal capture on Act Builder opening flow.
+ */
+
+.an-act-first-input .launch-builder__intro {
+  margin: 12px 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 42ch;
+}
+
+.an-act-first-input .launch-builder__journey-hint {
+  margin: 8px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.48);
+  max-width: 52ch;
+}
+
+.an-act-first-input .launch-builder__method-hint {
+  margin: 0 0 12px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: rgba(66, 212, 146, 0.82);
+}
+
+.launch-builder__method-badge--beta {
+  color: rgba(66, 212, 146, 0.9);
+}
+
+.launch-builder__transcript {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.launch-builder__transcript-label {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.launch-builder__textarea--inline {
+  min-height: 96px;
+}
+
+.launch-builder__input-error {
+  margin: 8px 0 0;
+  font-size: 0.875rem;
+  color: rgba(255, 140, 120, 0.95);
+}
+
+.launch-builder__evidence-note {
+  margin: 10px 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.55);
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(66, 212, 146, 0.18);
+  background: rgba(66, 212, 146, 0.05);
+}
+
+.launch-builder__voice-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

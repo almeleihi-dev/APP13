@@ -4,6 +4,7 @@ import { unauthorized } from "../../shared/errors/index.js";
 import type { AuthContext } from "../../shared/auth/index.js";
 import type { JwtService } from "../../identity/infrastructure/jwt-service.js";
 import type { SessionStore } from "../../identity/infrastructure/session-store.js";
+import { isBrowserStaticPath } from "../../browser-static/domain/browser-static.js";
 
 export interface AuthenticateOptions {
   required?: boolean;
@@ -18,6 +19,9 @@ export function createAuthenticateMiddleware(deps: {
     request: FastifyRequest,
     _reply: FastifyReply
   ): Promise<void> {
+    if (isBrowserStaticPath(request.url.split("?")[0] ?? request.url)) {
+      return;
+    }
     if (request.routeOptions.config?.authenticate === false) {
       return;
     }

@@ -1,0 +1,22 @@
+{
+  "name": "@an-act/tokens",
+  "version": "1.0.0",
+  "description": "AN ACT design tokens — semantic colors, spacing, typography, motion",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tokens.json": "./assets/tokens.json"
+  },
+  "files": ["dist", "assets"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "sync": "tsx ../../scripts/sync-an-act-tokens.ts"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}

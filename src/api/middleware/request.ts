@@ -7,7 +7,7 @@ const REQUEST_ID_HEADER = "x-request-id";
 export async function requestIdMiddleware(
   request: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<void> {
   const incoming = request.headers[REQUEST_ID_HEADER];
   const requestId =
     typeof incoming === "string" && incoming.length > 0

@@ -1,0 +1,5 @@
+# AN ACT — production crawl policy (Tier 1 presentation)
+User-agent: *
+Allow: /
+
+Sitemap: https://anact.app/sitemap.xml

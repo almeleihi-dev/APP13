@@ -5,7 +5,7 @@ module.exports = {
       name: "no-domain-to-api",
       comment: "domain/ must not import api/ — Backend §2.2",
       severity: "error",
-      from: { path: "^src/(identity|action|contract|execution|complaint|trust)/domain" },
+      from: { path: "^src/(identity|action|contract|execution|complaint|trust|financial)/domain" },
       to: { path: "^src/api" },
     },
     {
@@ -14,7 +14,7 @@ module.exports = {
       severity: "error",
       from: { path: "^src/shared" },
       to: {
-        path: "^src/(identity|action|contract|execution|complaint|trust|platform|api)",
+        path: "^src/(identity|action|contract|execution|complaint|trust|financial|platform|api)",
       },
     },
     {

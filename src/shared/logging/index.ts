@@ -3,7 +3,11 @@ import type { AppConfig } from "../config/index.js";
 
 export type { Logger };
 
-export function createLogger(config: AppConfig): Logger {
+export function buildPinoOptions(config: AppConfig): LoggerOptions | null {
+  if (config.logLevel === "off") {
+    return null;
+  }
+
   const options: LoggerOptions = {
     level: config.logLevel,
     base: {
@@ -14,13 +18,33 @@ export function createLogger(config: AppConfig): Logger {
   };
 
   if (config.logPretty && config.env === "local") {
-    return pino({
+    return {
       ...options,
       transport: {
         target: "pino-pretty",
         options: { colorize: true, translateTime: "SYS:standard" },
       },
-    });
+    };
+  }
+
+  return options;
+}
+
+export function resolveFastifyLogger(
+  config: AppConfig
+): false | LoggerOptions {
+  const options = buildPinoOptions(config);
+  if (!options) {
+    return false;
+  }
+
+  return options;
+}
+
+export function createLogger(config: AppConfig): Logger {
+  const options = buildPinoOptions(config);
+  if (!options) {
+    return pino({ level: "silent" });
   }
 
   return pino(options);

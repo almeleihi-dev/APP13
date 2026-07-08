@@ -7,6 +7,8 @@ import {
   executionRepository,
   type ExecutionRepository,
 } from "../infrastructure/execution-repository.js";
+import type { TrustService } from "../../trust/application/trust-service.js";
+import { observeEvaluationSubmitted } from "../../trust/application/trust-service.js";
 
 const DEFAULT_EVAL_FORM_ID = "EVAL-GENERIC-v1";
 
@@ -14,7 +16,8 @@ export class EvaluationService {
   constructor(
     private readonly db: DbPool,
     private readonly contracts: ContractRepository,
-    private readonly execution: ExecutionRepository = executionRepository
+    private readonly execution: ExecutionRepository = executionRepository,
+    private readonly trust?: TrustService
   ) {}
 
   async submitEvaluation(
@@ -102,6 +105,14 @@ export class EvaluationService {
         idempotencyKey: input.idempotency_key,
       });
 
+      await observeEvaluationSubmitted(this.trust, tx, {
+        providerId: contract.providerId,
+        contractId,
+        evaluationId: evaluation.id,
+        rating: input.rating,
+        idempotencyKey: input.idempotency_key,
+      });
+
       return this.toEvaluationResponse(evaluation);
     });
   }
@@ -154,9 +165,10 @@ export class EvaluationService {
 export function createEvaluationService(
   db: DbPool,
   contracts: ContractRepository,
-  execution: ExecutionRepository = executionRepository
+  execution: ExecutionRepository = executionRepository,
+  trust?: TrustService
 ): EvaluationService {
-  return new EvaluationService(db, contracts, execution);
+  return new EvaluationService(db, contracts, execution, trust);
 }
 
 export { DEFAULT_EVAL_FORM_ID };

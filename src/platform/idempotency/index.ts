@@ -17,6 +17,8 @@ export interface IdempotencyRecord {
 export interface IdempotencyStore {
   get(key: string): Promise<IdempotencyRecord | null>;
   set(key: string, record: IdempotencyRecord, ttlSeconds: number): Promise<void>;
+  /** OC-1: release the underlying connection on graceful shutdown. */
+  close?(): Promise<void>;
 }
 
 export function hashRequestBody(body: string | Buffer | undefined): string {
@@ -46,6 +48,10 @@ export class RedisIdempotencyStore implements IdempotencyStore {
       "EX",
       ttlSeconds
     );
+  }
+
+  async close(): Promise<void> {
+    await this.redis.quit();
   }
 }
 
@@ -118,6 +124,11 @@ export class IdempotencyService {
   }
 
   /** GC for keys past TTL is handled by Redis EX — Backend §6.1 idempotency.gc */
+
+  /** OC-1: release the Redis connection on graceful shutdown. */
+  async close(): Promise<void> {
+    await this.store.close?.();
+  }
 }
 
 export function createIdempotencyService(

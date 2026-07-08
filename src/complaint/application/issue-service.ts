@@ -7,12 +7,20 @@ import {
   assertIssueScope,
 } from "../domain/issue.js";
 import { complaintRepository, type ComplaintRepository } from "../infrastructure/complaint-repository.js";
+import type { EscrowService } from "../../financial/application/escrow-service.js";
+import type { TrustService } from "../../trust/application/trust-service.js";
+import { observeIssueRaised } from "../../trust/application/trust-service.js";
+import type { EventInboxService } from "../../notifications/application/event-inbox-service.js";
+import { observeInboxIssueRaised } from "../../notifications/application/event-inbox-service.js";
 
 export class IssueService {
   constructor(
     private readonly db: DbPool,
     private readonly contracts: ContractRepository,
-    private readonly complaints: ComplaintRepository = complaintRepository
+    private readonly complaints: ComplaintRepository = complaintRepository,
+    private readonly escrow?: EscrowService,
+    private readonly trust?: TrustService,
+    private readonly eventInbox?: EventInboxService
   ) {}
 
   async createIssue(
@@ -65,6 +73,26 @@ export class IssueService {
         );
       }
 
+      if (this.escrow) {
+        await this.escrow.freezeOnIssueRaisedTx(tx, {
+          contractId: input.contract_id,
+          issueId: issue.id,
+          actorUserId: userId,
+        });
+      }
+
+      await observeIssueRaised(this.trust, tx, {
+        providerId: contract.providerId,
+        contractId: input.contract_id,
+        issueId: issue.id,
+        confirmed: true,
+      });
+
+      await observeInboxIssueRaised(this.eventInbox, tx, {
+        contractId: input.contract_id,
+        issueId: issue.id,
+      });
+
       return {
         id: issue.id,
         contract_id: issue.contractId,
@@ -97,7 +125,10 @@ export class IssueService {
 export function createIssueService(
   db: DbPool,
   contracts: ContractRepository,
-  complaints: ComplaintRepository = complaintRepository
+  complaints: ComplaintRepository = complaintRepository,
+  escrow?: EscrowService,
+  trust?: TrustService,
+  eventInbox?: EventInboxService
 ): IssueService {
-  return new IssueService(db, contracts, complaints);
+  return new IssueService(db, contracts, complaints, escrow, trust, eventInbox);
 }

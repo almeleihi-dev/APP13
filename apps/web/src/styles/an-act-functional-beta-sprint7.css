@@ -1,0 +1,82 @@
+/* Functional Beta Sprint 7 — Global Language & Location Foundation */
+
+.an-act-living-s7 .an-act-language-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.an-act-living-s7 .an-act-language-selector__select {
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--ds-color-border, #d8dee9) 80%, transparent);
+  padding: 0.35rem 0.75rem;
+  background: color-mix(in srgb, var(--ds-color-surface, #fff) 92%, transparent);
+}
+
+.an-act-locale-ar .launch-splash__inner,
+.an-act-locale-ar .an-act-guest-entry__shell,
+.an-act-locale-ar .launch-builder__shell,
+.an-act-locale-ar .an-act-passport-flow__shell {
+  direction: rtl;
+  text-align: right;
+}
+
+.an-act-locale-ar .an-act-language-selector,
+.an-act-locale-ar .an-act-marketplace-location-filters__scopes {
+  direction: ltr;
+}
+
+.an-act-marketplace-location-filters {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--ds-color-border, #d8dee9) 70%, transparent);
+  background: color-mix(in srgb, var(--ds-color-surface, #fff) 96%, transparent);
+}
+
+.an-act-marketplace-location-filters__scopes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.an-act-marketplace-location-filters__chip {
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--ds-color-border, #d8dee9) 80%, transparent);
+  padding: 0.35rem 0.75rem;
+  background: transparent;
+}
+
+.an-act-marketplace-location-filters__chip.is-active {
+  background: color-mix(in srgb, var(--ds-color-accent, #2563eb) 14%, transparent);
+  border-color: color-mix(in srgb, var(--ds-color-accent, #2563eb) 40%, transparent);
+}
+
+.an-act-passport-form__languages {
+  border: none;
+  padding: 0;
+  margin: 0.75rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.an-act-passport-form__checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.an-act-team-passport__global {
+  margin-top: 0.75rem;
+}
+
+.launch-splash__language,
+.an-act-guest-entry__language,
+.launch-builder__language,
+.an-act-passport-flow__language {
+  align-self: flex-end;
+}

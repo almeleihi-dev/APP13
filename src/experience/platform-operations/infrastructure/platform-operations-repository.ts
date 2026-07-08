@@ -1,0 +1,64 @@
+import type { Queryable } from "../../../shared/db/index.js";
+import { platformAnalyticsRepository } from "../../../analytics/infrastructure/platform-analytics-repository.js";
+import { adminConsoleRepository } from "../../../operations/infrastructure/admin-console-repository.js";
+import {
+  buildContractOverview,
+  buildEscrowOverview,
+  buildExecutionOverview,
+  buildIssueOverview,
+  buildOfferOverview,
+  buildPlatformOverview,
+  buildRequestOverview,
+  buildRiskOverview,
+  buildTrustOverview,
+} from "../../../operations/domain/admin-console.js";
+import type { PlatformOperationsRawSnapshot } from "../domain/platform-operations.js";
+
+export class PlatformOperationsRepository {
+  async loadRawSnapshot(client: Queryable): Promise<PlatformOperationsRawSnapshot> {
+    const [
+      analyticsSnapshot,
+      requestMetrics,
+      offerMetrics,
+      contractMetrics,
+      escrowMetrics,
+      executionMetrics,
+      issueMetrics,
+      trustMetrics,
+      riskMetrics,
+    ] = await Promise.all([
+      platformAnalyticsRepository.loadSnapshot(client),
+      adminConsoleRepository.getRequestMetrics(client),
+      adminConsoleRepository.getOfferMetrics(client),
+      adminConsoleRepository.getContractMetrics(client),
+      adminConsoleRepository.getEscrowMetrics(client),
+      adminConsoleRepository.getExecutionMetrics(client),
+      adminConsoleRepository.getIssueMetrics(client),
+      adminConsoleRepository.getTrustMetrics(client),
+      adminConsoleRepository.getRiskMetrics(client),
+    ]);
+
+    const platformOverview = buildPlatformOverview({
+      requests: buildRequestOverview(requestMetrics),
+      offers: buildOfferOverview(offerMetrics),
+      contracts: buildContractOverview(contractMetrics),
+      escrow: buildEscrowOverview(escrowMetrics),
+      execution: buildExecutionOverview(executionMetrics),
+      issues: buildIssueOverview(issueMetrics),
+      trust: buildTrustOverview(trustMetrics),
+      risks: buildRiskOverview(riskMetrics),
+      failedOperations: riskMetrics.failedOperations,
+    });
+
+    return {
+      analyticsSnapshot,
+      platformOverview,
+    };
+  }
+}
+
+export function createPlatformOperationsRepository(): PlatformOperationsRepository {
+  return new PlatformOperationsRepository();
+}
+
+export const platformOperationsRepository = createPlatformOperationsRepository();

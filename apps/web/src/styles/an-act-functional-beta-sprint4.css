@@ -1,0 +1,93 @@
+/**
+ * AN ACT — Functional Beta Sprint 4
+ * Contract economy engine: ledger, intelligence, revenue, insurance readiness.
+ */
+
+.an-act-economy-page__shell {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+.an-act-economy-page__nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.an-act-economy-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.an-act-economy-dashboard__header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.an-act-economy-dashboard__section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.an-act-economy-dashboard__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.an-act-economy-dashboard__metric {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(66, 212, 146, 0.16);
+  background: rgba(255, 255, 255, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.an-act-economy-dashboard__columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.an-act-economy-dashboard__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.an-act-economy-dashboard__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.an-act-economy-dashboard__list li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.an-act-economy-dashboard__formula {
+  margin-top: 10px;
+  font-family: var(--ds-font-mono, monospace);
+}
+
+.an-act-living-economy .an-act-personal-home__metric {
+  font-size: 1.5rem;
+}
+
+.an-act-living-s4 .an-act-personal-home__inline-link {
+  color: rgba(66, 212, 146, 0.95);
+}

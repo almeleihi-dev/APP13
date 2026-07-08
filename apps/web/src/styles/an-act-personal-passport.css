@@ -1,0 +1,293 @@
+/**
+ * AN ACT Personal Professional Passport v1
+ * First user journey after Final Act — profile setup and passport dashboard.
+ */
+
+.an-act-passport-flow {
+  min-height: 100vh;
+  min-height: 100dvh;
+  color: var(--an-act-rc-text, #ffffff);
+  background-color: var(--an-act-rc-bg, #050506);
+}
+
+.an-act-passport-flow__shell {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, calc(100% - clamp(24px, 6vw, 48px)));
+  margin: 0 auto;
+  padding: clamp(28px, 5vw, 56px) 0 clamp(48px, 8vw, 72px);
+}
+
+.an-act-passport-flow__header {
+  display: grid;
+  gap: clamp(12px, 2vw, 18px);
+  max-width: none;
+  margin-bottom: clamp(28px, 5vw, 44px);
+}
+
+.an-act-passport-flow__header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: clamp(16px, 3vw, 24px);
+  flex-wrap: wrap;
+}
+
+.an-act-passport-flow__header-row > div:first-child {
+  max-width: 720px;
+}
+
+
+.an-act-passport-flow__eyebrow {
+  margin: 0;
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--an-act-rc-green, #42d492);
+}
+
+.an-act-passport-flow__title {
+  margin: 0;
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: clamp(1.65rem, 4vw, 2.35rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.an-act-passport-flow__lead {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--an-act-rc-muted, rgba(255, 255, 255, 0.54));
+  line-height: 1.65;
+}
+
+.an-act-passport-form {
+  display: grid;
+  gap: clamp(24px, 4vw, 32px);
+}
+
+.an-act-passport-form__grid {
+  display: grid;
+  gap: clamp(16px, 3vw, 24px);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+}
+
+.an-act-passport-form__panel {
+  display: grid;
+  gap: 12px;
+  padding: clamp(20px, 3vw, 28px);
+  border-radius: var(--an-act-rc-radius-lg, 18px);
+  border: 1px solid var(--an-act-rc-panel-border, rgba(255, 255, 255, 0.08));
+  background: var(--an-act-rc-panel-bg, rgba(14, 14, 18, 0.88));
+}
+
+.an-act-passport-form__label {
+  margin: 0;
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--an-act-rc-muted-soft, rgba(255, 255, 255, 0.38));
+}
+
+.an-act-passport-form__input,
+.an-act-passport-form__textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--an-act-rc-radius, 14px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(5, 5, 6, 0.72);
+  color: var(--an-act-rc-text, #ffffff);
+  transition: border-color var(--an-act-rc-fast, 320ms) var(--an-act-rc-ease, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.an-act-passport-form__input:focus,
+.an-act-passport-form__textarea:focus {
+  outline: none;
+  border-color: var(--an-act-rc-focus, rgba(66, 212, 146, 0.62));
+  box-shadow: 0 0 0 3px rgba(66, 212, 146, 0.12);
+}
+
+.an-act-passport-form__textarea {
+  resize: vertical;
+  min-height: 140px;
+  line-height: 1.55;
+}
+
+.an-act-passport-form__photo-zone {
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+}
+
+.an-act-passport-form__photo-preview {
+  width: clamp(88px, 16vw, 112px);
+  height: clamp(88px, 16vw, 112px);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(145deg, rgba(66, 212, 146, 0.14), rgba(20, 20, 24, 0.92));
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 1.25rem;
+  letter-spacing: 0.08em;
+  color: var(--an-act-rc-green, #42d492);
+}
+
+.an-act-passport-form__photo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.an-act-passport-form__upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--an-act-rc-text, #ffffff);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition:
+    border-color var(--an-act-rc-fast, 320ms) var(--an-act-rc-ease, cubic-bezier(0.16, 1, 0.3, 1)),
+    background var(--an-act-rc-fast, 320ms) var(--an-act-rc-ease, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.an-act-passport-form__upload:hover {
+  border-color: rgba(66, 212, 146, 0.35);
+  background: rgba(66, 212, 146, 0.08);
+}
+
+.an-act-passport-form__upload-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.an-act-passport-form__actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.an-act-passport-form__submit {
+  min-width: min(100%, 320px);
+}
+
+.an-act-passport-dashboard__hero {
+  margin-bottom: clamp(24px, 4vw, 36px);
+}
+
+.an-act-passport-dashboard__passport {
+  max-width: 720px;
+}
+
+.an-act-passport-dashboard__grid {
+  display: grid;
+  gap: clamp(14px, 2.5vw, 20px);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  margin-bottom: clamp(28px, 5vw, 40px);
+}
+
+.an-act-passport-dashboard__panel {
+  display: grid;
+  gap: 10px;
+  padding: clamp(18px, 3vw, 24px);
+}
+
+.an-act-passport-dashboard__label {
+  margin: 0;
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--an-act-rc-green, #42d492);
+}
+
+.an-act-passport-dashboard__value {
+  margin: 0;
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.an-act-passport-dashboard__body {
+  margin: 0;
+  color: var(--an-act-rc-muted, rgba(255, 255, 255, 0.54));
+  line-height: 1.6;
+}
+
+.an-act-passport-dashboard__list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 8px;
+  color: var(--an-act-rc-muted, rgba(255, 255, 255, 0.54));
+}
+
+.an-act-passport-dashboard__section {
+  display: grid;
+  gap: clamp(16px, 3vw, 22px);
+  margin-bottom: clamp(28px, 5vw, 40px);
+}
+
+.an-act-passport-dashboard__section-title {
+  margin: 0;
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.an-act-passport-dashboard__action-groups {
+  display: grid;
+  gap: clamp(12px, 2vw, 16px);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+
+.an-act-passport-dashboard__action-card {
+  padding: clamp(16px, 2.5vw, 20px);
+}
+
+.an-act-passport-dashboard__action-title {
+  margin: 0 0 8px;
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 0.92rem;
+  letter-spacing: -0.01em;
+}
+
+.an-act-passport-dashboard__stats {
+  display: grid;
+  gap: clamp(12px, 2vw, 16px);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  margin-bottom: clamp(16px, 3vw, 22px);
+}
+
+.an-act-passport-dashboard__summary-card {
+  padding: clamp(18px, 3vw, 24px);
+}
+
+.an-act-passport-dashboard__actions {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: clamp(8px, 2vw, 16px);
+}
+
+.p13-passport-preview__avatar {
+  overflow: hidden;
+}
+
+.p13-passport-preview__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
