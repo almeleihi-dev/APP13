@@ -184,7 +184,7 @@ export async function registerAppRoutes(
   app: FastifyInstance,
   deps: AppDependencies
 ): Promise<void> {
-  await registerHealthRoutes(app, deps.db);
+  await registerHealthRoutes(app, deps.db, deps.config);
   await registerBrowserSurfaceRoutes(app, deps.browserSurface);
   await registerBrowserStaticRoutes(app, deps.browserStatic);
   await registerAuthRoutes(app, {
@@ -224,7 +224,13 @@ export async function registerAppRoutes(
   await registerNotificationRoutes(app, deps.eventInbox);
   await registerDiscoveryRoutes(app, deps.discovery);
   await registerAnalyticsRoutes(app, deps.platformAnalytics);
-  await registerHomeRoutes(app, deps.homeExperience);
+  await registerHomeRoutes(app, {
+    homeExperience: deps.homeExperience,
+    browserSurface: deps.browserSurface,
+    jwt: deps.jwt,
+    sessions: deps.sessions,
+    config: deps.config,
+  });
   await registerLiveFrameRoutes(app, deps.liveFrameExperience);
   await registerContractJourneyRoutes(app, deps.contractJourney);
   await registerActionEconomyRoutes(app, deps.actionEconomy);

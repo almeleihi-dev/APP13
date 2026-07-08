@@ -1,6 +1,7 @@
 import React, { type CSSProperties, type ReactNode } from "react";
 import type { RenderNode } from "../../render-node.js";
 import { resolveComponentRelayIntent } from "@an-act/runtime-core";
+import { useCardRoleInList } from "../list-section-context.js";
 
 export interface RelayIntent {
   actionId?: string;
@@ -67,13 +68,15 @@ export function AnActCard({ node, children, onRelay, screenId = "" }: AnActCardP
   const actionId = resolved?.actionId ?? (typeof node.props?.actionId === "string" ? node.props.actionId : undefined);
   const relayBody = resolved?.body;
   const interactive = Boolean(route || actionId || node.props?.opportunityId);
+  const defaultRole = node.accessibility?.role ?? "article";
+  const role = useCardRoleInList(defaultRole);
 
   return (
     <article
-      className={`an-act-card${elevated ? " an-act-card--elevated" : ""}${interactive ? " an-act-card--interactive" : ""}`}
+      className={`an-act-card an-act-card--premium${elevated ? " an-act-card--elevated" : ""}${interactive ? " an-act-card--interactive" : ""}`}
       data-component-id={node.componentId}
       style={style}
-      role={node.accessibility?.role ?? "article"}
+      role={role}
       aria-label={node.accessibility?.label}
       tabIndex={interactive ? 0 : undefined}
       onClick={interactive ? () => onRelay?.({ route, actionId, body: relayBody }) : undefined}
@@ -102,7 +105,7 @@ export function AnActLiveFrame({ node, children }: AnActLiveFrameProps) {
   const uiTier = String(node.props?.uiTier ?? "silver");
   return (
     <div
-      className="an-act-live-frame"
+      className="an-act-live-frame an-act-live-frame--premium"
       data-component-id={node.componentId}
       data-ui-tier={uiTier}
       style={{ ...style, borderColor: style.borderColor ?? "currentColor", color: style.borderColor ?? "inherit" }}

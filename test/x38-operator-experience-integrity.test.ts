@@ -279,7 +279,7 @@ describe("X38 operator experience integrity center", () => {
 
       assert.ok(view.integrity_score.score >= 0);
       assert.equal(view.auth_boundaries.public_browser_routes, BROWSER_SURFACE_ROUTES.length);
-      assert.ok(view.auth_boundaries.hybrid_conflicts.includes("/home"));
+      assert.ok(!view.auth_boundaries.hybrid_conflicts.includes("/home"));
       assert.ok(view.workflow_parity.paired_count >= 7);
       assert.equal(view.x_stack_alignment.x31_browser_ready, true);
     });

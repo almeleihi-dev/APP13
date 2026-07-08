@@ -1,0 +1,224 @@
+/**
+ * AN ACT Personal Identity Integration v2
+ * Active passport identity across platform surfaces.
+ */
+
+.an-act-app-shell__header-end {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.an-act-identity-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px 8px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(14, 14, 18, 0.72);
+}
+
+.an-act-identity-nav__avatar,
+.an-act-identity-card__avatar,
+.an-act-identity-runtime-bar__avatar {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(145deg, rgba(66, 212, 146, 0.14), rgba(20, 20, 24, 0.92));
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--an-act-rc-green, #42d492);
+  flex-shrink: 0;
+}
+
+.an-act-identity-card__avatar {
+  width: clamp(52px, 8vw, 64px);
+  height: clamp(52px, 8vw, 64px);
+  border-radius: 14px;
+  font-size: 0.95rem;
+}
+
+.an-act-identity-runtime-bar__avatar {
+  width: 40px;
+  height: 40px;
+}
+
+.an-act-identity-nav__photo,
+.an-act-identity-card__photo,
+.an-act-identity-runtime-bar__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.an-act-identity-nav__copy,
+.an-act-identity-card__body,
+.an-act-identity-runtime-bar__copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.an-act-identity-nav__name,
+.an-act-identity-card__name,
+.an-act-identity-runtime-bar__owner {
+  margin: 0;
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 0.82rem;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.an-act-identity-card__name {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  white-space: normal;
+}
+
+.an-act-identity-runtime-bar__owner {
+  font-size: 0.875rem;
+}
+
+.an-act-identity-nav__title,
+.an-act-identity-card__title,
+.an-act-identity-runtime-bar__meta,
+.an-act-identity-card__meta {
+  margin: 0;
+  color: var(--an-act-rc-muted, rgba(255, 255, 255, 0.54));
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.an-act-identity-nav__tier,
+.an-act-identity-card__live-frame {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.an-act-identity-nav__tier--silver,
+.an-act-identity-card__live-frame--silver {
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.an-act-identity-nav__tier--gold,
+.an-act-identity-card__live-frame--gold {
+  border-color: rgba(212, 175, 55, 0.35);
+  color: rgba(244, 214, 122, 0.92);
+}
+
+.an-act-identity-nav__tier--platinum,
+.an-act-identity-card__live-frame--platinum {
+  border-color: rgba(66, 212, 146, 0.35);
+  color: var(--an-act-rc-green, #42d492);
+}
+
+.an-act-identity-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: clamp(14px, 2.5vw, 18px);
+  align-items: center;
+  padding: clamp(16px, 2.5vw, 20px);
+  border-radius: var(--an-act-rc-radius-lg, 18px);
+  border: 1px solid var(--an-act-rc-panel-border, rgba(255, 255, 255, 0.08));
+  background: var(--an-act-rc-panel-bg, rgba(14, 14, 18, 0.88));
+}
+
+.an-act-identity-card--compact {
+  padding: 12px 14px;
+}
+
+.an-act-identity-card__eyebrow {
+  margin: 0;
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--an-act-rc-green, #42d492);
+}
+
+.an-act-identity-runtime-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-radius: var(--an-act-rc-radius, 14px);
+  border: 1px solid rgba(66, 212, 146, 0.14);
+  background: rgba(66, 212, 146, 0.06);
+}
+
+.an-act-identity-greeting {
+  margin: 0 0 10px;
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  letter-spacing: -0.02em;
+  color: var(--an-act-rc-green, #42d492);
+}
+
+.an-act-identity-dashboard-grid {
+  display: grid;
+  gap: clamp(14px, 2.5vw, 18px);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  margin-bottom: clamp(20px, 3vw, 28px);
+}
+
+.an-act-platform-continuity .p12-landing__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.an-act-platform-continuity .p13-landing__nav-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.an-act-rc-live-frame-item--active {
+  border-color: rgba(66, 212, 146, 0.35);
+  box-shadow: 0 0 0 1px rgba(66, 212, 146, 0.12);
+}
+
+.an-act-rc-live-frame-item--active .ds-title {
+  color: var(--an-act-rc-green, #42d492);
+}
+
+.an-act-operator-identity-rail {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 16px;
+}
+
+@media (max-width: 720px) {
+  .an-act-identity-nav__copy {
+    display: none;
+  }
+
+  .an-act-identity-card {
+    grid-template-columns: auto 1fr;
+  }
+
+  .an-act-identity-card__live-frame {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}

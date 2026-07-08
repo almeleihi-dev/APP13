@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "npm ci --workspaces --include-workspace-root",
+  "buildCommand": "npm run sync:tokens && npm --prefix apps/web run build",
+  "outputDirectory": "apps/web/dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/start", "destination": "/index.html" },
+    { "source": "/preview", "destination": "/index.html" },
+    { "source": "/home", "destination": "/index.html" },
+    { "source": "/((?!assets/|icons/|og/|favicon\\.svg|robots\\.txt|sitemap\\.xml|manifest\\.webmanifest|sw\\.js|workbox-.*\\.js|an-act-brand\\.json).*)", "destination": "/index.html" }
+  ]
+}

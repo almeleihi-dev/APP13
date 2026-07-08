@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { ThemeProvider, AnActWordmark, AnActBrandLoading } from "@an-act/runtime-ui/react";
+import { ThemeProvider, AnActWordmark, AnActBrandLoading, PremiumButton, PremiumCard } from "@an-act/runtime-ui/react";
 import { useRuntime } from "../providers/RuntimeProvider.js";
 import { AN_ACT_BRAND } from "../brand/config.js";
 
@@ -48,8 +48,10 @@ export function ProviderProfilePage({ onComplete }: ProviderProfilePageProps) {
 
   return (
     <ThemeProvider mode="action">
-      <div className="an-act-login-shell">
-        <div className="an-act-login-panel">
+      <div className="premium-console an-act-login-shell">
+        <div className="premium-console__ambient" aria-hidden="true" />
+        <div className="premium-console an-act-login-panel">
+        <div className="premium-console__ambient" aria-hidden="true" />
           <AnActWordmark logoUrl={AN_ACT_BRAND.logoUrl} />
           <h1 style={{ margin: 0, fontSize: "1.25rem" }}>Complete your profile</h1>
           <div className="an-act-card" role="region" aria-label="Professional passport">
@@ -70,9 +72,9 @@ export function ProviderProfilePage({ onComplete }: ProviderProfilePageProps) {
               Bio
               <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={4} />
             </label>
-            <button type="submit" className="an-act-button an-act-button--primary" disabled={loading || busy}>
+            <PremiumButton type="submit" variant="primary" disabled={loading || busy}>
               Save and continue
-            </button>
+            </PremiumButton>
             {error ? (
               <p role="alert" style={{ margin: 0, color: "var(--an-act-color-status-error)" }}>
                 <strong>{error.title}</strong>: {error.detail}

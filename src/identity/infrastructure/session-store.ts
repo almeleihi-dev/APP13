@@ -33,6 +33,11 @@ export class SessionStore {
     private readonly config: AppConfig["session"]
   ) {}
 
+  /** OC-1: release the Redis connection on graceful shutdown. */
+  async close(): Promise<void> {
+    await this.redis.quit();
+  }
+
   async createSession(input: {
     userId: string;
     roles: PlatformRole[];

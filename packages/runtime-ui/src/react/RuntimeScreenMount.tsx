@@ -3,6 +3,7 @@ import type { AnActRuntimeScreenView } from "@an-act/runtime-core";
 import { ComponentDispatcher } from "../component-dispatcher.js";
 import { RuntimeScreenRenderer } from "../runtime-screen-renderer.js";
 import type { RenderedRuntimeScreen } from "../render-node.js";
+import { ListSectionProvider } from "./list-section-context.js";
 import { createReactComponentRenderers } from "./registry/p0-renderers.js";
 import { RenderNodeTree, type RenderNodeTreeProps } from "./RenderNodeTree.js";
 
@@ -19,21 +20,27 @@ export function renderRuntimeScreenReact(screen: AnActRuntimeScreenView): Render
 }
 
 function isListSection(sectionId: string): boolean {
-  return sectionId.includes("cards") || sectionId.includes("results") || sectionId.includes("opportunities");
+  return (
+    sectionId.includes("cards") ||
+    sectionId.includes("results") ||
+    sectionId.includes("opportunities") ||
+    sectionId.includes("activity")
+  );
 }
 
 export function RuntimeScreenMount({ screen, onRelay }: RuntimeScreenMountProps) {
   const rendered = screenRenderer.render(screen);
+
   const isEmptyState = rendered.screenId === "empty-state";
 
   return (
     <div
-      className="an-act-screen"
+      className="an-act-screen an-act-screen--premium an-act-screen--p12"
       data-screen-id={rendered.screenId}
       data-route={rendered.route}
       data-mode={rendered.mode}
     >
-      {rendered.sections.map((section) => {
+      {rendered.sections.map((section, sectionIndex) => {
         const nodes = section.nodes.map((node) => (
           <RenderNodeTree key={node.key} node={node} onRelay={onRelay} screenId={rendered.screenId} />
         ));
@@ -48,11 +55,19 @@ export function RuntimeScreenMount({ screen, onRelay }: RuntimeScreenMountProps)
 
         if (isListSection(section.id) && section.nodes.length > 1) {
           return (
-            <section key={section.id} className="an-act-section" data-section-id={section.id} aria-label={section.label}>
+            <section
+              key={section.id}
+              className="an-act-section an-act-section--premium an-act-section--p12 an-act-section--stagger"
+              data-section-id={section.id}
+              aria-label={section.label}
+              style={{ animationDelay: `${sectionIndex * 40}ms` }}
+            >
               <h2 className="an-act-section__label">{section.label}</h2>
-              <div data-component-id="core-ui-list" role="list" className="an-act-section">
-                {nodes}
-              </div>
+              <ListSectionProvider>
+                <div data-component-id="core-ui-list" role="list" className="an-act-section an-act-opportunity-list">
+                  {nodes}
+                </div>
+              </ListSectionProvider>
             </section>
           );
         }
@@ -60,10 +75,11 @@ export function RuntimeScreenMount({ screen, onRelay }: RuntimeScreenMountProps)
         return (
           <section
             key={section.id}
-            className="an-act-section"
+            className="an-act-section an-act-section--premium an-act-section--p12 an-act-section--stagger"
             data-section-id={section.id}
             data-section-purpose={section.purpose}
             aria-label={section.label}
+            style={{ animationDelay: `${sectionIndex * 40}ms` }}
           >
             <h2 className="an-act-section__label">{section.label}</h2>
             {nodes}

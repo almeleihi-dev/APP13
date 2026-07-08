@@ -1,0 +1,373 @@
+/**
+ * AN ACT Chapter 11 — Unified Premium Operator Console
+ * Single visual language for all operator dashboards and admin surfaces.
+ * Extends Phase 12/13 premium identity — no new palette.
+ */
+
+/* ── Console root ── */
+
+.premium-console {
+  min-height: 100vh;
+  background: var(--an-act-p12-black);
+  color: var(--an-act-p12-ink);
+}
+
+.premium-console__ambient {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 75% 50% at 50% -8%, rgba(66, 212, 146, 0.09), transparent 58%),
+    radial-gradient(ellipse 45% 35% at 88% 18%, var(--an-act-p12-blue-dim), transparent 52%),
+    radial-gradient(ellipse 35% 25% at 12% 40%, rgba(255, 255, 255, 0.02), transparent 50%),
+    linear-gradient(180deg, var(--an-act-p12-black) 0%, #0e0e12 45%, var(--an-act-p12-graphite) 100%);
+}
+
+.premium-console__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  display: grid;
+  gap: 24px;
+}
+
+/* ── Header & navigation ── */
+
+.premium-console__header {
+  display: grid;
+  gap: 16px;
+}
+
+.premium-console__headline {
+  display: grid;
+  gap: 8px;
+}
+
+.premium-console__title {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--an-act-p12-ink);
+}
+
+.premium-console__subtitle {
+  margin: 0;
+  max-width: 72ch;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--an-act-p12-ink-muted);
+}
+
+.premium-console__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.premium-console__section-title {
+  margin: 0 0 12px;
+  font-size: 1.125rem;
+  font-weight: 650;
+  color: var(--an-act-p12-ink);
+}
+
+/* ── Score hero ── */
+
+.premium-console-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.premium-console__score {
+  margin: 0;
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--an-act-p12-ink);
+}
+
+.premium-console__score-label {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+  color: var(--an-act-p12-ink-muted);
+}
+
+/* ── Layout grids ── */
+
+.premium-console__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.premium-console__split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.premium-console__hint {
+  margin: 8px 0 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--an-act-p12-ink-muted);
+}
+
+.premium-console__metric {
+  margin: 8px 0 0;
+  font-size: 1.5rem;
+  font-weight: 650;
+  color: var(--an-act-p12-ink);
+}
+
+/* ── Unified readiness badge ── */
+
+.premium-console-badge {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.premium-console-badge--green {
+  color: var(--an-act-p12-green);
+  background: var(--an-act-p12-green-dim);
+  border: 1px solid rgba(66, 212, 146, 0.35);
+}
+
+.premium-console-badge--amber {
+  color: #e8b84a;
+  background: rgba(232, 184, 74, 0.12);
+  border: 1px solid rgba(232, 184, 74, 0.35);
+}
+
+.premium-console-badge--red {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+}
+
+/* ── Compatibility: legacy cards inside premium console ── */
+
+.premium-console .an-act-card:not(.premium-card) {
+  padding: 28px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.012) 100%);
+  border: 1px solid var(--an-act-p12-border-soft);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  color: var(--an-act-p12-ink);
+}
+
+.premium-console .premium-card {
+  color: var(--an-act-p12-ink);
+}
+
+/* ── Compatibility: unify domain subtitle/hint/score/metric ── */
+
+.premium-console [class*="__subtitle"],
+.premium-console [class*="__hint"],
+.premium-console .an-act-partner-section p {
+  color: var(--an-act-p12-ink-muted);
+}
+
+.premium-console [class*="__score"],
+.premium-console [class*="__metric"]:not([class*="__metric-label"]) {
+  color: var(--an-act-p12-ink);
+}
+
+.premium-console h1,
+.premium-console h2,
+.premium-console h3,
+.premium-console h4 {
+  color: var(--an-act-p12-ink);
+}
+
+.premium-console [class*="__section-title"],
+.premium-console [class*="__section-head"] h2 {
+  color: var(--an-act-p12-ink);
+}
+
+/* ── Compatibility: unify domain grids/splits/nav ── */
+
+.premium-console [class*="__grid"]:not([class*="metric"]) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.premium-console [class*="__split"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.premium-console [class*="__nav"],
+.premium-console [class*="__toolbar"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.premium-console [class*="__header"] {
+  display: grid;
+  gap: 12px;
+}
+
+/* ── Compatibility: hero panels ── */
+
+.premium-console [class*="-hero"] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  padding: 28px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.012) 100%);
+  border: 1px solid var(--an-act-p12-border-soft);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ── Compatibility: unify all readiness/health/status badges ── */
+
+.premium-console [class*="badge--green"],
+.premium-console [class*="health--green"],
+.premium-console [class*="status--ready"]:not([class*="not-ready"]) {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--an-act-p12-green) !important;
+  background: var(--an-act-p12-green-dim) !important;
+  border: 1px solid rgba(66, 212, 146, 0.35) !important;
+}
+
+.premium-console [class*="badge--amber"],
+.premium-console [class*="health--amber"],
+.premium-console [class*="status--conditional"] {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #e8b84a !important;
+  background: rgba(232, 184, 74, 0.12) !important;
+  border: 1px solid rgba(232, 184, 74, 0.35) !important;
+}
+
+.premium-console [class*="badge--red"],
+.premium-console [class*="health--red"],
+.premium-console [class*="status--not-ready"] {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #f87171 !important;
+  background: rgba(248, 113, 113, 0.12) !important;
+  border: 1px solid rgba(248, 113, 113, 0.35) !important;
+}
+
+/* ── Tables inside console ── */
+
+.premium-console table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  color: var(--an-act-p12-ink);
+}
+
+.premium-console th,
+.premium-console td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--an-act-p12-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.premium-console th {
+  font-weight: 600;
+  color: var(--an-act-p12-ink-muted);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ── Auth shell alignment ── */
+
+.premium-console.an-act-login-shell,
+.premium-console.p12-auth {
+  min-height: 100vh;
+}
+
+/* ── AI panels ── */
+
+.premium-console .an-act-ai-panel,
+.premium-console .an-act-executive-panel {
+  border: 1px solid var(--an-act-p12-border-soft);
+  border-radius: 22px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.012) 100%);
+  color: var(--an-act-p12-ink);
+}
+
+/* ── Partner / demo / executive presentation ── */
+
+.premium-console.an-act-executive-presentation,
+.premium-console.an-act-partner-overview,
+.premium-console.an-act-demo-presenter {
+  max-width: 1220px;
+  margin: 0 auto;
+}
+
+/* ── Motion ── */
+
+.premium-console [class*="lift-in"],
+.premium-console .p12-lift-in {
+  animation: premium-console-lift-in var(--an-act-p12-motion-base) var(--an-act-p12-ease-premium) both;
+}
+
+@keyframes premium-console-lift-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .premium-console__nav,
+  .premium-console [class*="__nav"],
+  .premium-console [class*="__toolbar"] {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .premium-console__nav .premium-btn,
+  .premium-console [class*="__nav"] .premium-btn {
+    width: 100%;
+  }
+
+  .premium-console-hero,
+  .premium-console [class*="-hero"] {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .premium-console [class*="lift-in"],
+  .premium-console .p12-lift-in {
+    animation: none;
+  }
+}

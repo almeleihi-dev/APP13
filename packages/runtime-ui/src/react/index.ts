@@ -6,6 +6,49 @@ export { AnActSplash, AN_ACT_TRANSITION_DURATION_MS as SPLASH_TRANSITION_MS } fr
 export type { AnActSplashProps } from "./brand/AnActSplash.js";
 export { AnActWordmark } from "./brand/AnActWordmark.js";
 export type { AnActWordmarkProps } from "./brand/AnActWordmark.js";
+export { AnActLogoKey } from "./brand/AnActLogoKey.js";
+export type { AnActLogoKeyProps } from "./brand/AnActLogoKey.js";
+
+export {
+  PremiumBadge,
+  PremiumButton,
+  PremiumCard,
+  PremiumGlassPanel,
+  PremiumHero,
+  PremiumStat,
+  PremiumSurface,
+} from "./components/premium/PremiumComponents.js";
+export {
+  PremiumEntryBadge,
+  PremiumLiveIndicator,
+  PremiumMarketplaceFlow,
+  ProfessionalPassportMiniPreview,
+} from "./components/premium/EnterprisePresentation.js";
+export type {
+  PremiumEntryBadgeKind,
+  PremiumEntryBadgeProps,
+  PremiumLiveIndicatorProps,
+  ProfessionalPassportData,
+} from "./components/premium/EnterprisePresentation.js";
+export {
+  PremiumConsoleRoot,
+  PremiumConsoleHeader,
+  PremiumReadinessBadge,
+  PremiumScoreHero,
+  PremiumSectionTitle,
+  PremiumConsoleGrid,
+  PremiumConsoleSplit,
+  PremiumConsoleHint,
+  PremiumConsoleMetric,
+} from "./components/premium/PremiumConsoleComponents.js";
+export type { ReadinessSignal, PremiumConsoleRootProps, PremiumConsoleHeaderProps, PremiumReadinessBadgeProps, PremiumScoreHeroProps } from "./components/premium/PremiumConsoleComponents.js";
+export type {
+  PremiumBadgeProps,
+  PremiumButtonProps,
+  PremiumCardProps,
+  PremiumHeroProps,
+  PremiumStatProps,
+} from "./components/premium/PremiumComponents.js";
 
 export { ThemeProvider, useAnActTheme, useResolvedTheme } from "./providers/ThemeProvider.js";
 export type { ThemeContextValue, ThemeProviderProps } from "./providers/ThemeProvider.js";

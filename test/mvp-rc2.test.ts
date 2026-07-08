@@ -77,6 +77,29 @@ describe("MVP RC2 — Authentication hardening", () => {
     assert.match(auth, /async refresh/);
     assert.match(auth, /token\/refresh/);
     assert.match(auth, /logoutServer/);
+    assert.match(auth, /Idempotency-Key/);
+  });
+
+  it("AuthClient sends Idempotency-Key on login POST", async () => {
+    const calls: Array<{ url: string; init?: RequestInit }> = [];
+    const mockFetch: typeof fetch = async (input, init) => {
+      calls.push({ url: String(input), init });
+      return new Response(
+        JSON.stringify({
+          access_token: "access",
+          refresh_token: "refresh",
+          token_type: "Bearer",
+          expires_in: 3600,
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    };
+    const auth = new AuthClient({ baseUrl: "http://localhost:3000", fetch: mockFetch });
+    await auth.login("customer.demo@anact.local", "demo-password-123");
+    assert.equal(calls.length, 1);
+    const headers = calls[0]!.init?.headers as Record<string, string>;
+    assert.ok(headers["Idempotency-Key"]);
+    assert.match(headers["Idempotency-Key"], /^auth-/);
   });
 
   it("HttpClient retries once after refresh on 401", () => {
@@ -84,6 +107,7 @@ describe("MVP RC2 — Authentication hardening", () => {
     assert.match(http, /onRefresh/);
     assert.match(http, /_retried/);
     assert.match(http, /onRefreshFailure/);
+    assert.match(http, /resolveRequestUrl/);
   });
 
   it("RuntimeProvider wires session expiry and logout", () => {

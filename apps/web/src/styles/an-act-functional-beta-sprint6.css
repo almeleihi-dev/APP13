@@ -1,0 +1,131 @@
+/**
+ * AN ACT — Functional Beta Sprint 6
+ * Guest Entry Experience: explore before registration.
+ */
+
+.launch-splash__entry-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(100%, 320px);
+  margin: 16px auto 0;
+}
+
+.an-act-guest-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(120, 180, 255, 0.22);
+  background: rgba(120, 180, 255, 0.08);
+  font-size: 0.9rem;
+}
+
+.an-act-guest-banner__badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(120, 180, 255, 0.18);
+}
+
+.an-act-guest-entry__shell,
+.an-act-guest-demo__shell {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.an-act-guest-entry__title {
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+}
+
+.an-act-guest-entry__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.an-act-guest-entry__card,
+.an-act-guest-entry__conversion,
+.an-act-guest-demo__card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.an-act-guest-entry__label,
+.an-act-guest-demo__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  opacity: 0.72;
+  font-weight: 600;
+}
+
+.an-act-guest-demo__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.an-act-guest-demo__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.an-act-guest-demo__nav,
+.launch-preview__guest-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.an-act-guest-conversion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-color: rgba(66, 212, 146, 0.28);
+}
+
+.an-act-guest-conversion__badge {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.75;
+}
+
+.an-act-guest-conversion__title {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.an-act-guest-conversion__list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.an-act-guest-conversion__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.an-act-goal-breakdown__contract-preview {
+  border-color: rgba(120, 180, 255, 0.22);
+}
+
+.an-act-goal-breakdown__guest-note {
+  opacity: 0.85;
+  font-size: 0.9rem;
+}

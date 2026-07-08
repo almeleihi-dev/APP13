@@ -1,0 +1,269 @@
+/**
+ * AN ACT Personal Home Dashboard v1
+ * User operating command center after onboarding.
+ */
+
+.an-act-personal-home {
+  min-height: 100vh;
+  min-height: 100dvh;
+  color: var(--an-act-rc-text, #ffffff);
+  background-color: var(--an-act-rc-bg, #050506);
+}
+
+.an-act-personal-home__shell {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100% - clamp(24px, 6vw, 48px)));
+  margin: 0 auto;
+  padding: clamp(24px, 4vw, 40px) 0 clamp(56px, 8vw, 80px);
+}
+
+.an-act-personal-home__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: clamp(24px, 4vw, 36px);
+  padding-bottom: clamp(12px, 2vw, 16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.an-act-personal-home__topbar-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.an-act-personal-home__hero {
+  display: grid;
+  gap: clamp(20px, 4vw, 32px);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  margin-bottom: clamp(32px, 5vw, 48px);
+  padding: clamp(20px, 3vw, 28px);
+  border-radius: var(--an-act-rc-radius-lg, 18px);
+  border: 1px solid var(--an-act-rc-panel-border, rgba(255, 255, 255, 0.08));
+  background: linear-gradient(160deg, rgba(14, 14, 18, 0.95), rgba(5, 5, 6, 0.88));
+}
+
+.an-act-personal-home__eyebrow,
+.an-act-personal-home__label {
+  margin: 0;
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--an-act-rc-green, #42d492);
+}
+
+.an-act-personal-home__title {
+  margin: 0;
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+
+.an-act-personal-home__lead {
+  margin: 0;
+  max-width: 58ch;
+  color: var(--an-act-rc-muted, rgba(255, 255, 255, 0.54));
+  line-height: 1.65;
+}
+
+.an-act-personal-home__hero-stats {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
+  margin-top: clamp(16px, 3vw, 22px);
+}
+
+.an-act-personal-home__hero-identity {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.an-act-personal-home__profile-card {
+  margin: 0;
+}
+
+.an-act-personal-home__passport-access {
+  display: grid;
+  gap: 12px;
+  padding: clamp(16px, 2.5vw, 20px);
+}
+
+.an-act-personal-home__passport-preview {
+  margin: 0;
+}
+
+.an-act-personal-home__section {
+  margin-bottom: clamp(28px, 5vw, 40px);
+}
+
+.an-act-personal-home__section-title {
+  margin: 0 0 clamp(16px, 3vw, 22px);
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.an-act-personal-home__grid {
+  display: grid;
+  gap: clamp(14px, 2.5vw, 18px);
+}
+
+.an-act-personal-home__grid--3 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+}
+
+.an-act-personal-home__grid--4 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+
+.an-act-personal-home__workspace {
+  display: grid;
+  gap: clamp(14px, 2.5vw, 18px);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+}
+
+.an-act-personal-home__panel {
+  display: grid;
+  gap: 10px;
+  padding: clamp(16px, 2.5vw, 20px);
+  height: 100%;
+}
+
+.an-act-personal-home__metric {
+  margin: 0;
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: clamp(1.5rem, 3vw, 1.85rem);
+  letter-spacing: -0.02em;
+}
+
+.an-act-personal-home__metric--sm {
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+}
+
+.an-act-personal-home__body {
+  margin: 0;
+  color: var(--an-act-rc-muted, rgba(255, 255, 255, 0.54));
+  line-height: 1.6;
+}
+
+.an-act-personal-home__body--emphasis {
+  color: var(--an-act-rc-text, #ffffff);
+  font-size: 0.95rem;
+}
+
+.an-act-personal-home__empty {
+  margin: 0;
+  color: var(--an-act-rc-muted-soft, rgba(255, 255, 255, 0.38));
+  font-size: 0.875rem;
+}
+
+.an-act-personal-home__list,
+.an-act-personal-home__activity,
+.an-act-personal-home__tags {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.an-act-personal-home__list li,
+.an-act-personal-home__activity li {
+  display: grid;
+  gap: 4px;
+}
+
+.an-act-personal-home__list li strong,
+.an-act-personal-home__activity-title {
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 0.82rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.an-act-personal-home__list li span,
+.an-act-personal-home__activity-meta {
+  color: var(--an-act-rc-muted, rgba(255, 255, 255, 0.54));
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.an-act-personal-home__list--plain li {
+  color: var(--an-act-rc-muted, rgba(255, 255, 255, 0.54));
+  font-size: 0.875rem;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.an-act-personal-home__list--plain li::before {
+  content: "●";
+  position: absolute;
+  left: 0;
+  color: var(--an-act-rc-green, #42d492);
+  font-size: 0.55rem;
+  top: 0.45em;
+}
+
+.an-act-personal-home__tags li {
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  font-family: var(--an-act-rc-font-mono, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 0.75rem;
+}
+
+.an-act-personal-home__progress {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.an-act-personal-home__progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(66, 212, 146, 0.55), var(--an-act-rc-green, #42d492));
+}
+
+.an-act-personal-home__quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.an-act-personal-home__footer {
+  margin-top: clamp(24px, 4vw, 32px);
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.an-act-personal-home__footer-link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--an-act-rc-muted, rgba(255, 255, 255, 0.54));
+  font-size: 0.8125rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.an-act-personal-home__footer-link:hover {
+  color: var(--an-act-rc-green, #42d492);
+}
+
+@media (max-width: 720px) {
+  .an-act-personal-home__quick-actions .premium-button {
+    flex: 1 1 100%;
+  }
+}

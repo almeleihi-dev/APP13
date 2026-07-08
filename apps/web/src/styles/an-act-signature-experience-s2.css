@@ -1,0 +1,474 @@
+/**
+ * AN ACT — Signature Experience Sprint 2
+ * Recognizable visual identity: Meridian Enter motion, crafted materials,
+ * iconic passport credential, distinctive Live Frame, OS-grade Personal Home.
+ */
+
+:root {
+  /* Signature rhythm — single timing language */
+  --an-act-sig-fast: 260ms;
+  --an-act-sig-base: 400ms;
+  --an-act-sig-slow: 680ms;
+  --an-act-sig-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --an-act-sig-spring: cubic-bezier(0.34, 1.28, 0.64, 1);
+
+  /* Signature palette */
+  --an-act-sig-black: #050506;
+  --an-act-sig-graphite: #0e0e11;
+  --an-act-sig-graphite-b: #141418;
+  --an-act-sig-green: #42d492;
+  --an-act-sig-green-dim: rgba(66, 212, 146, 0.14);
+  --an-act-sig-green-glow: rgba(66, 212, 146, 0.42);
+  --an-act-sig-glass: rgba(14, 14, 18, 0.72);
+  --an-act-sig-glass-border: rgba(255, 255, 255, 0.09);
+  --an-act-sig-font: "IBM Plex Mono", "SF Mono", Menlo, ui-monospace, monospace;
+
+  /* Signature spacing rhythm (8px grid) */
+  --an-act-sig-space-1: 8px;
+  --an-act-sig-space-2: 16px;
+  --an-act-sig-space-3: 24px;
+  --an-act-sig-space-4: 32px;
+  --an-act-sig-space-5: 48px;
+}
+
+html.an-act-signature-s2 {
+  scroll-behavior: smooth;
+}
+
+html.an-act-signature-s2 ::selection {
+  background: rgba(66, 212, 146, 0.28);
+  color: #ffffff;
+}
+
+/* ── Signature scroll chrome ── */
+html.an-act-signature-s2 ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html.an-act-signature-s2 ::-webkit-scrollbar-track {
+  background: var(--an-act-sig-black);
+}
+
+html.an-act-signature-s2 ::-webkit-scrollbar-thumb {
+  background: rgba(66, 212, 146, 0.22);
+  border-radius: 999px;
+  border: 2px solid var(--an-act-sig-black);
+}
+
+html.an-act-signature-s2 ::-webkit-scrollbar-thumb:hover {
+  background: rgba(66, 212, 146, 0.38);
+}
+
+/* ── 1. Signature Motion — Meridian Enter ── */
+
+.an-act-signature-s2 {
+  position: relative;
+}
+
+.an-act-sig-meridian-sweep {
+  pointer-events: none;
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(66, 212, 146, 0.15) 20%,
+    var(--an-act-sig-green) 50%,
+    rgba(66, 212, 146, 0.15) 80%,
+    transparent 100%
+  );
+  box-shadow: 0 0 24px var(--an-act-sig-green-glow);
+  transform: translateX(-110%);
+  animation: an-act-sig-meridian-sweep var(--an-act-sig-slow) var(--an-act-sig-ease) both;
+}
+
+@keyframes an-act-sig-meridian-sweep {
+  0% {
+    transform: translateX(-110%);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+}
+
+.an-act-sig-enter {
+  animation: an-act-sig-enter var(--an-act-sig-base) var(--an-act-sig-ease) both;
+}
+
+@keyframes an-act-sig-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.an-act-excellence-s1 .launch-router__page,
+.an-act-platform-continuity.an-act-signature-s2,
+.an-act-excellence-s1-page.an-act-sig-enter {
+  animation-name: an-act-sig-enter;
+  animation-duration: var(--an-act-sig-base);
+  animation-timing-function: var(--an-act-sig-ease);
+}
+
+/* ── 2. Signature Materials — glass & graphite ── */
+
+.an-act-sig-glass {
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.04) 0%, transparent 42%),
+    linear-gradient(180deg, rgba(14, 14, 18, 0.82) 0%, rgba(5, 5, 6, 0.94) 100%);
+  backdrop-filter: blur(16px) saturate(120%);
+  border: 1px solid var(--an-act-sig-glass-border);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 24px 48px rgba(0, 0, 0, 0.45);
+}
+
+.an-act-sig-crafted::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(66, 212, 146, 0.45) 50%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+.an-act-sig-crafted {
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── 3. Signature Identity — iconic passport credential ── */
+
+.an-act-sig-passport-shell .p13-passport-preview,
+.an-act-sig-passport-credential {
+  position: relative;
+  padding: clamp(24px, 4vw, 32px);
+  border-radius: 20px;
+  background:
+    linear-gradient(165deg, rgba(66, 212, 146, 0.06) 0%, transparent 38%),
+    linear-gradient(180deg, rgba(20, 20, 24, 0.96) 0%, rgba(5, 5, 6, 0.98) 100%);
+  border: 1px solid rgba(66, 212, 146, 0.2);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 28px 56px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(66, 212, 146, 0.06);
+}
+
+.an-act-sig-passport-shell .p13-passport-preview::before,
+.an-act-sig-passport-credential::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 18px;
+  height: 18px;
+  border-top: 2px solid var(--an-act-sig-green);
+  border-left: 2px solid var(--an-act-sig-green);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.an-act-sig-passport-shell .p13-passport-preview::after,
+.an-act-sig-passport-credential::after {
+  content: "";
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 18px;
+  height: 18px;
+  border-bottom: 2px solid var(--an-act-sig-green);
+  border-right: 2px solid var(--an-act-sig-green);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.an-act-sig-passport-shell .p13-passport-preview__eyebrow,
+.an-act-sig-passport-credential .an-act-sig-label {
+  font-family: var(--an-act-sig-font);
+  letter-spacing: 0.22em;
+  color: var(--an-act-sig-green);
+}
+
+.an-act-sig-passport-shell .p13-passport-preview__name {
+  font-family: var(--an-act-sig-font);
+  font-size: clamp(1.15rem, 2.4vw, 1.35rem);
+  letter-spacing: -0.03em;
+}
+
+/* ── 4. Live Frame — distinctive signature ring ── */
+
+.an-act-sig-live-frame {
+  position: relative;
+  isolation: isolate;
+}
+
+.an-act-sig-live-frame::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 1px solid rgba(66, 212, 146, 0.25);
+  opacity: 0.6;
+  animation: an-act-sig-live-ring 3.2s var(--an-act-sig-ease) infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.an-act-sig-live-frame--gold::before {
+  border-color: rgba(212, 175, 55, 0.35);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.12);
+}
+
+.an-act-sig-live-frame--platinum::before {
+  border-color: rgba(66, 212, 146, 0.45);
+  box-shadow: 0 0 24px rgba(66, 212, 146, 0.18);
+}
+
+@keyframes an-act-sig-live-ring {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.04);
+  }
+}
+
+.an-act-rc-live-frame-item--active.an-act-sig-live-frame-card {
+  background:
+    linear-gradient(160deg, rgba(66, 212, 146, 0.08) 0%, rgba(14, 14, 18, 0.92) 100%);
+}
+
+/* ── 5. Personal Home — professional operating system ── */
+
+.an-act-sig-os .an-act-personal-home__topbar {
+  padding: var(--an-act-sig-space-2) var(--an-act-sig-space-3);
+  margin-bottom: var(--an-act-sig-space-4);
+  border-radius: 14px;
+  border: 1px solid var(--an-act-sig-glass-border);
+  background: var(--an-act-sig-glass);
+  backdrop-filter: blur(12px);
+}
+
+.an-act-sig-os .an-act-personal-home__hero {
+  border-color: rgba(66, 212, 146, 0.12);
+}
+
+.an-act-sig-os .an-act-personal-home__hero::after {
+  content: "OPERATING SURFACE";
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-family: var(--an-act-sig-font);
+  font-size: 0.58rem;
+  letter-spacing: 0.24em;
+  color: rgba(66, 212, 146, 0.45);
+  pointer-events: none;
+}
+
+.an-act-sig-os .an-act-personal-home__section-title::before {
+  width: 4px;
+  box-shadow: 0 0 12px rgba(66, 212, 146, 0.45);
+}
+
+.an-act-sig-os .premium-card {
+  border-radius: 16px;
+}
+
+/* ── 6. Signature Details ── */
+
+.an-act-sig-divider {
+  height: 1px;
+  margin: var(--an-act-sig-space-3) 0;
+  border: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(66, 212, 146, 0.35) 20%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(66, 212, 146, 0.35) 80%,
+    transparent
+  );
+}
+
+.an-act-sig-label {
+  margin: 0;
+  font-family: var(--an-act-sig-font);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--an-act-sig-green);
+}
+
+.an-act-sig-focus-ring:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--an-act-sig-black),
+    0 0 0 4px var(--an-act-sig-green);
+}
+
+.an-act-platform-continuity .premium-button:focus-visible,
+.an-act-passport-flow .premium-button:focus-visible,
+.an-act-personal-home .premium-button:focus-visible,
+.an-act-passport-form__input:focus-visible,
+.an-act-passport-form__textarea:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--an-act-sig-black),
+    0 0 0 4px rgba(66, 212, 146, 0.55);
+}
+
+.an-act-sig-success-flash {
+  animation: an-act-sig-success-flash var(--an-act-sig-slow) var(--an-act-sig-ease) both;
+}
+
+@keyframes an-act-sig-success-flash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(66, 212, 146, 0.5);
+  }
+  40% {
+    box-shadow: 0 0 0 8px rgba(66, 212, 146, 0.18);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(66, 212, 146, 0);
+  }
+}
+
+.an-act-sig-empty {
+  position: relative;
+  padding: var(--an-act-sig-space-3);
+  border-radius: 14px;
+  border: 1px dashed rgba(66, 212, 146, 0.18);
+  background: rgba(66, 212, 146, 0.03);
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.an-act-sig-empty::before {
+  content: "—";
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--an-act-sig-font);
+  color: var(--an-act-sig-green);
+  letter-spacing: 0.3em;
+  opacity: 0.5;
+}
+
+.an-act-personal-home__empty.an-act-sig-empty-panel,
+.an-act-personal-home__empty-panel.an-act-sig-empty {
+  padding: var(--an-act-sig-space-2) 0;
+  border: none;
+  background: transparent;
+}
+
+.an-act-personal-home__empty.an-act-sig-empty-panel::before,
+.an-act-personal-home__empty-panel.an-act-sig-empty::before {
+  display: none;
+}
+
+/* Signature hover language — unified lift + meridian highlight */
+.an-act-signature-s2 .premium-card--interactive,
+.an-act-signature-s2 .premium-card--featured,
+.an-act-sig-os .an-act-personal-home__panel {
+  transition:
+    transform var(--an-act-sig-fast) var(--an-act-sig-ease),
+    box-shadow var(--an-act-sig-fast) var(--an-act-sig-ease),
+    border-color var(--an-act-sig-fast) var(--an-act-sig-ease);
+}
+
+.an-act-signature-s2 .premium-card--interactive:hover,
+.an-act-signature-s2 .premium-card--featured:hover {
+  border-color: rgba(66, 212, 146, 0.22);
+}
+
+/* Launch key — signature pedestal glow */
+.an-act-signature-s2 .launch-splash__pedestal {
+  background: radial-gradient(ellipse, rgba(66, 212, 146, 0.12), transparent 68%);
+}
+
+.an-act-signature-s2 .an-act-logo-key {
+  filter: drop-shadow(0 0 20px rgba(66, 212, 146, 0.22));
+}
+
+/* Enterprise landing — signature section rails */
+.an-act-signature-s2-page .an-act-rc-section__label,
+.an-act-platform-continuity.an-act-signature-s2 .an-act-rc-section__label {
+  font-family: var(--an-act-sig-font);
+  letter-spacing: 0.22em;
+}
+
+.an-act-signature-s2-page .p12-landing__section-title,
+.an-act-signature-s2-page .p12-landing__display {
+  font-family: var(--an-act-sig-font);
+}
+
+.an-act-signature-s2-page .an-act-rc-live-frame-item {
+  transition:
+    border-color var(--an-act-sig-base) var(--an-act-sig-ease),
+    box-shadow var(--an-act-sig-base) var(--an-act-sig-ease);
+}
+
+/* Remove generic flat feel on passport form panels */
+.an-act-sig-passport-shell .an-act-passport-form__panel {
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
+    rgba(14, 14, 18, 0.9);
+  backdrop-filter: blur(10px);
+}
+
+.an-act-sig-passport-shell .an-act-passport-dashboard__passport {
+  padding: var(--an-act-sig-space-1);
+}
+
+/* Identity card — crafted credential */
+.an-act-sig-os .an-act-identity-card {
+  border-color: rgba(66, 212, 146, 0.14);
+  background:
+    linear-gradient(155deg, rgba(66, 212, 146, 0.05) 0%, transparent 45%),
+    var(--an-act-sig-glass);
+  backdrop-filter: blur(12px);
+}
+
+/* ── Reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .an-act-sig-meridian-sweep,
+  .an-act-sig-live-frame::before {
+    animation: none;
+  }
+
+  .an-act-sig-enter,
+  .an-act-excellence-s1 .launch-router__page,
+  .an-act-platform-continuity.an-act-signature-s2,
+  .an-act-excellence-s1-page.an-act-sig-enter {
+    animation: none;
+  }
+
+  html.an-act-signature-s2 {
+    scroll-behavior: auto;
+  }
+}

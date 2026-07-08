@@ -13,10 +13,38 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
+  // OC-1: graceful shutdown — drain HTTP, then release DB and Redis; bounded so
+  // a stuck dependency can never hang the process indefinitely.
+  let shuttingDown = false;
   const shutdown = async (signal: string) => {
+    if (shuttingDown) return;
+    shuttingDown = true;
     deps.logger.info({ signal }, "shutting down");
-    await app.close();
-    await deps.db.close();
+
+    const hardTimeout = setTimeout(() => {
+      deps.logger.fatal({ signal }, "shutdown timed out; forcing exit");
+      process.exit(1);
+    }, 10_000);
+    hardTimeout.unref();
+
+    const closers: Array<[string, () => Promise<unknown>]> = [
+      ["http", () => app.close()],
+      ["database", () => deps.db.close()],
+      ["idempotency", () => deps.idempotency.close()],
+      ["sessions", () => deps.sessions.close()],
+    ];
+    for (const [name, close] of closers) {
+      try {
+        await close();
+      } catch (error) {
+        deps.logger.error(
+          { err: error, resource: name },
+          "error closing resource during shutdown"
+        );
+      }
+    }
+
+    clearTimeout(hardTimeout);
     process.exit(0);
   };
 

@@ -1,18 +1,21 @@
 import {
   ThemeProvider,
-  AnActWordmark,
-  AnActBrandLoading,
+  AnActLogoKey,
+  PremiumButton,
+  PremiumGlassPanel,
 } from "@an-act/runtime-ui/react";
 import { useState, type FormEvent } from "react";
 import { useRuntime } from "../providers/RuntimeProvider.js";
 import { AN_ACT_BRAND } from "../brand/config.js";
+import { PresentationError } from "../components/PresentationError.js";
 
 export interface RegisterPageProps {
   onLogin: () => void;
   onSuccess: () => void;
+  onBackToLanding?: () => void;
 }
 
-export function RegisterPage({ onLogin, onSuccess }: RegisterPageProps) {
+export function RegisterPage({ onLogin, onSuccess, onBackToLanding }: RegisterPageProps) {
   const { register, loading, error } = useRuntime();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,59 +35,55 @@ export function RegisterPage({ onLogin, onSuccess }: RegisterPageProps) {
 
   return (
     <ThemeProvider mode="need">
-      <div className="an-act-login-shell">
-        <div className="an-act-login-panel">
-          <div style={{ display: "grid", gap: "8px", justifyItems: "start" }}>
-            <AnActWordmark logoUrl={AN_ACT_BRAND.logoUrl} />
-            <span className="an-act-product-name">{AN_ACT_BRAND.productName}</span>
+      <div className="p12-auth">
+        <div className="p12-auth__ambient" aria-hidden="true" />
+        <PremiumGlassPanel className="p12-auth__card p12-lift-in">
+          {onBackToLanding ? (
+            <PremiumButton variant="ghost" block onClick={onBackToLanding}>
+              Back to landing
+            </PremiumButton>
+          ) : null}
+          <div style={{ display: "grid", gap: 12, justifyItems: "center", textAlign: "center" }}>
+            <AnActLogoKey size="sm" />
+            <h1 className="p12-landing__section-title" style={{ margin: 0, fontSize: "1.5rem" }}>
+              Create account
+            </h1>
+            <p className="ds-eyebrow" style={{ margin: 0, color: "var(--an-act-p12-ink-muted)" }}>
+              {AN_ACT_BRAND.productName}
+            </p>
           </div>
-          <p style={{ margin: 0, color: "var(--an-act-color-text-secondary)" }}>
-            Create your account — validation is server authoritative
+          <p style={{ margin: 0, textAlign: "center", color: "var(--an-act-p12-ink-muted)", fontSize: "0.9375rem" }}>
+            Account validation is server authoritative
           </p>
-          {loading ? <AnActBrandLoading stageText="Creating account..." compact /> : null}
-          <form onSubmit={onSubmit} style={{ display: "grid", gap: "var(--an-act-spacing-space-16)" }}>
-            <label className="an-act-field">
+          <form onSubmit={onSubmit} style={{ display: "grid", gap: 16 }} aria-busy={loading}>
+            <label className="p12-field">
               Display name
-              <input
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                autoComplete="name"
-                required
-              />
+              <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} autoComplete="name" />
             </label>
-            <label className="an-act-field">
+            <label className="p12-field">
               Email
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
-                required
-              />
+              <input value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
             </label>
-            <label className="an-act-field">
+            <label className="p12-field">
               Password
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="new-password"
-                required
               />
             </label>
-            <button type="submit" className="an-act-button an-act-button--primary" disabled={loading}>
-              {loading ? "Creating account..." : "Create account"}
-            </button>
+            <PremiumButton type="submit" variant="primary" block disabled={loading} aria-busy={loading}>
+              {loading ? "Creating..." : "Create account"}
+            </PremiumButton>
             {error ? (
-              <p role="alert" style={{ margin: 0, color: "var(--an-act-color-status-error)" }}>
-                <strong>{error.title}</strong>: {error.detail}
-              </p>
+              <PresentationError title={error.title} detail={error.detail} code={error.code} />
             ) : null}
           </form>
-          <button type="button" className="an-act-button an-act-button--ghost" onClick={onLogin}>
-            Already have an account? Sign in
-          </button>
-        </div>
+          <PremiumButton variant="ghost" block onClick={onLogin}>
+            Back to sign in
+          </PremiumButton>
+        </PremiumGlassPanel>
       </div>
     </ThemeProvider>
   );

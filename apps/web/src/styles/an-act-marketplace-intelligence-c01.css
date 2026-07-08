@@ -1,0 +1,306 @@
+/**
+ * AN ACT — Marketplace Intelligence Cycle 01
+ * Believable professional ecosystem: providers, trust, storytelling, beta honesty.
+ */
+
+:root {
+  --an-act-mkt-accent: rgba(66, 212, 146, 0.88);
+  --an-act-mkt-muted: rgba(15, 23, 42, 0.62);
+  --an-act-mkt-border: rgba(15, 23, 42, 0.08);
+}
+
+html.an-act-mkt-c01 {
+  scroll-behavior: smooth;
+}
+
+/* ── Marketplace identity banner ── */
+
+.an-act-marketplace-identity {
+  margin: 0 0 20px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(66, 212, 146, 0.08), rgba(15, 23, 42, 0.02));
+  border: 1px solid rgba(66, 212, 146, 0.18);
+}
+
+.an-act-marketplace-identity__badge {
+  display: inline-flex;
+  margin: 0 0 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--an-act-mkt-accent);
+  background: rgba(66, 212, 146, 0.1);
+  border: 1px solid rgba(66, 212, 146, 0.22);
+}
+
+.an-act-marketplace-identity__title {
+  margin: 0 0 6px;
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+.an-act-marketplace-identity__lead {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--an-act-mkt-muted);
+}
+
+.an-act-marketplace-identity__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--an-act-mkt-border);
+}
+
+.an-act-marketplace-identity__stat {
+  display: grid;
+  gap: 2px;
+}
+
+.an-act-marketplace-identity__stat strong {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.an-act-marketplace-identity__stat span {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--an-act-mkt-muted);
+}
+
+/* ── Featured provider cards (browse) ── */
+
+.an-act-marketplace-providers {
+  margin-top: 20px;
+}
+
+.an-act-marketplace-providers__label {
+  margin: 0 0 12px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--an-act-mkt-muted);
+}
+
+.an-act-marketplace-providers__grid {
+  display: grid;
+  gap: 12px;
+}
+
+.an-act-marketplace-provider-card {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 14px;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  background: var(--an-act-color-surface-primary, #fff);
+  border: 1px solid var(--an-act-mkt-border);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.an-act-marketplace-provider-card:hover {
+  border-color: rgba(66, 212, 146, 0.35);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+}
+
+.an-act-marketplace-provider-card__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.an-act-marketplace-provider-card__avatar {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: rgba(66, 212, 146, 0.12);
+  color: rgba(31, 90, 50, 0.9);
+  flex-shrink: 0;
+}
+
+.an-act-marketplace-provider-card__meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.an-act-marketplace-provider-card__name {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.an-act-marketplace-provider-card__service {
+  margin: 2px 0 0;
+  font-size: 0.8125rem;
+  color: var(--an-act-mkt-muted);
+}
+
+.an-act-marketplace-provider-card__tier {
+  display: inline-flex;
+  margin-top: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(31, 90, 50, 0.9);
+  background: rgba(31, 122, 69, 0.1);
+}
+
+.an-act-marketplace-provider-card__signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.an-act-marketplace-provider-card__signal {
+  font-size: 0.75rem;
+  color: var(--an-act-mkt-muted);
+}
+
+.an-act-marketplace-provider-card__signal strong {
+  color: inherit;
+  font-weight: 600;
+}
+
+.an-act-marketplace-provider-card__cta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--an-act-mkt-accent);
+}
+
+/* ── Detail: provider credential + story ── */
+
+.ds-flow__provider-credential {
+  margin: 0 0 16px;
+}
+
+.ds-flow__provider-credential .p13-passport-preview {
+  margin: 0;
+}
+
+.ds-flow__story-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.ds-flow__story-card {
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.03);
+  border: 1px solid var(--an-act-mkt-border);
+}
+
+.ds-flow__story-card strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--an-act-mkt-muted);
+}
+
+.ds-flow__story-card p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.ds-flow__confidence-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.ds-flow__confidence-item {
+  padding: 12px;
+  border-radius: 12px;
+  text-align: center;
+  background: rgba(31, 122, 69, 0.06);
+  border: 1px solid rgba(31, 122, 69, 0.14);
+}
+
+.ds-flow__confidence-item strong {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.ds-flow__confidence-item span {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--an-act-mkt-muted);
+}
+
+.ds-flow__next-action {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--an-act-mkt-muted);
+  background: rgba(66, 212, 146, 0.06);
+  border-left: 3px solid rgba(66, 212, 146, 0.45);
+}
+
+.ds-flow__verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(31, 90, 50, 0.95);
+  background: rgba(31, 122, 69, 0.12);
+}
+
+.ds-flow__verified-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+@media (max-width: 640px) {
+  .an-act-marketplace-identity__stats {
+    gap: 12px;
+  }
+
+  .ds-flow__confidence-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.an-act-mkt-c01 {
+    scroll-behavior: auto;
+  }
+}

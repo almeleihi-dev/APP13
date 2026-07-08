@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { ThemeProvider, AnActWordmark, AnActBrandLoading } from "@an-act/runtime-ui/react";
+import { ThemeProvider, AnActWordmark, AnActBrandLoading, PremiumButton, PremiumCard } from "@an-act/runtime-ui/react";
 import { useRuntime } from "../providers/RuntimeProvider.js";
 import { AN_ACT_BRAND } from "../brand/config.js";
 
@@ -77,8 +77,9 @@ export function ProviderOnboardingPage({ onComplete }: ProviderOnboardingPagePro
 
   return (
     <ThemeProvider mode="action">
-      <div className="an-act-login-shell">
-        <div className="an-act-login-panel an-act-onboarding-panel">
+      <div className="premium-console an-act-login-shell">
+        <div className="premium-console__ambient" aria-hidden="true" />
+        <div className="premium-console an-act-login-panel an-act-onboarding-panel">
           <AnActWordmark logoUrl={AN_ACT_BRAND.logoUrl} />
           <h1 style={{ margin: 0, fontSize: "1.25rem" }}>Provider onboarding</h1>
           <div className="an-act-progress-inline" role="progressbar" aria-valuenow={progress}>
@@ -87,16 +88,16 @@ export function ProviderOnboardingPage({ onComplete }: ProviderOnboardingPagePro
           </div>
           {busy || loading ? <AnActBrandLoading stageText="Loading onboarding..." compact /> : null}
           {active ? (
-            <div className="an-act-card">
+            <PremiumCard as="div" className="premium-card">
               <h2 style={{ margin: 0 }}>{active.label}</h2>
               <p style={{ margin: "8px 0 0", color: "var(--an-act-color-text-secondary)" }}>{active.purpose}</p>
-            </div>
+            </PremiumCard>
           ) : null}
           <form onSubmit={submitCurrentStep} style={{ display: "grid", gap: "var(--an-act-spacing-space-12)" }}>
             {renderStepFields(currentStep, form, setForm)}
-            <button type="submit" className="an-act-button an-act-button--primary" disabled={busy || loading}>
+            <PremiumButton type="submit" variant="primary" disabled={busy || loading}>
               Continue
-            </button>
+            </PremiumButton>
           </form>
           {(stepError ?? error?.detail) ? (
             <p role="alert" style={{ margin: 0, color: "var(--an-act-color-status-error)" }}>

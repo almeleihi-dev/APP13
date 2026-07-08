@@ -267,6 +267,68 @@ export class RuntimeClient {
   async loadNeedEmptyState(): Promise<AnActRuntimeScreenView> {
     return this.http.get<AnActRuntimeScreenView>("/need-experience/screen/empty-state");
   }
+
+  // --- Phase 9: Strategic partner demo transport (no business logic) ---
+
+  async getRuntimeDemo(): Promise<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>("/runtime-demo");
+  }
+
+  async getDemoScenarios(): Promise<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>("/runtime-demo/scenarios");
+  }
+
+  async startDemo(scenarioId?: string): Promise<Record<string, unknown>> {
+    return this.http.post<Record<string, unknown>>("/runtime-demo/start", { scenario_id: scenarioId });
+  }
+
+  async nextDemoStep(): Promise<Record<string, unknown>> {
+    return this.http.post<Record<string, unknown>>("/runtime-demo/next", {});
+  }
+
+  async previousDemoStep(): Promise<Record<string, unknown>> {
+    return this.http.post<Record<string, unknown>>("/runtime-demo/previous", {});
+  }
+
+  async pauseDemo(): Promise<Record<string, unknown>> {
+    return this.http.post<Record<string, unknown>>("/runtime-demo/pause", {});
+  }
+
+  async resumeDemo(): Promise<Record<string, unknown>> {
+    return this.http.post<Record<string, unknown>>("/runtime-demo/resume", {});
+  }
+
+  async restartDemo(): Promise<Record<string, unknown>> {
+    return this.http.post<Record<string, unknown>>("/runtime-demo/restart", {});
+  }
+
+  async stopDemo(): Promise<Record<string, unknown>> {
+    return this.http.post<Record<string, unknown>>("/runtime-demo/stop", {});
+  }
+
+  async getKnowledgeBankSummary(): Promise<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>("/knowledge-bank/summary");
+  }
+
+  async getExecutiveExperienceSummary(): Promise<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>("/executive-experience/summary");
+  }
+
+  async getExecutiveExperienceInvestor(): Promise<Record<string, unknown>> {
+    return this.http.get<Record<string, unknown>>("/executive-experience/investor");
+  }
+
+  async getRuntimeExecutiveInsights(): Promise<{ screen: AnActRuntimeScreenView; insights: Record<string, unknown> }> {
+    return this.http.get<{ screen: AnActRuntimeScreenView; insights: Record<string, unknown> }>(
+      "/runtime-executive/insights"
+    );
+  }
+
+  async getRuntimeExecutiveSummary(): Promise<{ screen: AnActRuntimeScreenView; summary: Record<string, unknown> }> {
+    return this.http.get<{ screen: AnActRuntimeScreenView; summary: Record<string, unknown> }>(
+      "/runtime-executive/summary"
+    );
+  }
 }
 
 export function createRuntimeClient(config: RuntimeClientConfig): RuntimeClient {

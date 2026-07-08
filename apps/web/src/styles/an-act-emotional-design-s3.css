@@ -1,0 +1,350 @@
+/**
+ * AN ACT — Emotional Design Sprint 3
+ * Premium calm: confidence, trust, breathing space, meaningful moments.
+ */
+
+:root {
+  --an-act-emo-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --an-act-emo-base: 480ms;
+  --an-act-emo-slow: 720ms;
+  --an-act-emo-green-soft: rgba(66, 212, 146, 0.12);
+  --an-act-emo-text-soft: rgba(255, 255, 255, 0.62);
+  --an-act-emo-read-max: 62ch;
+  --an-act-emo-breathe: clamp(32px, 6vw, 56px);
+}
+
+html.an-act-emotional-s3 {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Premium calm: reduce noise motion on productivity surfaces ── */
+
+.an-act-passport-flow .an-act-sig-meridian-sweep,
+.an-act-personal-home .an-act-sig-meridian-sweep,
+.an-act-platform-continuity:not(.launch-splash):not(.launch-builder):not(.launch-preview) .an-act-sig-meridian-sweep {
+  display: none;
+}
+
+.an-act-emotional-s3 .launch-gm__ambient-green {
+  animation-duration: 22s;
+}
+
+.an-act-emotional-s3 .an-act-sig-live-frame::before {
+  animation-duration: 5.5s;
+  opacity: 0.35;
+}
+
+.an-act-emotional-s3 .an-act-excellence-s1-page .an-act-personal-home__section {
+  animation: none;
+}
+
+.an-act-emotional-s3 .an-act-sig-meridian-sweep {
+  height: 1px;
+  opacity: 0.75;
+  animation-duration: var(--an-act-emo-slow);
+  box-shadow: 0 0 16px rgba(66, 212, 146, 0.22);
+}
+
+/* ── Human presence: reading comfort ── */
+
+.an-act-emotional-s3 .an-act-passport-flow__lead,
+.an-act-emotional-s3 .an-act-personal-home__lead,
+.an-act-emotional-s3 .p12-landing__lead,
+.an-act-emotional-s3 .p13-hero__lead {
+  max-width: var(--an-act-emo-read-max);
+  line-height: 1.72;
+  color: var(--an-act-emo-text-soft);
+}
+
+.an-act-emotional-s3 .an-act-personal-home__body,
+.an-act-emotional-s3 .an-act-passport-dashboard__body,
+.an-act-emotional-s3 .an-act-passport-form__textarea {
+  line-height: 1.65;
+}
+
+.an-act-emotional-s3 .an-act-passport-flow__title,
+.an-act-emotional-s3 .an-act-personal-home__title {
+  line-height: 1.18;
+  font-weight: 400;
+}
+
+/* ── Emotional hierarchy: breathing space ── */
+
+.an-act-emotional-s3 .an-act-passport-flow__shell,
+.an-act-emotional-s3 .an-act-personal-home__shell {
+  padding-top: var(--an-act-emo-breathe);
+  padding-bottom: calc(var(--an-act-emo-breathe) + 16px);
+}
+
+.an-act-emotional-s3 .an-act-personal-home__hero {
+  padding: clamp(28px, 4vw, 40px);
+  gap: clamp(24px, 4vw, 36px);
+}
+
+.an-act-emotional-s3 .an-act-personal-home__section {
+  margin-bottom: clamp(36px, 6vw, 52px);
+}
+
+.an-act-emotional-s3 .an-act-personal-home__panel:not(.premium-card--featured) {
+  border-color: rgba(255, 255, 255, 0.05);
+  background: rgba(10, 10, 12, 0.55);
+}
+
+.an-act-emotional-s3 .an-act-personal-home__panel.premium-card--featured,
+.an-act-emotional-s3 .an-act-passport-dashboard__panel.premium-card--featured {
+  border-color: rgba(66, 212, 146, 0.14);
+}
+
+.an-act-emotional-s3 .an-act-personal-home__grid,
+.an-act-emotional-s3 .an-act-personal-home__workspace {
+  gap: clamp(18px, 3vw, 24px);
+}
+
+/* ── 1. First Launch — quiet anticipation ── */
+
+.an-act-emotion-launch.launch-splash .launch-splash__tagline {
+  color: rgba(255, 255, 255, 0.48);
+  letter-spacing: 0.28em;
+}
+
+.an-act-emotion-launch .launch-splash__key-glow {
+  animation-duration: 4.8s;
+}
+
+.an-act-emotion-launch .launch-splash__inner {
+  gap: clamp(36px, 6vw, 52px);
+}
+
+/* ── 2. Final Act — earned transition ── */
+
+.an-act-emotion-final-act.launch-ceremony {
+  background: rgba(5, 5, 6, 0.92);
+}
+
+.an-act-emotion-final-act .launch-ceremony__glow {
+  opacity: 0.55;
+  animation-duration: var(--an-act-emo-slow);
+}
+
+.an-act-emotion-final-act .launch-ceremony__logo-wrap {
+  animation: an-act-emo-final-settle var(--an-act-emo-slow) var(--an-act-emo-ease) both;
+}
+
+@keyframes an-act-emo-final-settle {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── 3. Profile — welcome & trust ── */
+
+.an-act-emotion-profile .an-act-passport-flow__header {
+  margin-bottom: clamp(36px, 6vw, 48px);
+}
+
+.an-act-emotion-profile .an-act-passport-flow__eyebrow {
+  color: rgba(66, 212, 146, 0.78);
+}
+
+.an-act-emotion-profile .an-act-passport-form__panel {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+}
+
+/* ── 4. Passport created — quiet achievement ── */
+
+.an-act-emotion-passport-created .an-act-passport-flow__shell {
+  animation: an-act-emo-passport-glow var(--an-act-emo-base) var(--an-act-emo-ease) both;
+}
+
+.an-act-emotion-passport-created .an-act-passport-form {
+  opacity: 0.42;
+  transform: scale(0.992);
+  transition:
+    opacity var(--an-act-emo-base) var(--an-act-emo-ease),
+    transform var(--an-act-emo-base) var(--an-act-emo-ease);
+}
+
+.an-act-emotion-passport-created::after {
+  content: "Professional Passport established";
+  position: fixed;
+  z-index: 10000;
+  left: 50%;
+  bottom: clamp(24px, 5vw, 40px);
+  transform: translateX(-50%);
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(66, 212, 146, 0.28);
+  background: rgba(8, 12, 10, 0.92);
+  color: var(--an-act-sig-green, #42d492);
+  font-family: var(--an-act-sig-font, "IBM Plex Mono", ui-monospace, monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  animation: an-act-emo-toast-in var(--an-act-emo-base) var(--an-act-emo-ease) both;
+  pointer-events: none;
+}
+
+@keyframes an-act-emo-passport-glow {
+  from {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.06);
+  }
+  to {
+    filter: brightness(1);
+  }
+}
+
+@keyframes an-act-emo-toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* ── 5. Passport view — credential pride ── */
+
+.an-act-emotion-passport-view .an-act-passport-dashboard__hero {
+  margin-bottom: clamp(32px, 5vw, 48px);
+}
+
+.an-act-emotion-passport-view .an-act-sig-passport-credential {
+  animation: an-act-emo-credential-present var(--an-act-emo-slow) var(--an-act-emo-ease) both;
+}
+
+@keyframes an-act-emo-credential-present {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── 6. Personal Home arrival — operating confidence ── */
+
+.an-act-emotion-home-arrival .an-act-personal-home__hero {
+  animation: an-act-emo-home-arrive var(--an-act-emo-slow) var(--an-act-emo-ease) both;
+}
+
+.an-act-emotion-home-arrival .an-act-personal-home__topbar {
+  animation: an-act-emo-fade-in var(--an-act-emo-base) var(--an-act-emo-ease) both;
+}
+
+.an-act-emotion-home-arrival .an-act-personal-home__section:nth-child(1) {
+  animation: an-act-emo-fade-in var(--an-act-emo-base) var(--an-act-emo-ease) 120ms both;
+}
+
+@keyframes an-act-emo-home-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes an-act-emo-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── 7. Live Frame reveal — assured verification ── */
+
+.an-act-emotion-live-frame .an-act-identity-card__live-frame,
+.an-act-emotion-live-frame .an-act-passport-dashboard__panel:first-child {
+  animation: an-act-emo-live-frame-reveal var(--an-act-emo-slow) var(--an-act-emo-ease) 80ms both;
+}
+
+@keyframes an-act-emo-live-frame-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    box-shadow: 0 0 0 rgba(66, 212, 146, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    box-shadow: 0 0 24px rgba(66, 212, 146, 0.1);
+  }
+}
+
+/* ── 8. Return Home — welcome back ── */
+
+.an-act-emotion-return-home {
+  font-family: var(--an-act-sig-font, "IBM Plex Mono", ui-monospace, monospace);
+  letter-spacing: 0.04em;
+  transition:
+    color var(--an-act-emo-base) var(--an-act-emo-ease),
+    border-color var(--an-act-emo-base) var(--an-act-emo-ease),
+    background var(--an-act-emo-base) var(--an-act-emo-ease);
+}
+
+.an-act-emotion-return-home:hover {
+  color: var(--an-act-sig-green, #42d492);
+  border-color: rgba(66, 212, 146, 0.22);
+  background: rgba(66, 212, 146, 0.06);
+}
+
+/* ── Delight: subtle rewards for attention ── */
+
+.an-act-emotional-s3 .an-act-identity-greeting {
+  opacity: 0.92;
+}
+
+.an-act-emotional-s3 .an-act-public-beta-notice {
+  border-color: rgba(66, 212, 146, 0.12);
+  background: rgba(66, 212, 146, 0.04);
+  line-height: 1.62;
+}
+
+.an-act-emotional-s3 .an-act-sig-empty {
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.an-act-emotional-s3 .premium-stat--live .premium-stat__pulse {
+  animation-duration: 3.6s;
+}
+
+/* Accessibility: focus comfort */
+.an-act-emotional-s3 :focus-visible {
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .an-act-emotion-passport-created::after,
+  .an-act-emotion-home-arrival .an-act-personal-home__hero,
+  .an-act-emotion-home-arrival .an-act-personal-home__topbar,
+  .an-act-emotion-passport-view .an-act-sig-passport-credential,
+  .an-act-emotion-live-frame .an-act-identity-card__live-frame,
+  .an-act-emotion-final-act .launch-ceremony__logo-wrap {
+    animation: none;
+  }
+
+  .an-act-emotion-passport-created .an-act-passport-form {
+    opacity: 1;
+    transform: none;
+  }
+}

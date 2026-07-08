@@ -1,18 +1,16 @@
-import {
-  ThemeProvider,
-  AnActWordmark,
-  AnActBrandLoading,
-} from "@an-act/runtime-ui/react";
+import { ThemeProvider, AnActWordmark, PremiumButton } from "@an-act/runtime-ui/react";
 import { useState, type FormEvent } from "react";
 import { useRuntime } from "../providers/RuntimeProvider.js";
 import { AN_ACT_BRAND } from "../brand/config.js";
+import { PresentationError } from "../components/PresentationError.js";
 
 export interface RegisterProviderPageProps {
   onLogin: () => void;
   onSuccess: () => void;
+  onBackToLanding?: () => void;
 }
 
-export function RegisterProviderPage({ onLogin, onSuccess }: RegisterProviderPageProps) {
+export function RegisterProviderPage({ onLogin, onSuccess, onBackToLanding }: RegisterProviderPageProps) {
   const { registerProvider, loading, error } = useRuntime();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,17 +34,24 @@ export function RegisterProviderPage({ onLogin, onSuccess }: RegisterProviderPag
 
   return (
     <ThemeProvider mode="action">
-      <div className="an-act-login-shell">
-        <div className="an-act-login-panel">
+      <div className="premium-console an-act-login-shell">
+        <div className="premium-console__ambient" aria-hidden="true" />
+        <div className="premium-console an-act-login-panel">
+        <div className="premium-console__ambient" aria-hidden="true" />
           <div style={{ display: "grid", gap: "8px", justifyItems: "start" }}>
             <AnActWordmark logoUrl={AN_ACT_BRAND.logoUrl} />
             <span className="an-act-product-name">{AN_ACT_BRAND.productName} — Provider</span>
           </div>
+          {onBackToLanding ? (
+            <PremiumButton variant="ghost" onClick={onBackToLanding}>
+              Back to landing
+            </PremiumButton>
+          ) : null}
+          <h1 style={{ margin: 0, fontSize: "1.25rem" }}>Register as a provider</h1>
           <p style={{ margin: 0, color: "var(--an-act-color-text-secondary)" }}>
             Register as a professional — validation is server authoritative
           </p>
-          {loading ? <AnActBrandLoading stageText="Creating provider account..." compact /> : null}
-          <form onSubmit={onSubmit} style={{ display: "grid", gap: "var(--an-act-spacing-space-16)" }}>
+          <form onSubmit={onSubmit} style={{ display: "grid", gap: "var(--an-act-spacing-space-16)" }} aria-busy={loading}>
             <label className="an-act-field">
               Display name
               <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} required />
@@ -67,18 +72,14 @@ export function RegisterProviderPage({ onLogin, onSuccess }: RegisterProviderPag
               Password
               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
             </label>
-            <button type="submit" className="an-act-button an-act-button--primary" disabled={loading}>
+            <PremiumButton type="submit" variant="primary" disabled={loading} aria-busy={loading}>
               {loading ? "Creating account..." : "Create provider account"}
-            </button>
-            {error ? (
-              <p role="alert" style={{ margin: 0, color: "var(--an-act-color-status-error)" }}>
-                <strong>{error.title}</strong>: {error.detail}
-              </p>
-            ) : null}
+            </PremiumButton>
+            {error ? <PresentationError title={error.title} detail={error.detail} code={error.code} /> : null}
           </form>
-          <button type="button" className="an-act-button an-act-button--ghost" onClick={onLogin}>
+          <PremiumButton variant="ghost" onClick={onLogin}>
             Sign in instead
-          </button>
+          </PremiumButton>
         </div>
       </div>
     </ThemeProvider>

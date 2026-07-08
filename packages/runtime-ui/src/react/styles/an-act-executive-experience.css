@@ -1,0 +1,533 @@
+/**
+ * AN ACT Chapter 13 — Executive Experience Refinement
+ * Presentation-only. Final pass elevating premium surfaces into an executive OS feel.
+ * Extends Ch12 polish — does not replace Phase 12/13 identity.
+ */
+
+:root {
+  --an-act-ch13-motion-enter: 680ms;
+  --an-act-ch13-motion-ui: 360ms;
+  --an-act-ch13-motion-fast: 220ms;
+  --an-act-ch13-ease: cubic-bezier(0.18, 1, 0.32, 1);
+  --an-act-ch13-shadow-card:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 14px 40px rgba(0, 0, 0, 0.26),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
+  --an-act-ch13-shadow-card-hover:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 22px 52px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(66, 212, 146, 0.08);
+  --an-act-ch13-shadow-btn:
+    0 4px 0 rgba(0, 0, 0, 0.22),
+    0 8px 28px var(--an-act-p12-green-glow);
+  --an-act-ch13-signature-glow: radial-gradient(
+    ellipse 55% 42% at 42% 18%,
+    rgba(66, 212, 146, 0.14) 0%,
+    rgba(66, 212, 146, 0.04) 38%,
+    transparent 68%
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   1. Executive hero — composition & focal balance (landing)
+   ══════════════════════════════════════════════════════════════ */
+
+.p14-executive .premium-hero {
+  position: relative;
+  isolation: isolate;
+  gap: clamp(22px, 3.6vw, 30px);
+  padding: clamp(44px, 7vw, 84px) 0 clamp(32px, 4.5vw, 56px);
+  max-width: 720px;
+}
+
+.p14-executive .premium-hero::before {
+  content: "";
+  position: absolute;
+  inset: -12% -20% 28% -8%;
+  background: var(--an-act-ch13-signature-glow);
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(2px);
+}
+
+.p14-executive .premium-hero .ds-eyebrow {
+  margin: 0;
+  letter-spacing: 0.14em;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.p14-executive .premium-hero .an-act-logo-key:not(.an-act-logo-key--sm) {
+  transform: scale(1.1);
+  justify-self: start;
+  margin: 4px 0 2px;
+}
+
+.p14-executive .p12-landing__display {
+  margin: 0;
+  max-width: 11.5ch;
+  text-wrap: balance;
+}
+
+.p14-executive .p13-hero__statement {
+  margin: 0;
+  font-weight: 520;
+}
+
+.p14-executive .p13-hero__lead {
+  margin: 0;
+}
+
+.p14-executive .p13-hero__actions {
+  margin-top: 4px;
+}
+
+.p14-executive .p13-hero__runtime {
+  border-color: rgba(66, 212, 146, 0.14);
+  background: linear-gradient(
+    135deg,
+    rgba(66, 212, 146, 0.06) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  box-shadow: 0 0 24px rgba(66, 212, 146, 0.06);
+}
+
+.p14-executive .p13-landing__stats {
+  margin-top: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--an-act-p12-border-soft);
+  width: 100%;
+  max-width: 100%;
+}
+
+.p14-executive .p12-landing__nav .an-act-logo-key--sm {
+  transform: scale(1.06);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   2. AN ACT visual signature — green accent & graphite material
+   ══════════════════════════════════════════════════════════════ */
+
+.p14-executive .p12-landing__ambient,
+.premium-console__ambient {
+  background:
+    radial-gradient(ellipse 75% 50% at 50% -8%, rgba(66, 212, 146, 0.1), transparent 58%),
+    radial-gradient(ellipse 45% 35% at 88% 18%, var(--an-act-p12-blue-dim), transparent 52%),
+    radial-gradient(ellipse 35% 25% at 12% 40%, rgba(255, 255, 255, 0.02), transparent 50%),
+    linear-gradient(180deg, var(--an-act-p12-black) 0%, var(--an-act-p12-charcoal) 45%, var(--an-act-p12-graphite) 100%);
+}
+
+.p14-executive .p12-landing__section-title,
+.premium-console [class*="__section-title"],
+.premium-console__section-title {
+  position: relative;
+  padding-left: 14px;
+}
+
+.p14-executive .p12-landing__section-title::before,
+.premium-console [class*="__section-title"]::before,
+.premium-console__section-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  bottom: 0.15em;
+  width: 3px;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    var(--an-act-p12-green) 0%,
+    rgba(66, 212, 146, 0.35) 100%
+  );
+  box-shadow: 0 0 12px var(--an-act-p12-green-glow);
+}
+
+.p14-executive .p12-landing__inner {
+  gap: clamp(48px, 7.5vw, 76px);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   3. Premium motion system — calm, executive
+   ══════════════════════════════════════════════════════════════ */
+
+.p14-executive .p12-lift-in {
+  animation: ch13HeroReveal var(--an-act-ch13-motion-enter) var(--an-act-ch13-ease) both;
+}
+
+.p14-executive .p12-landing__section {
+  animation: ch13SectionReveal calc(var(--an-act-ch13-motion-enter) + 80ms) var(--an-act-ch13-ease) both;
+}
+
+@keyframes ch13HeroReveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ch13SectionReveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.premium-btn {
+  transition:
+    transform var(--an-act-ch13-motion-ui) var(--an-act-ch13-ease),
+    box-shadow var(--an-act-ch13-motion-ui) var(--an-act-ch13-ease),
+    background var(--an-act-ch13-motion-ui) var(--an-act-ch13-ease),
+    border-color var(--an-act-ch13-motion-ui) var(--an-act-ch13-ease),
+    opacity var(--an-act-ch13-motion-fast) ease;
+}
+
+.premium-card {
+  transition:
+    transform var(--an-act-ch13-motion-ui) var(--an-act-ch13-ease),
+    box-shadow var(--an-act-ch13-motion-ui) var(--an-act-ch13-ease),
+    border-color var(--an-act-ch13-motion-ui) var(--an-act-ch13-ease);
+}
+
+.premium-console [class*="lift-in"],
+.premium-console .p12-lift-in {
+  animation: ch13ConsoleReveal 560ms var(--an-act-ch13-ease) both;
+}
+
+@keyframes ch13ConsoleReveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   4. Visual hierarchy — heading scale & scanability
+   ══════════════════════════════════════════════════════════════ */
+
+.p14-executive .p12-landing__section {
+  gap: clamp(18px, 2.8vw, 26px);
+}
+
+.p14-executive .p12-landing__section-title {
+  font-size: clamp(1.375rem, 2.5vw, 1.75rem);
+  margin-bottom: 2px;
+}
+
+.premium-console__title {
+  font-size: clamp(1.625rem, 3.2vw, 2.125rem);
+}
+
+.premium-console h2,
+.premium-console [class*="__section-title"] {
+  font-size: clamp(1.0625rem, 2vw, 1.25rem);
+}
+
+.premium-console h3 {
+  font-size: 1rem;
+}
+
+.p14-executive .p12-landing__lead {
+  margin-top: -4px;
+}
+
+.premium-console__subtitle,
+.premium-console [class*="__subtitle"] {
+  margin-top: 2px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   5. Live system feeling — restrained signals
+   ══════════════════════════════════════════════════════════════ */
+
+.p13-live-status__dot,
+.p13-hero__runtime-dot,
+.premium-stat__pulse {
+  animation: ch13StatusPulse 3.6s ease-in-out infinite;
+}
+
+@keyframes ch13StatusPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 8px var(--an-act-p12-green-glow);
+  }
+  50% {
+    opacity: 0.62;
+    transform: scale(0.92);
+    box-shadow: 0 0 4px rgba(66, 212, 146, 0.18);
+  }
+}
+
+.p13-live-status,
+.p13-hero__runtime {
+  transition:
+    border-color var(--an-act-ch13-motion-ui) var(--an-act-ch13-ease),
+    box-shadow var(--an-act-ch13-motion-ui) var(--an-act-ch13-ease);
+}
+
+.premium-console__ambient {
+  animation: ch13AmbientPresence 14s ease-in-out infinite;
+}
+
+@keyframes ch13AmbientPresence {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.94;
+  }
+}
+
+.premium-stat--live {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 0 20px rgba(66, 212, 146, 0.04);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   6. Card refinement — material depth & edge lighting
+   ══════════════════════════════════════════════════════════════ */
+
+.premium-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    162deg,
+    rgba(255, 255, 255, 0.055) 0%,
+    rgba(255, 255, 255, 0.018) 48%,
+    rgba(255, 255, 255, 0.008) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: var(--an-act-ch13-shadow-card);
+}
+
+.premium-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.14) 20%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.14) 80%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.premium-card--featured,
+.p13-card--primary {
+  border-color: rgba(66, 212, 146, 0.2) !important;
+  background: linear-gradient(
+    155deg,
+    rgba(66, 212, 146, 0.08) 0%,
+    rgba(255, 255, 255, 0.025) 52%,
+    rgba(255, 255, 255, 0.01) 100%
+  ) !important;
+}
+
+.premium-card--interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--an-act-ch13-shadow-card-hover);
+  border-color: rgba(66, 212, 146, 0.16);
+}
+
+.premium-glass-panel {
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    var(--an-act-p12-glass) 40%,
+    rgba(10, 10, 12, 0.78) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 28px 72px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22);
+}
+
+.premium-console .an-act-card:not(.premium-card),
+.premium-console [class*="-hero"] {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(255, 255, 255, 0.07);
+  box-shadow: var(--an-act-ch13-shadow-card);
+}
+
+.premium-console .an-act-card:not(.premium-card)::before,
+.premium-console [class*="-hero"]::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   7. Button refinement — tactile executive response
+   ══════════════════════════════════════════════════════════════ */
+
+.premium-btn--primary {
+  box-shadow: var(--an-act-ch13-shadow-btn), 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+.premium-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 0 rgba(0, 0, 0, 0.18),
+    0 14px 36px var(--an-act-p12-green-glow-strong),
+    0 1px 0 rgba(255, 255, 255, 0.22) inset;
+}
+
+.premium-btn--primary:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.2),
+    0 6px 18px var(--an-act-p12-green-glow),
+    0 1px 0 rgba(255, 255, 255, 0.16) inset;
+}
+
+.premium-btn--secondary {
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.14), 0 4px 14px rgba(0, 0, 0, 0.16);
+}
+
+.premium-btn--secondary:active,
+.premium-btn--ghost:active {
+  transform: translateY(1px);
+  transition-duration: var(--an-act-ch13-motion-fast);
+}
+
+.premium-btn:focus-visible {
+  outline: 2px solid var(--an-act-p12-green);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(66, 212, 146, 0.12);
+}
+
+.p13-cta-primary:focus-visible {
+  outline-offset: 4px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   8. Executive typography
+   ══════════════════════════════════════════════════════════════ */
+
+.premium-stat__value {
+  font-weight: 680;
+  letter-spacing: -0.035em;
+}
+
+.premium-stat__label {
+  letter-spacing: 0.11em;
+  font-weight: 600;
+}
+
+.premium-console__score,
+.premium-console [class*="__score"]:not([class*="label"]) {
+  font-weight: 720;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.premium-console [class*="__metric"]:not([class*="label"]) {
+  font-weight: 650;
+  line-height: 1.15;
+}
+
+.premium-console [class*="__hint"],
+.premium-console__hint,
+.p14-executive .ds-caption {
+  line-height: 1.55;
+}
+
+.premium-console [class*="__score-label"],
+.premium-console__score-label {
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   9. Enterprise polish — unified OS behavior
+   ══════════════════════════════════════════════════════════════ */
+
+.premium-btn,
+.premium-card,
+.premium-badge,
+.premium-console-badge,
+.p13-entry-badge,
+.p12-entry__icon,
+.premium-glass-panel {
+  border-radius: var(--an-act-ch12-radius-md, 14px);
+}
+
+.premium-card,
+.premium-glass-panel,
+.premium-console .an-act-card:not(.premium-card) {
+  border-radius: var(--an-act-ch12-radius-xl, 22px);
+}
+
+.p12-entry__icon {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.p12-entry__arrow {
+  transition:
+    transform var(--an-act-ch13-motion-ui) var(--an-act-ch13-ease),
+    color var(--an-act-ch13-motion-ui) var(--an-act-ch13-ease);
+}
+
+.premium-console__nav .premium-btn,
+.premium-console [class*="__nav"] .premium-btn,
+.premium-console [class*="__toolbar"] .premium-btn {
+  min-height: 40px;
+}
+
+.premium-console-badge,
+.p13-entry-badge,
+.premium-badge {
+  letter-spacing: 0.07em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .p14-executive .p12-lift-in,
+  .p14-executive .p12-landing__section,
+  .premium-console__ambient,
+  .p13-live-status__dot,
+  .p13-hero__runtime-dot,
+  .premium-stat__pulse {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .p14-executive .premium-hero .an-act-logo-key:not(.an-act-logo-key--sm) {
+    transform: scale(1.02);
+  }
+
+  .p14-executive .p12-landing__display {
+    max-width: none;
+  }
+}

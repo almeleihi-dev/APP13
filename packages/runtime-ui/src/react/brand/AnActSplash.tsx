@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { AN_ACT_TRANSITION_DURATION_MS } from "@an-act/tokens";
-import { AnActWordmark } from "./AnActWordmark.js";
+import { AnActLogoKey } from "./AnActLogoKey.js";
 
 export interface AnActSplashProps {
   /** Experience mode the splash transitions into after exit. */
@@ -12,7 +12,7 @@ export interface AnActSplashProps {
 /**
  * Official AN ACT splash — matte black, terminal wordmark, 640ms exit into Runtime.
  */
-export function AnActSplash({ targetMode = "need", logoUrl, onComplete }: AnActSplashProps) {
+export function AnActSplash({ targetMode = "need", logoUrl: _logoUrl, onComplete }: AnActSplashProps) {
   const [phase, setPhase] = useState<"visible" | "exit">("visible");
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export function AnActSplash({ targetMode = "need", logoUrl, onComplete }: AnActS
       aria-label="AN ACT is loading"
     >
       <div className="an-act-splash__content">
-        <AnActWordmark logoUrl={logoUrl} className="an-act-splash__wordmark" />
+        <AnActLogoKey className="an-act-splash__wordmark p12-float" />
         <div className="an-act-splash__indicator" aria-hidden="true">
           <span className="an-act-splash__indicator-track">
             <span className={`an-act-splash__indicator-fill${phase === "exit" ? " an-act-splash__indicator-fill--complete" : ""}`} />

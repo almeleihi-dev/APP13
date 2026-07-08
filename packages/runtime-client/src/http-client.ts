@@ -1,5 +1,7 @@
 import type { RuntimeClientConfig, RuntimeProblemDetails } from "./types.js";
 import { RuntimeClientError } from "./types.js";
+import { createIdempotencyKey } from "./idempotency.js";
+import { resolveFetch, resolveRequestUrl } from "./fetch-bind.js";
 
 export interface HttpRequestOptions {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -14,7 +16,7 @@ export class HttpClient {
   private readonly fetchImpl: typeof fetch;
 
   constructor(private readonly config: RuntimeClientConfig) {
-    this.fetchImpl = config.fetch ?? fetch;
+    this.fetchImpl = resolveFetch(config.fetch);
   }
 
   async request<T>(path: string, options: HttpRequestOptions = {}): Promise<T> {
@@ -39,7 +41,7 @@ export class HttpClient {
   }
 
   private async executeRequest<T>(path: string, options: HttpRequestOptions): Promise<T> {
-    const url = new URL(path, this.config.baseUrl);
+    const url = resolveRequestUrl(this.config.baseUrl, path);
     if (options.query) {
       for (const [key, value] of Object.entries(options.query)) {
         if (value !== undefined) {
@@ -56,6 +58,11 @@ export class HttpClient {
       headers["Content-Type"] = "application/json";
     }
 
+    const method = options.method ?? "GET";
+    if (method === "POST" || method === "PUT" || method === "PATCH") {
+      headers["Idempotency-Key"] = createIdempotencyKey("runtime");
+    }
+
     if (options.auth !== false) {
       const token = this.config.getAccessToken?.();
       if (token) {
@@ -64,7 +71,7 @@ export class HttpClient {
     }
 
     const response = await this.fetchImpl(url.toString(), {
-      method: options.method ?? "GET",
+      method,
       headers,
       body: options.body ? JSON.stringify(options.body) : undefined,
     });

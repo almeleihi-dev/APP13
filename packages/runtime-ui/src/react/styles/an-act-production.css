@@ -3,6 +3,14 @@
  * Presentation only; no business logic.
  */
 
+@import "./an-act-design-system.css";
+@import "./an-act-runtime-premium.css";
+@import "./an-act-identity-premium.css";
+@import "./an-act-operator-console.css";
+@import "./an-act-premium-polish.css";
+@import "./an-act-executive-experience.css";
+@import "./an-act-above-fold.css";
+
 /* ── Splash Experience ─────────────────────────────────────── */
 
 .an-act-splash {
@@ -195,6 +203,12 @@
   gap: var(--an-act-spacing-space-12, 12px);
 }
 
+.an-act-error-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--an-act-spacing-space-8, 8px);
+}
+
 /* ── Responsive ────────────────────────────────────────────── */
 
 @media (max-width: 640px) {
@@ -217,6 +231,16 @@
 
   .an-act-card {
     padding: var(--an-act-spacing-space-16, 16px);
+  }
+
+  .an-act-search-form__row {
+    grid-template-columns: 1fr;
+  }
+
+  .an-act-ai-panel__body,
+  .an-act-executive-panel__body {
+    max-height: min(60vh, 480px);
+    overflow: auto;
   }
 }
 
@@ -255,6 +279,11 @@
   .an-act-splash__content {
     transition-duration: var(--an-act-transition-duration, 640ms) !important;
   }
+
+  .an-act-search-form__spinner,
+  .an-act-spin {
+    animation: none !important;
+  }
 }
 
 /* ── Performance hints ─────────────────────────────────────── */
@@ -267,4 +296,221 @@
 .an-act-card,
 .an-act-button {
   touch-action: manipulation;
+}
+
+/* ── Phase 9.1 Need MVP presentation ─────────────────────── */
+
+.an-act-opportunity-list {
+  gap: var(--an-act-spacing-space-16, 16px);
+}
+
+.an-act-search-form {
+  display: grid;
+  gap: var(--an-act-spacing-space-12, 12px);
+}
+
+.an-act-search-form__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--an-act-spacing-space-8, 8px);
+  align-items: center;
+}
+
+.an-act-search-form__input-wrap {
+  position: relative;
+}
+
+.an-act-search-form__input {
+  width: 100%;
+  min-height: var(--an-act-touch-target-min);
+  padding: var(--an-act-spacing-space-12, 12px) var(--an-act-spacing-space-16, 16px);
+  padding-right: calc(var(--an-act-spacing-space-16, 16px) + 28px);
+  border-radius: var(--an-act-radius-large);
+  border: 1px solid var(--an-act-color-border-default);
+  background: var(--an-act-color-surface-primary);
+  color: inherit;
+  font: inherit;
+}
+
+.an-act-search-form__clear {
+  position: absolute;
+  top: 50%;
+  right: var(--an-act-spacing-space-8, 8px);
+  transform: translateY(-50%);
+  min-height: 32px;
+  min-width: 32px;
+  padding: 0;
+  border: none;
+  border-radius: var(--an-act-radius-pill);
+  background: var(--an-act-color-surface-secondary);
+  color: var(--an-act-color-text-secondary);
+  cursor: pointer;
+}
+
+.an-act-search-form__status {
+  display: flex;
+  align-items: center;
+  gap: var(--an-act-spacing-space-8, 8px);
+  min-height: 20px;
+  font-size: var(--an-act-typography-caption-font-size);
+  color: var(--an-act-color-text-secondary);
+}
+
+.an-act-search-form__spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--an-act-color-border-subtle);
+  border-top-color: var(--an-act-color-interactive-default);
+  animation: an-act-spin 0.8s linear infinite;
+}
+
+@keyframes an-act-spin {
+  to { transform: rotate(360deg); }
+}
+
+.an-act-opportunity-card {
+  gap: var(--an-act-spacing-space-12, 12px);
+}
+
+.an-act-opportunity-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--an-act-spacing-space-12, 12px);
+}
+
+.an-act-opportunity-card__provider {
+  margin: 0;
+  font-family: var(--an-act-typography-title-font-family);
+  font-size: var(--an-act-typography-title-font-size);
+  line-height: 1.25;
+}
+
+.an-act-opportunity-card__service {
+  margin: 4px 0 0;
+  color: var(--an-act-color-text-secondary);
+}
+
+.an-act-opportunity-card__metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--an-act-spacing-space-8, 8px);
+}
+
+.an-act-opportunity-card__metric {
+  display: grid;
+  gap: 2px;
+  padding: var(--an-act-spacing-space-8, 8px) var(--an-act-spacing-space-12, 12px);
+  border-radius: var(--an-act-radius-medium);
+  background: var(--an-act-color-surface-secondary);
+}
+
+.an-act-opportunity-card__metric-label {
+  font-size: var(--an-act-typography-caption-font-size);
+  color: var(--an-act-color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.an-act-live-frame-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--an-act-radius-pill);
+  font-size: var(--an-act-typography-caption-font-size);
+  font-weight: 600;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.an-act-live-frame-badge--bronze { background: #fef3c7; color: #92400e; }
+.an-act-live-frame-badge--silver { background: #f3f4f6; color: #374151; }
+.an-act-live-frame-badge--gold { background: #fef9c3; color: #854d0e; }
+.an-act-live-frame-badge--platinum { background: #ede9fe; color: #5b21b6; }
+
+.an-act-button--block {
+  width: 100%;
+}
+
+/* Premium search */
+.an-act-search-form--premium .an-act-search-form__input-wrap {
+  position: relative;
+}
+
+.an-act-search-form__icon {
+  position: absolute;
+  left: var(--ds-space-4, 16px);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ds-color-ink-muted, #71717a);
+  pointer-events: none;
+  font-size: 1rem;
+}
+
+.an-act-search-form--premium .an-act-search-form__input {
+  padding-left: calc(var(--ds-space-4, 16px) + 24px);
+  border-radius: var(--ds-radius-xl, 20px);
+  box-shadow: var(--ds-shadow-xs, 0 1px 2px rgba(10, 10, 11, 0.04));
+  transition: box-shadow var(--ds-motion-fast, 140ms), border-color var(--ds-motion-fast, 140ms);
+}
+
+.an-act-search-form--premium .an-act-search-form__input:focus {
+  box-shadow: var(--ds-shadow-glow, 0 0 0 1px rgba(37, 99, 235, 0.12), 0 8px 24px rgba(37, 99, 235, 0.12));
+  border-color: rgba(37, 99, 235, 0.35);
+  outline: none;
+}
+
+/* Premium opportunity cards */
+.an-act-opportunity-card--premium {
+  gap: var(--ds-space-4, 16px);
+  border-radius: var(--ds-radius-2xl, 24px);
+  padding: var(--ds-space-5, 20px);
+}
+
+.an-act-opportunity-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--ds-space-4, 16px);
+}
+
+.an-act-opportunity-card__identity {
+  display: flex;
+  gap: var(--ds-space-3, 12px);
+  align-items: center;
+}
+
+.an-act-opportunity-card__passport-preview {
+  margin: 0;
+  padding: var(--ds-space-3, 12px);
+  border-radius: var(--ds-radius-md, 12px);
+  background: var(--ds-color-surface-soft, #fafafa);
+  font-size: var(--ds-text-sm, 0.875rem);
+  color: var(--ds-color-ink-muted, #71717a);
+}
+
+.an-act-opportunity-card__metric--price {
+  background: var(--ds-color-ink, #0a0a0b);
+  color: #fff;
+}
+
+.an-act-opportunity-card__metric--price .an-act-opportunity-card__metric-label {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.an-act-opportunity-card__metric--price .an-act-opportunity-card__metric-value {
+  color: #fff;
+}
+
+.an-act-opportunity-card__cta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--ds-space-3, 12px);
+}
+
+@media (max-width: 640px) {
+  .an-act-opportunity-card__cta {
+    grid-template-columns: 1fr;
+  }
 }

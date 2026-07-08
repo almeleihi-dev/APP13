@@ -1,0 +1,556 @@
+/**
+ * AN ACT Platform Experience — Visual Continuity RC
+ * Extends Launch GM design language across /home and platform surfaces.
+ * Presentation only — no business logic changes.
+ */
+
+:root {
+  --an-act-rc-bg: #050506;
+  --an-act-rc-graphite-a: #0e0e11;
+  --an-act-rc-graphite-b: #141418;
+  --an-act-rc-carbon: #1a1a1f;
+  --an-act-rc-text: #ffffff;
+  --an-act-rc-muted: rgba(255, 255, 255, 0.54);
+  --an-act-rc-muted-soft: rgba(255, 255, 255, 0.38);
+  --an-act-rc-green: #42d492;
+  --an-act-rc-green-glow: rgba(66, 212, 146, 0.38);
+  --an-act-rc-green-soft: rgba(66, 212, 146, 0.08);
+  --an-act-rc-red: rgba(232, 96, 96, 0.88);
+  --an-act-rc-font-mono: "IBM Plex Mono", "SF Mono", "Menlo", ui-monospace, monospace;
+  --an-act-rc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --an-act-rc-fast: 320ms;
+  --an-act-rc-base: 440ms;
+  --an-act-rc-radius: 14px;
+  --an-act-rc-radius-lg: 18px;
+  --an-act-rc-focus: rgba(66, 212, 146, 0.62);
+  --an-act-rc-panel-border: rgba(255, 255, 255, 0.08);
+  --an-act-rc-panel-bg: rgba(14, 14, 18, 0.88);
+}
+
+/* ── Platform shell — matches LaunchScene lighting ── */
+
+.an-act-platform-continuity {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  color: var(--an-act-rc-text);
+  background-color: var(--an-act-rc-bg);
+  animation: an-act-platform-enter var(--an-act-rc-base) var(--an-act-rc-ease) both;
+}
+
+@keyframes an-act-platform-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.an-act-platform-continuity .p12-landing__ambient {
+  display: none;
+}
+
+.an-act-platform-continuity__inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Navigation ── */
+
+.an-act-platform-continuity .p12-landing__nav {
+  padding: clamp(16px, 3vw, 24px) 0 clamp(12px, 2vw, 16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.an-act-platform-continuity .p13-landing__nav-status {
+  gap: 12px;
+}
+
+/* ── Hero — primary action focus ── */
+
+.an-act-platform-continuity .an-act-rc-hero {
+  padding: clamp(28px, 5vw, 44px) 0 clamp(8px, 2vw, 16px);
+}
+
+.an-act-platform-continuity .an-act-rc-hero .premium-hero {
+  padding: clamp(28px, 4.5vw, 40px);
+  border-radius: var(--an-act-rc-radius-lg);
+  border: 1px solid rgba(66, 212, 146, 0.18);
+  background: linear-gradient(158deg, rgba(26, 26, 32, 0.96), rgba(10, 10, 14, 0.94));
+  box-shadow:
+    0 20px 52px rgba(0, 0, 0, 0.36),
+    0 0 48px rgba(66, 212, 146, 0.05);
+}
+
+.an-act-platform-continuity .an-act-rc-hero__eyebrow {
+  margin: 0 0 12px;
+  font-family: var(--an-act-rc-font-mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--an-act-rc-green);
+}
+
+.an-act-platform-continuity .p12-landing__display {
+  font-family: var(--an-act-rc-font-mono);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  color: var(--an-act-rc-text);
+  max-width: 16ch;
+}
+
+.an-act-platform-continuity .p13-hero__statement,
+.an-act-platform-continuity .p12-landing__lead,
+.an-act-platform-continuity .p13-hero__lead {
+  font-weight: 400;
+  color: var(--an-act-rc-muted);
+}
+
+.an-act-platform-continuity .p13-hero__actions {
+  gap: 14px;
+  margin-top: clamp(24px, 4vw, 32px);
+}
+
+.an-act-platform-continuity .p13-hero__runtime {
+  margin-top: clamp(20px, 3vw, 28px);
+  font-family: var(--an-act-rc-font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--an-act-rc-muted-soft);
+}
+
+.an-act-platform-continuity .p13-hero__runtime-dot {
+  background: var(--an-act-rc-green);
+  box-shadow: 0 0 12px var(--an-act-rc-green-glow);
+}
+
+/* ── Section hierarchy labels ── */
+
+.an-act-platform-continuity .an-act-rc-section {
+  display: grid;
+  gap: clamp(20px, 3.5vw, 28px);
+}
+
+.an-act-platform-continuity .an-act-rc-section--primary {
+  order: -3;
+}
+
+.an-act-platform-continuity .an-act-rc-section--identity {
+  order: -2;
+}
+
+.an-act-platform-continuity .an-act-rc-section--trust {
+  order: -1;
+}
+
+.an-act-platform-continuity .an-act-rc-section--supporting {
+  opacity: 0.92;
+}
+
+.an-act-platform-continuity .p12-landing__section-title {
+  font-family: var(--an-act-rc-font-mono);
+  font-weight: 400;
+  font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--an-act-rc-text);
+}
+
+.an-act-platform-continuity .an-act-rc-section__label {
+  margin: 0 0 4px;
+  font-family: var(--an-act-rc-font-mono);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--an-act-rc-green);
+}
+
+.an-act-platform-continuity .p12-landing__lead {
+  font-size: clamp(0.92rem, 1.8vw, 1.02rem);
+  line-height: 1.55;
+}
+
+/* ── Operating panels (cards) ── */
+
+.an-act-platform-continuity .premium-card {
+  border-radius: var(--an-act-rc-radius);
+  border: 1px solid var(--an-act-rc-panel-border);
+  background: var(--an-act-rc-panel-bg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  transition:
+    border-color var(--an-act-rc-fast) var(--an-act-rc-ease),
+    box-shadow var(--an-act-rc-fast) var(--an-act-rc-ease),
+    transform var(--an-act-rc-fast) var(--an-act-rc-ease);
+}
+
+.an-act-platform-continuity .premium-card--featured,
+.an-act-platform-continuity .p13-card--primary {
+  border-color: rgba(66, 212, 146, 0.22);
+  background: linear-gradient(160deg, rgba(22, 22, 28, 0.94), rgba(10, 10, 14, 0.9));
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.32),
+    0 0 32px rgba(66, 212, 146, 0.05);
+}
+
+.an-act-platform-continuity .premium-card--interactive:hover {
+  transform: translateY(-2px);
+  border-color: rgba(66, 212, 146, 0.28);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
+}
+
+.an-act-platform-continuity .ds-title {
+  font-family: var(--an-act-rc-font-mono);
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--an-act-rc-text) !important;
+}
+
+.an-act-platform-continuity .ds-caption {
+  font-weight: 400;
+  color: var(--an-act-rc-muted) !important;
+  line-height: 1.55;
+}
+
+.an-act-platform-continuity .p12-card-body {
+  margin-top: 12px;
+}
+
+.an-act-platform-continuity .ds-eyebrow {
+  color: var(--an-act-rc-muted) !important;
+}
+
+/* ── Button system ── */
+
+.an-act-platform-continuity .premium-btn {
+  font-family: var(--an-act-rc-font-mono);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 12px;
+  transition:
+    transform var(--an-act-rc-fast) var(--an-act-rc-ease),
+    box-shadow var(--an-act-rc-base) var(--an-act-rc-ease),
+    border-color var(--an-act-rc-fast) var(--an-act-rc-ease);
+}
+
+.an-act-platform-continuity .premium-btn--primary,
+.an-act-platform-continuity .p13-cta-primary {
+  border: 1px solid rgba(66, 212, 146, 0.32) !important;
+  background: linear-gradient(168deg, #0c0c0e 0%, #060608 58%, #040405 100%) !important;
+  color: var(--an-act-rc-text) !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 0 28px rgba(66, 212, 146, 0.1),
+    0 12px 32px rgba(0, 0, 0, 0.38) !important;
+}
+
+.an-act-platform-continuity .premium-btn--primary:hover,
+.an-act-platform-continuity .p13-cta-primary:hover {
+  border-color: rgba(66, 212, 146, 0.48) !important;
+  box-shadow:
+    0 0 0 1px rgba(66, 212, 146, 0.12) inset,
+    0 0 40px rgba(66, 212, 146, 0.16),
+    0 14px 36px rgba(0, 0, 0, 0.42) !important;
+}
+
+.an-act-platform-continuity .premium-btn--secondary,
+.an-act-platform-continuity .p13-cta-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: linear-gradient(165deg, rgba(20, 20, 24, 0.96), rgba(10, 10, 12, 0.92)) !important;
+  color: var(--an-act-rc-text) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28) !important;
+}
+
+.an-act-platform-continuity .premium-btn--secondary:hover,
+.an-act-platform-continuity .p13-cta-secondary:hover {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.an-act-platform-continuity .premium-btn--danger {
+  border: 1px solid rgba(232, 96, 96, 0.35) !important;
+  background: rgba(24, 10, 10, 0.88) !important;
+  color: var(--an-act-rc-red) !important;
+  box-shadow: 0 0 20px rgba(232, 96, 96, 0.08) !important;
+}
+
+.an-act-platform-continuity .premium-btn:focus-visible {
+  outline: 2px solid var(--an-act-rc-focus);
+  outline-offset: 3px;
+}
+
+.an-act-platform-continuity .premium-btn:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+/* ── Professional Passport — premium digital document ── */
+
+.an-act-platform-continuity .an-act-rc-passport-zone {
+  display: grid;
+  gap: clamp(24px, 4vw, 32px);
+}
+
+.an-act-platform-continuity .p13-passport-preview,
+.an-act-platform-continuity .p13-passport-preview.premium-card {
+  padding: clamp(28px, 4.5vw, 40px);
+  border-radius: var(--an-act-rc-radius-lg);
+  border: 1px solid rgba(66, 212, 146, 0.2);
+  background:
+    linear-gradient(155deg, rgba(28, 28, 34, 0.98), rgba(12, 12, 16, 0.94)),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.012) 0 1px, transparent 1px 8px);
+  box-shadow:
+    0 24px 56px rgba(0, 0, 0, 0.4),
+    0 0 48px rgba(66, 212, 146, 0.06);
+}
+
+.an-act-platform-continuity .p13-passport-preview__header {
+  gap: clamp(16px, 3vw, 24px);
+  margin-bottom: clamp(20px, 3vw, 28px);
+}
+
+.an-act-platform-continuity .p13-passport-preview__avatar {
+  width: clamp(56px, 10vw, 72px);
+  height: clamp(56px, 10vw, 72px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(145deg, rgba(66, 212, 146, 0.14), rgba(20, 20, 24, 0.92));
+  font-family: var(--an-act-rc-font-mono);
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+}
+
+.an-act-platform-continuity .p13-passport-preview__eyebrow {
+  font-family: var(--an-act-rc-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--an-act-rc-green);
+}
+
+.an-act-platform-continuity .p13-passport-preview__name {
+  font-family: var(--an-act-rc-font-mono);
+  font-weight: 400;
+  font-size: clamp(1.25rem, 2.8vw, 1.55rem);
+  letter-spacing: -0.02em;
+  color: var(--an-act-rc-text);
+}
+
+.an-act-platform-continuity .p13-passport-preview__service,
+.an-act-platform-continuity .p13-passport-preview__summary {
+  font-weight: 400;
+  color: var(--an-act-rc-muted);
+  line-height: 1.6;
+}
+
+.an-act-platform-continuity .p13-passport-preview__tier {
+  font-family: var(--an-act-rc-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid rgba(66, 212, 146, 0.28);
+  background: rgba(66, 212, 146, 0.08);
+  padding: 8px 12px;
+  border-radius: 999px;
+}
+
+.an-act-platform-continuity .p13-passport-preview__rating {
+  font-family: var(--an-act-rc-font-mono);
+  color: var(--an-act-rc-green);
+}
+
+.an-act-platform-continuity .p13-passport-preview__certs li {
+  font-family: var(--an-act-rc-font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--an-act-rc-muted);
+}
+
+/* ── Trust — earned, not decorative ── */
+
+.an-act-platform-continuity .an-act-rc-trust-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 2vw, 16px);
+}
+
+.an-act-platform-continuity .an-act-rc-trust-grid .premium-card {
+  padding: clamp(20px, 3vw, 24px);
+}
+
+.an-act-platform-continuity .premium-stat {
+  padding: clamp(18px, 3vw, 22px);
+  border-radius: var(--an-act-rc-radius);
+  border: 1px solid var(--an-act-rc-panel-border);
+  background: rgba(10, 10, 13, 0.82);
+}
+
+.an-act-platform-continuity .premium-stat__value {
+  font-family: var(--an-act-rc-font-mono);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--an-act-rc-text);
+}
+
+.an-act-platform-continuity .premium-stat__label {
+  font-weight: 400;
+  color: var(--an-act-rc-muted-soft);
+}
+
+.an-act-platform-continuity .premium-stat--live .premium-stat__pulse {
+  background: var(--an-act-rc-green);
+  box-shadow: 0 0 8px var(--an-act-rc-green-glow);
+  animation: an-act-rc-trust-pulse 2.4s var(--an-act-rc-ease) infinite;
+}
+
+@keyframes an-act-rc-trust-pulse {
+  0%, 100% { opacity: 0.45; transform: scale(0.92); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* ── Stats row in hero ── */
+
+.an-act-platform-continuity .p12-landing__stats {
+  gap: clamp(12px, 2vw, 16px);
+  margin-top: clamp(24px, 4vw, 32px);
+}
+
+/* ── Entry points — operating panels ── */
+
+.an-act-platform-continuity .p12-entry {
+  padding: clamp(18px, 3vw, 22px);
+  transition: background var(--an-act-rc-fast) var(--an-act-rc-ease);
+}
+
+.an-act-platform-continuity .p12-entry:hover {
+  background: rgba(66, 212, 146, 0.04);
+}
+
+.an-act-platform-continuity .p12-entry:focus-visible {
+  outline: 2px solid var(--an-act-rc-focus);
+  outline-offset: -2px;
+}
+
+.an-act-platform-continuity .p12-entry__icon {
+  font-family: var(--an-act-rc-font-mono);
+  color: var(--an-act-rc-green);
+}
+
+.an-act-platform-continuity .p13-entry__title-row strong {
+  font-family: var(--an-act-rc-font-mono);
+  font-weight: 400;
+  font-size: 0.92rem;
+  letter-spacing: 0.04em;
+}
+
+.an-act-platform-continuity .p12-entry__copy span:last-child {
+  color: var(--an-act-rc-muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+/* ── Marketplace flow ── */
+
+.an-act-platform-continuity .p13-marketplace-flow__title {
+  font-family: var(--an-act-rc-font-mono);
+  font-weight: 400;
+  font-size: 0.95rem;
+  color: var(--an-act-rc-text);
+}
+
+.an-act-platform-continuity .p13-marketplace-flow__body {
+  color: var(--an-act-rc-muted);
+  font-weight: 400;
+}
+
+.an-act-platform-continuity .p13-marketplace-flow__index {
+  font-family: var(--an-act-rc-font-mono);
+  border-color: rgba(66, 212, 146, 0.28);
+  color: var(--an-act-rc-green);
+}
+
+/* ── Footer ── */
+
+.an-act-platform-continuity .an-act-rc-footer {
+  text-align: center;
+  padding-top: clamp(24px, 4vw, 32px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.an-act-platform-continuity .an-act-rc-footer .ds-caption {
+  color: var(--an-act-rc-muted-soft) !important;
+}
+
+.an-act-platform-continuity .p12-landing__replay-launch {
+  color: var(--an-act-rc-muted);
+}
+
+.an-act-platform-continuity .p12-landing__replay-launch:hover {
+  color: var(--an-act-rc-text);
+}
+
+.an-act-platform-continuity .p12-landing__replay-launch:focus-visible {
+  outline: 2px solid var(--an-act-rc-focus);
+  outline-offset: 4px;
+}
+
+/* ── Inner layout rhythm ── */
+
+.an-act-platform-continuity .p12-landing__inner {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(48px, 8vw, 72px);
+  max-width: 1120px;
+  padding: clamp(24px, 4vw, 40px) clamp(20px, 4vw, 40px) clamp(56px, 10vw, 88px);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 900px) {
+  .an-act-platform-continuity .p12-landing__grid-3,
+  .an-act-platform-continuity .an-act-rc-trust-grid,
+  .an-act-platform-continuity .p12-landing__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .an-act-platform-continuity .p13-hero__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .an-act-platform-continuity .premium-btn--lg {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .an-act-platform-continuity .p13-passport-preview__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ── Reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .an-act-platform-continuity {
+    animation: none;
+  }
+
+  .an-act-platform-continuity .premium-card--interactive:hover,
+  .an-act-platform-continuity .premium-btn:active {
+    transform: none;
+  }
+
+  .an-act-platform-continuity .premium-stat--live .premium-stat__pulse {
+    animation: none;
+    opacity: 1;
+  }
+
+  .launch-gm__ambient-green {
+    animation: none;
+  }
+}

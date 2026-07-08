@@ -28,10 +28,6 @@ export async function registerBrowserSurfaceRoutes(
     return reply.type("text/html; charset=utf-8").send(browserSurface.getLoginHtml());
   });
 
-  app.get("/home", { config: PUBLIC_HTML_ROUTE_CONFIG }, async (_request, reply) => {
-    return reply.type("text/html; charset=utf-8").send(browserSurface.getHomeHubHtml());
-  });
-
   app.get("/contracts", { config: PUBLIC_HTML_ROUTE_CONFIG }, async (_request, reply) => {
     return reply.type("text/html; charset=utf-8").send(browserSurface.getContractsHtml());
   });

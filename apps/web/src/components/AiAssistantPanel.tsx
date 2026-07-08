@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
-import { AnActBrandLoading } from "@an-act/runtime-ui/react";
+import { useEffect, useRef, useState } from "react";
 import type { RuntimeClient } from "@an-act/runtime-client";
+import { useEscapeKey } from "../hooks/useEscapeKey.js";
+import { PresentationError } from "./PresentationError.js";
 
 export type AiAssistantKind = "need" | "action" | "contract";
 
@@ -16,7 +17,13 @@ export function AiAssistantPanel({ client, kind, collapsed = false }: AiAssistan
   const [headline, setHeadline] = useState("");
   const [summary, setSummary] = useState("");
   const [recommendations, setRecommendations] = useState<string[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<{ title: string; detail: string } | null>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  useEscapeKey(open, () => {
+    setOpen(false);
+    toggleRef.current?.focus();
+  });
 
   useEffect(() => {
     if (!open) {
@@ -43,30 +50,43 @@ export function AiAssistantPanel({ client, kind, collapsed = false }: AiAssistan
           setRecommendations([]);
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : "AI assistant unavailable");
+        setError({
+          title: "Assistant unavailable",
+          detail: err instanceof Error ? err.message : "We couldn't load AI guidance right now.",
+        });
       } finally {
         setLoading(false);
       }
     })();
   }, [client, kind, open]);
 
+  function reloadAssistant() {
+    setOpen(false);
+    setTimeout(() => setOpen(true), 0);
+  }
+
   return (
     <aside className="an-act-ai-panel" aria-label={`${labelForKind(kind)} assistant`}>
       <button
+        ref={toggleRef}
         type="button"
         className="an-act-ai-panel__toggle"
         aria-expanded={open}
+        aria-controls={`ai-panel-${kind}`}
         onClick={() => setOpen((v) => !v)}
       >
         {labelForKind(kind)}
       </button>
       {open ? (
-        <div className="an-act-ai-panel__body">
-          {loading ? <AnActBrandLoading stageText="Loading AI guidance..." compact /> : null}
+        <div id={`ai-panel-${kind}`} className="an-act-ai-panel__body" role="region">
+          {loading ? <p role="status" className="an-act-inline-status" data-compact="true">Loading guidance...</p> : null}
           {error ? (
-            <p role="status" className="an-act-ai-panel__error">
-              {error}
-            </p>
+            <PresentationError
+              title={error.title}
+              detail={error.detail}
+              onRetry={reloadAssistant}
+              onDismiss={() => setError(null)}
+            />
           ) : null}
           {!loading && !error ? (
             <>

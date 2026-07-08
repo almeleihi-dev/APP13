@@ -1,0 +1,473 @@
+/**
+ * AN ACT Chapter 12 — Premium Experience Polish
+ * Presentation-only refinements. Extends Phase 12/13/11 — does not replace.
+ * Target: ~12% tighter rhythm, unified interaction language, executive clarity.
+ */
+
+:root {
+  /* ── Chapter 12 unified tokens ── */
+  --an-act-ch12-radius-sm: 12px;
+  --an-act-ch12-radius-md: 14px;
+  --an-act-ch12-radius-lg: 20px;
+  --an-act-ch12-radius-xl: 22px;
+  --an-act-ch12-shadow-card: 0 10px 32px rgba(0, 0, 0, 0.22);
+  --an-act-ch12-shadow-card-hover: 0 20px 48px rgba(0, 0, 0, 0.3);
+  --an-act-ch12-shadow-btn: 0 5px 20px var(--an-act-p12-green-glow);
+  --an-act-ch12-motion-fast: 280ms;
+  --an-act-ch12-motion-base: 340ms;
+  --an-act-ch12-space-section: clamp(52px, 8.5vw, 82px);
+  --an-act-ch12-space-block: clamp(22px, 3.2vw, 30px);
+  --an-act-ch12-copy-width: 46ch;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   1. Logo final polish — preserve keyboard-key concept
+   ══════════════════════════════════════════════════════════════ */
+
+.an-act-logo-key {
+  transform: scale(1.04);
+  transition: transform var(--an-act-ch12-motion-base) var(--an-act-p12-ease-premium);
+}
+
+.an-act-logo-key__cap {
+  padding: 18px 30px 22px;
+  border-radius: 15px;
+  background: linear-gradient(
+    165deg,
+    #484850 0%,
+    #2e2e36 32%,
+    #1a1a20 68%,
+    #121216 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.2) inset,
+    0 -4px 12px rgba(0, 0, 0, 0.5) inset,
+    0 0 0 1px rgba(66, 212, 146, 0.04),
+    0 18px 44px rgba(0, 0, 0, 0.5),
+    0 3px 0 #0a0a0c;
+  transform: rotateX(6deg) translateZ(0);
+}
+
+.an-act-logo-key__cap::before {
+  height: 46%;
+  border-radius: 13px 13px 48% 48%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.04) 42%,
+    transparent 100%
+  );
+}
+
+.an-act-logo-key__cap::after {
+  content: "";
+  position: absolute;
+  inset: auto 8px 6px 8px;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(66, 212, 146, 0.35) 35%,
+    rgba(66, 212, 146, 0.55) 50%,
+    rgba(66, 212, 146, 0.35) 65%,
+    transparent 100%
+  );
+  opacity: 0.65;
+  pointer-events: none;
+  transition: opacity var(--an-act-ch12-motion-base) var(--an-act-p12-ease-premium);
+}
+
+.an-act-logo-key:hover .an-act-logo-key__cap,
+.an-act-logo-key:focus-within .an-act-logo-key__cap {
+  transform: rotateX(2deg) translateY(-4px) translateZ(12px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.24) inset,
+    0 -4px 12px rgba(0, 0, 0, 0.45) inset,
+    0 0 0 1px rgba(66, 212, 146, 0.12),
+    0 22px 56px rgba(0, 0, 0, 0.54),
+    0 0 32px var(--an-act-p12-green-glow),
+    0 4px 0 #0a0a0c;
+}
+
+.an-act-logo-key:hover .an-act-logo-key__cap::after,
+.an-act-logo-key:focus-within .an-act-logo-key__cap::after {
+  opacity: 1;
+}
+
+.an-act-logo-key:active .an-act-logo-key__cap {
+  transform: rotateX(8deg) translateY(-1px) translateZ(2px);
+  transition-duration: var(--an-act-ch12-motion-fast);
+}
+
+.an-act-logo-key__label {
+  font-size: clamp(1.2rem, 2.4vw, 1.5625rem);
+  font-weight: 520;
+  letter-spacing: 0.055em;
+  text-shadow:
+    0 0 18px var(--an-act-p12-green-glow),
+    0 0 36px rgba(66, 212, 146, 0.1),
+    0 1px 0 rgba(0, 0, 0, 0.35);
+}
+
+.an-act-logo-key--sm .an-act-logo-key__cap {
+  padding: 9px 15px 12px;
+  border-radius: 10px;
+}
+
+.an-act-logo-key--sm .an-act-logo-key__cap::after {
+  inset: auto 5px 4px 5px;
+  height: 2px;
+}
+
+.an-act-logo-key--sm .an-act-logo-key__label {
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   2. Vertical rhythm — ~12% tighter layouts
+   ══════════════════════════════════════════════════════════════ */
+
+.p12-landing__inner {
+  gap: var(--an-act-ch12-space-section);
+  padding: 28px clamp(20px, 3.5vw, 42px) 68px;
+}
+
+.premium-hero {
+  gap: clamp(26px, 4.2vw, 34px);
+  padding: clamp(48px, 7.5vw, 92px) 0 clamp(34px, 5vw, 62px);
+}
+
+.p12-landing__section {
+  gap: var(--an-act-ch12-space-block);
+}
+
+.p12-landing__grid-3 {
+  gap: 16px;
+}
+
+.p12-landing__entries {
+  gap: 12px;
+}
+
+.p12-entry {
+  padding: 18px 22px;
+  gap: 16px;
+}
+
+.premium-card {
+  padding: 22px;
+  border-radius: var(--an-act-ch12-radius-xl);
+  box-shadow: var(--an-act-ch12-shadow-card);
+}
+
+.premium-stat {
+  padding: 18px 20px;
+  border-radius: var(--an-act-ch12-radius-lg);
+}
+
+.p13-passport-preview {
+  padding: 22px 24px;
+  gap: 14px;
+}
+
+.p13-marketplace-flow__step {
+  padding: 16px 0;
+}
+
+.p13-hero__actions {
+  gap: 12px 16px;
+  padding-top: 4px;
+}
+
+.p12-landing__nav {
+  padding: 8px 0 4px;
+}
+
+/* ── Operator / executive console rhythm ── */
+
+.premium-console__inner {
+  padding: 20px 16px 40px;
+  gap: 20px;
+}
+
+.premium-console__header {
+  gap: 12px;
+}
+
+.premium-console__headline {
+  gap: 6px;
+}
+
+.premium-console__grid,
+.premium-console [class*="__grid"]:not([class*="metric"]) {
+  gap: 10px;
+}
+
+.premium-console__split,
+.premium-console [class*="__split"] {
+  gap: 14px;
+}
+
+.premium-console [class*="__header"] {
+  gap: 10px;
+}
+
+.premium-console-hero,
+.premium-console [class*="-hero"] {
+  margin-bottom: 10px;
+  padding: 22px;
+}
+
+.premium-console__section-title,
+.premium-console [class*="__section-title"] {
+  margin-bottom: 10px;
+}
+
+.premium-console .premium-card,
+.premium-console .an-act-card:not(.premium-card) {
+  padding: 22px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   3. Typography polish
+   ══════════════════════════════════════════════════════════════ */
+
+.p12-landing__display {
+  line-height: 1.06;
+  max-width: 12.5ch;
+}
+
+.p12-landing__lead,
+.p13-hero__statement,
+.p13-hero__lead {
+  max-width: var(--an-act-ch12-copy-width);
+  line-height: 1.58;
+}
+
+.p12-landing__section-title {
+  line-height: 1.18;
+  letter-spacing: -0.028em;
+}
+
+.premium-console__title {
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.premium-console__subtitle {
+  max-width: 68ch;
+  line-height: 1.52;
+}
+
+.p13-marketplace-flow__body,
+.p12-entry__copy span {
+  line-height: 1.52;
+}
+
+.p13-marketplace-flow__title {
+  line-height: 1.25;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   4. Motion & interaction polish
+   ══════════════════════════════════════════════════════════════ */
+
+.premium-btn {
+  padding: 12px 22px;
+  border-radius: var(--an-act-ch12-radius-md);
+  transition:
+    transform var(--an-act-ch12-motion-base) var(--an-act-p12-ease-premium),
+    box-shadow var(--an-act-ch12-motion-base) var(--an-act-p12-ease-premium),
+    background var(--an-act-ch12-motion-base) var(--an-act-p12-ease-premium),
+    border-color var(--an-act-ch12-motion-base) var(--an-act-p12-ease-premium),
+    opacity var(--an-act-ch12-motion-fast) ease;
+}
+
+.premium-btn--primary {
+  box-shadow: var(--an-act-ch12-shadow-btn), 0 1px 0 rgba(255, 255, 255, 0.18) inset;
+}
+
+.premium-btn--primary:hover {
+  transform: translateY(-1px);
+}
+
+.premium-btn--primary:active {
+  transform: translateY(0);
+  transition-duration: var(--an-act-ch12-motion-fast);
+}
+
+.premium-btn--secondary:hover,
+.premium-btn--ghost:hover {
+  transform: translateY(-1px);
+}
+
+.premium-btn:focus-visible {
+  outline-offset: 2px;
+}
+
+.premium-card {
+  transition:
+    transform var(--an-act-ch12-motion-base) var(--an-act-p12-ease-lift),
+    box-shadow var(--an-act-ch12-motion-base) var(--an-act-p12-ease-premium),
+    border-color var(--an-act-ch12-motion-base) var(--an-act-p12-ease-premium);
+}
+
+.premium-card--interactive:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--an-act-ch12-shadow-card-hover), 0 0 0 1px rgba(66, 212, 146, 0.06);
+}
+
+.premium-card--interactive:active {
+  transform: translateY(-1px);
+  transition-duration: var(--an-act-ch12-motion-fast);
+}
+
+.p12-entry {
+  transition: background var(--an-act-ch12-motion-base) var(--an-act-p12-ease-premium);
+}
+
+.p12-entry-wrap:hover .p12-entry {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.p12-entry:focus-visible {
+  outline: 2px solid var(--an-act-p12-green);
+  outline-offset: -2px;
+}
+
+.p12-lift-in {
+  animation-duration: 720ms;
+}
+
+.p12-fade-in {
+  animation-duration: 640ms;
+}
+
+.premium-console [class*="lift-in"],
+.premium-console .p12-lift-in {
+  animation-duration: 520ms;
+}
+
+@keyframes premium-console-lift-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   5. Component consistency audit
+   ══════════════════════════════════════════════════════════════ */
+
+.premium-badge,
+.premium-console-badge,
+.p13-entry-badge,
+.p13-live-status {
+  border-radius: 999px;
+}
+
+.premium-glass-panel {
+  border-radius: var(--an-act-ch12-radius-xl);
+}
+
+.p12-entry__icon {
+  border-radius: var(--an-act-ch12-radius-sm);
+  width: 44px;
+  height: 44px;
+}
+
+.p13-marketplace-flow__index {
+  border-radius: 50%;
+}
+
+.p12-field input,
+.p12-auth__provider {
+  border-radius: var(--an-act-ch12-radius-sm);
+}
+
+.premium-console th,
+.premium-console td {
+  padding: 8px 10px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   6. Executive experience — scanning & hierarchy
+   ══════════════════════════════════════════════════════════════ */
+
+.premium-console__score {
+  font-size: 2.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.premium-console [class*="__score"]:not([class*="label"]) {
+  font-variant-numeric: tabular-nums;
+}
+
+.premium-console [class*="__metric"]:not([class*="label"]) {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.premium-console section + section,
+.premium-console [class*="__section-title"] + * {
+  scroll-margin-top: 16px;
+}
+
+.premium-console h2 {
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.premium-console h3 {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.premium-console [class*="__list"] li + li,
+.premium-console [class*="__recommendations"] li + li {
+  margin-top: 2px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   7. Micro details & footer
+   ══════════════════════════════════════════════════════════════ */
+
+.p12-landing footer {
+  padding-top: 18px !important;
+}
+
+.p13-entry__title-row strong {
+  letter-spacing: -0.01em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .an-act-logo-key,
+  .an-act-logo-key__cap,
+  .an-act-logo-key__cap::after,
+  .premium-card--interactive,
+  .premium-btn,
+  .p12-entry {
+    transition: none !important;
+  }
+
+  .an-act-logo-key:active .an-act-logo-key__cap {
+    transform: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .an-act-logo-key {
+    transform: scale(1);
+  }
+
+  .p12-landing__inner {
+    padding-bottom: 52px;
+  }
+}

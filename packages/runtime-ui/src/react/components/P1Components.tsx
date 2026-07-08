@@ -1,7 +1,8 @@
-import React, { type CSSProperties, type FormEvent, type ReactNode } from "react";
+import React, { type CSSProperties, type FormEvent, type ReactNode, useEffect, useRef, useState } from "react";
 import type { RenderNode } from "../../render-node.js";
-import { AnActLiveFrame, type RelayIntent } from "./P0Components.js";
+import type { RelayIntent } from "./P0Components.js";
 import { AnActBrandLoading } from "../brand/AnActBrandLoading.js";
+import { useCardRoleInList } from "../list-section-context.js";
 
 export type { RelayIntent };
 
@@ -66,40 +67,101 @@ export function AnActInput({ node, onRelay }: P1ComponentProps) {
 export function AnActSearch({ node, onRelay }: P1ComponentProps) {
   const style = node.style as CSSProperties;
   const loading = Boolean(node.props?.loading);
+  const liveSearch = Boolean(node.props?.liveSearch);
+  const initialValue = String(node.props?.value ?? "");
+  const [keyword, setKeyword] = useState(initialValue);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    setKeyword(initialValue);
+  }, [initialValue]);
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
+
+  const submitSearch = (nextKeyword: string, immediate = false) => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+      debounceRef.current = null;
+    }
+    const run = () => {
+      onRelay?.({ actionId: "need.search", body: { keyword: nextKeyword.trim() } });
+    };
+    if (immediate) {
+      run();
+      return;
+    }
+    debounceRef.current = setTimeout(run, 350);
+  };
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = event.currentTarget;
-    const input = form.elements.namedItem("keyword") as HTMLInputElement | null;
-    const keyword = input?.value ?? "";
-    onRelay?.({ actionId: "need.search", body: { keyword } });
+    submitSearch(keyword, true);
   };
 
   return (
     <form
       data-component-id={node.componentId}
+      className="an-act-search-form an-act-search-form--premium"
       onSubmit={submit}
       style={{ display: "grid", gap: "var(--an-act-spacing-space-8)", ...(style as object) }}
     >
-      <span className="an-act-section__label">{node.accessibility?.label ?? "Search"}</span>
-      <input
-        name="keyword"
-        type="search"
-        defaultValue={String(node.props?.value ?? "")}
-        placeholder={String(node.props?.placeholder ?? "Search...")}
-        style={{
-          minHeight: "var(--an-act-touch-target-min)",
-          padding: "var(--an-act-spacing-space-12) var(--an-act-spacing-space-16)",
-          borderRadius: "var(--an-act-radius-large)",
-          border: `1px solid var(--an-act-color-border-default)`,
-          background: "var(--an-act-color-surface-primary)",
-          color: "inherit",
-          font: "inherit",
-        }}
-      />
-      <button type="submit" className="an-act-button an-act-button--primary" disabled={loading}>
-        {loading ? "Searching..." : "Search"}
-      </button>
+      <span className="an-act-section__label">{node.accessibility?.label ?? "Search marketplace"}</span>
+      <div className="an-act-search-form__row">
+        <div className="an-act-search-form__input-wrap">
+          <span className="an-act-search-form__icon" aria-hidden="true">
+            ⌕
+          </span>
+          <input
+            name="keyword"
+            type="search"
+            className="an-act-search-form__input"
+            value={keyword}
+            placeholder={String(node.props?.placeholder ?? "Search services, professionals, programs...")}
+            aria-busy={loading}
+            onChange={(event) => {
+              const next = event.currentTarget.value;
+              setKeyword(next);
+              if (liveSearch) {
+                submitSearch(next);
+              }
+            }}
+          />
+          {keyword ? (
+            <button
+              type="button"
+              className="an-act-search-form__clear"
+              aria-label="Clear search"
+              onClick={() => {
+                setKeyword("");
+                if (liveSearch) {
+                  submitSearch("", true);
+                }
+              }}
+            >
+              ×
+            </button>
+          ) : null}
+        </div>
+        <button type="submit" className="ds-btn ds-btn--primary" disabled={loading}>
+          {loading ? "Searching..." : "Search"}
+        </button>
+      </div>
+      <div className="an-act-search-form__status" aria-live="polite">
+        {loading ? (
+          <>
+            <span className="an-act-search-form__spinner" aria-hidden="true" />
+            <span>Finding the best matches for you...</span>
+          </>
+        ) : keyword.trim().length === 0 ? (
+          <span>Search live — results update as you type.</span>
+        ) : null}
+      </div>
     </form>
   );
 }
@@ -110,16 +172,9 @@ export function AnActChip({ node, onRelay }: P1ComponentProps) {
   return (
     <button
       type="button"
-      className="an-act-button an-act-button--secondary"
+      className="an-act-chip"
       data-component-id={node.componentId}
       aria-pressed={selected}
-      style={{
-        ...(style as object),
-        minHeight: "44px",
-        borderRadius: "var(--an-act-radius-pill)",
-        fontWeight: selected ? 600 : 400,
-        borderColor: selected ? "var(--an-act-color-accent-primary)" : undefined,
-      }}
       onClick={() => {
         if (node.props?.query) {
           onRelay?.({ actionId: "need.search", body: { keyword: String(node.props.query) } });
@@ -218,14 +273,15 @@ export function AnActEmptyState({ node, children }: P1ComponentProps) {
   return (
     <div
       data-component-id="core-ui-empty-state"
-      className="an-act-card"
-      style={{
-        textAlign: "center",
-        borderStyle: "dashed",
-        boxShadow: "var(--an-act-elevation-none)",
-      }}
+      className="an-act-card an-act-empty-state"
       role="status"
     >
+      {node.props?.title ? <strong>{String(node.props.title)}</strong> : null}
+      {node.props?.summary || node.props?.message ? (
+        <p style={{ margin: "8px 0 0", color: "var(--an-act-color-text-secondary)" }}>
+          {String(node.props.summary ?? node.props.message)}
+        </p>
+      ) : null}
       {children}
     </div>
   );
@@ -268,69 +324,111 @@ export function AnActOpportunityCard({ node, onRelay }: P1ComponentProps) {
   const liveFrame = node.props?.liveFrame as { tier?: string } | undefined;
   const badges = Array.isArray(node.props?.badges) ? (node.props.badges as Array<Record<string, unknown>>) : [];
   const opportunityId = typeof node.props?.opportunityId === "string" ? node.props.opportunityId : undefined;
+  const title = String(node.props?.title ?? "");
+  const titleParts = title.split("—").map((part) => part.trim());
+  const providerName = titleParts[0] ?? title;
+  const serviceName = titleParts.length > 1 ? titleParts.slice(1).join(" — ") : "Professional service";
+
+  const relaySnapshot = () => {
+    if (!opportunityId) {
+      return;
+    }
+    onRelay?.({
+      actionId: "need.view-opportunity",
+      body: {
+        opportunity_id: opportunityId,
+        snapshot: {
+          title,
+          providerName,
+          serviceName,
+          opportunityId,
+          liveFrame,
+          rating: node.props?.rating,
+          distanceKm: node.props?.distanceKm,
+          availability: node.props?.availability,
+          estimatedMinutes: node.props?.estimatedMinutes,
+          estimatedCostSar: node.props?.estimatedCostSar,
+          badges: badges.map((badge) => String(badge.label ?? badge.status ?? "")),
+        },
+      },
+    });
+  };
+
+  const role = useCardRoleInList("article");
 
   return (
     <article
-      className={`an-act-card an-act-card--interactive`}
+      className="an-act-card an-act-card--premium an-act-card--interactive an-act-card--elevated an-act-opportunity-card an-act-opportunity-card--premium an-act-opportunity-card--p12 an-act-card--live-frame-accent"
       data-component-id={node.componentId}
       style={style}
-      role="article"
-      tabIndex={opportunityId ? 0 : undefined}
-      onClick={() => {
-        if (opportunityId) {
-          onRelay?.({ actionId: "need.select-opportunity", body: { opportunity_id: opportunityId } });
-        }
-      }}
-      onKeyDown={(event) => {
-        if (opportunityId && (event.key === "Enter" || event.key === " ")) {
-          onRelay?.({ actionId: "need.select-opportunity", body: { opportunity_id: opportunityId } });
-        }
-      }}
+      role={role}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--an-act-spacing-space-12)", justifyContent: "space-between" }}>
-        <strong style={{ fontFamily: "var(--an-act-typography-title-font-family)", fontSize: "var(--an-act-typography-title-font-size)" }}>
-          {String(node.props?.title ?? "")}
-        </strong>
+      <div className="an-act-opportunity-card__top">
+        <div className="an-act-opportunity-card__identity">
+          <div className="ds-avatar" aria-hidden="true">
+            {providerName.slice(0, 2).toUpperCase()}
+          </div>
+          <div>
+            <h3 className="an-act-opportunity-card__provider">{providerName}</h3>
+            <p className="an-act-opportunity-card__service">{serviceName}</p>
+          </div>
+        </div>
         {liveFrame?.tier ? (
-          <AnActLiveFrame
-            node={{
-              key: `${node.key}-live-frame`,
-              element: "an-act-live-frame",
-              componentId: "core-ui-live-frame",
-              props: { uiTier: liveFrame.tier, label: String(liveFrame.tier) },
-              style: { padding: "4px 12px" },
-            }}
-          />
+          <span className={`ds-badge ds-badge--live-frame ds-badge--live-frame-${liveFrame.tier}`}>
+            Live Frame · {String(liveFrame.tier)}
+          </span>
         ) : null}
       </div>
-      <div
-        style={{
-          display: "flex",
-          gap: "var(--an-act-spacing-space-12)",
-          flexWrap: "wrap",
-          fontSize: "var(--an-act-typography-caption-font-size)",
-          color: "var(--an-act-color-text-secondary)",
-        }}
-      >
-        {node.props?.rating != null ? <span>★ {String(node.props.rating)}</span> : null}
-        {node.props?.distanceKm != null ? <span>{String(node.props.distanceKm)} km</span> : null}
-        {node.props?.availability ? <span>{String(node.props.availability)}</span> : null}
-        {node.props?.estimatedCostSar != null ? <span>{String(node.props.estimatedCostSar)} SAR</span> : null}
+
+      <p className="an-act-opportunity-card__passport-preview">
+        Professional passport on file · Platform verified · Live Frame monitored
+      </p>
+
+      <div className="an-act-opportunity-card__metrics">
+        {node.props?.rating != null ? (
+          <div className="an-act-opportunity-card__metric">
+            <span className="an-act-opportunity-card__metric-label">Rating</span>
+            <strong className="an-act-opportunity-card__metric-value">★ {String(node.props.rating)}</strong>
+          </div>
+        ) : null}
+        {node.props?.distanceKm != null ? (
+          <div className="an-act-opportunity-card__metric">
+            <span className="an-act-opportunity-card__metric-label">Distance</span>
+            <strong className="an-act-opportunity-card__metric-value">{String(node.props.distanceKm)} km</strong>
+          </div>
+        ) : null}
+        {node.props?.estimatedCostSar != null ? (
+          <div className="an-act-opportunity-card__price-block" aria-label="Estimated price">
+            <small>From</small>
+            <strong>{String(node.props.estimatedCostSar)} SAR</strong>
+          </div>
+        ) : null}
+        {node.props?.estimatedCostSar == null && node.props?.availability ? (
+          <div className="an-act-opportunity-card__metric">
+            <span className="an-act-opportunity-card__metric-label">Available</span>
+            <strong className="an-act-opportunity-card__metric-value">{String(node.props.availability)}</strong>
+          </div>
+        ) : null}
       </div>
+
       {badges.length > 0 ? (
-        <div style={{ display: "flex", gap: "var(--an-act-spacing-space-8)", flexWrap: "wrap" }}>
+        <div className="an-act-opportunity-card__badges" aria-label="Verification badges">
           {badges.map((badge, index) => (
-            <AnActBadge
-              key={`${node.key}-badge-${index}`}
-              node={{
-                key: `${node.key}-badge-${index}`,
-                element: "an-act-badge",
-                componentId: "core-ui-badge",
-                props: badge,
-                style: {},
-              }}
-            />
+            <span key={`${node.key}-badge-${index}`} className="ds-badge ds-badge--verified">
+              {String(badge.label ?? badge.status ?? "")}
+            </span>
           ))}
+        </div>
+      ) : null}
+
+      {opportunityId ? (
+        <div className="an-act-opportunity-card__cta">
+        <button type="button" className="premium-btn premium-btn--secondary premium-btn--block ds-btn--ripple" onClick={relaySnapshot}>
+          Preview passport
+        </button>
+          <button type="button" className="premium-btn premium-btn--primary premium-btn--block ds-btn--ripple" onClick={relaySnapshot}>
+            View Details
+          </button>
         </div>
       ) : null}
     </article>

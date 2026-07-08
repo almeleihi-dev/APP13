@@ -11,6 +11,7 @@ import { createAuthenticateMiddleware } from "./middleware/authenticate.js";
 import { requireAuthMiddleware } from "./middleware/require-auth.js";
 import { createServiceAuthMiddleware } from "./middleware/service-auth.js";
 import { createRevalidationMiddleware } from "./middleware/revalidate.js";
+import { createCorsHook, parseCorsOrigins } from "./middleware/cors.js";
 import { registerAppRoutes } from "../bootstrap/routes.js";
 import type { AppDependencies } from "../bootstrap/dependencies.js";
 
@@ -25,7 +26,9 @@ export async function buildServer(deps: AppDependencies) {
 
   await app.register(cookie);
 
+  const corsOrigins = parseCorsOrigins(process.env.APP13_CORS_ORIGINS);
   app.addHook("onRequest", requestIdMiddleware);
+  app.addHook("onRequest", createCorsHook(corsOrigins));
   app.addHook("preHandler", createIdempotencyPreHandler(deps.idempotency));
   app.addHook(
     "preHandler",

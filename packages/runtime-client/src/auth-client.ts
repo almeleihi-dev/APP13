@@ -1,5 +1,7 @@
 import { RuntimeClientError, type RuntimeProblemDetails } from "./types.js";
 import type { AuthTokens } from "./types.js";
+import { createIdempotencyKey } from "./idempotency.js";
+import { resolveFetch } from "./fetch-bind.js";
 
 export interface AuthStorage {
   getTokens(): AuthTokens | null;
@@ -78,7 +80,7 @@ export class AuthClient {
   private refreshPromise: Promise<AuthTokens> | null = null;
 
   constructor(private readonly config: AuthClientConfig) {
-    this.fetchImpl = config.fetch ?? fetch;
+    this.fetchImpl = resolveFetch(config.fetch);
     this.storage = config.storage ?? new MemoryAuthStorage();
   }
 
@@ -145,6 +147,7 @@ export class AuthClient {
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
+          "Idempotency-Key": createIdempotencyKey("auth-logout"),
         },
       });
     } catch {
@@ -165,7 +168,11 @@ export class AuthClient {
   ): Promise<AuthTokens> {
     const response = await this.fetchImpl(`${this.config.baseUrl}${path}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "Idempotency-Key": createIdempotencyKey("auth"),
+      },
       body: JSON.stringify(body),
     });
 

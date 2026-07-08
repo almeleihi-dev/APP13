@@ -57,7 +57,7 @@ function buildApiOnlyRouteSources(): Record<string, string> {
     ].join("\n"),
     "src/api/routes/home.ts": [
       "export async function registerHomeRoutes",
-      'app.get("/home", { config: { authRequired: true } }',
+      "getHomeHubHtml",
       'app.get("/home/customer", { config: { authRequired: true } }',
     ].join("\n"),
     "src/api/routes/executive-ux-readiness.ts": [

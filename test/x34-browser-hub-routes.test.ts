@@ -7,6 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readFile } from "node:fs/promises";
 import { registerBrowserSurfaceRoutes } from "../src/api/routes/browser-surface.js";
+import { registerHomeRoutes } from "../src/api/routes/home.js";
 import { registerBrowserStaticRoutes } from "../src/api/routes/browser-static.js";
 import { createAuthenticateMiddleware } from "../src/api/middleware/authenticate.js";
 import { requireAuthMiddleware } from "../src/api/middleware/require-auth.js";
@@ -67,6 +68,19 @@ async function buildBrowserHubTestServer() {
   app.addHook("preHandler", requireAuthMiddleware);
   await registerBrowserStaticRoutes(app, browserStatic);
   await registerBrowserSurfaceRoutes(app, browserSurface);
+  await registerHomeRoutes(app, {
+    homeExperience: {
+      getHome: async () => ({}),
+      getCustomerHome: async () => ({}),
+      getProviderHome: async () => ({}),
+    } as never,
+    browserSurface,
+    jwt: {
+      verifyAccessToken: async () => ({ sub: "x", session_id: "y" }),
+    } as never,
+    sessions: hangingSessions as never,
+    config: { session: { cookieName: "app13_session" } } as never,
+  });
 
   return { app, browserSurface };
 }
@@ -144,15 +158,17 @@ describe("X34 browser hub and journey routes", () => {
 
   describe("wiring (repository sources)", () => {
     it("registers hub and journey routes in app bootstrap", async () => {
-      const [serverSource, packageSource, routeSource] = await Promise.all([
+      const [serverSource, packageSource, routeSource, homeRouteSource] = await Promise.all([
         readRouteWiringSource(),
         readFile(path.join(ROOT_DIR, "package.json"), "utf8"),
         readFile(path.join(ROOT_DIR, "src/api/routes/browser-surface.ts"), "utf8"),
+        readFile(path.join(ROOT_DIR, "src/api/routes/home.ts"), "utf8"),
       ]);
 
       assert.match(serverSource, /registerBrowserSurfaceRoutes/);
+      assert.match(serverSource, /registerHomeRoutes/);
       assert.match(packageSource, /verify:x34/);
-      assert.match(routeSource, /getHomeHubHtml/);
+      assert.match(homeRouteSource, /getHomeHubHtml/);
       assert.match(routeSource, /getContractsHtml/);
       assert.match(routeSource, /getMarketplaceResultsHtml/);
       assert.match(routeSource, /getProviderHubHtml/);

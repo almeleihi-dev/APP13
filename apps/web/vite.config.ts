@@ -10,7 +10,16 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.svg", "icons/*.svg", "manifest.webmanifest"],
+      includeAssets: [
+        "favicon.svg",
+        "robots.txt",
+        "sitemap.xml",
+        "og/an-act-og.png",
+        "og/an-act-og.svg",
+        "icons/*.png",
+        "icons/*.svg",
+        "manifest.webmanifest",
+      ],
       manifest: false,
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,svg,webmanifest,json}"],
@@ -50,6 +59,8 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    strictPort: true,
+    host: "127.0.0.1",
     proxy: {
       "/need-experience": API_PROXY,
       "/action-experience": API_PROXY,
@@ -61,6 +72,10 @@ export default defineConfig({
       "/ai-execution-companion-experience": API_PROXY,
       "/contract-intelligence": API_PROXY,
       "/runtime-executive": API_PROXY,
+      "/runtime-demo": API_PROXY,
+      "/knowledge-bank": API_PROXY,
+      "/executive-experience": API_PROXY,
+      "/investor-readiness": API_PROXY,
       "/v1": API_PROXY,
     },
   },

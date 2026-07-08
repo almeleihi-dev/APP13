@@ -37,6 +37,52 @@ const configSchema = z.object({
   }),
 });
 
+/**
+ * Reality Bridge ET-2 — production safety guards.
+ * When env is staging/production, refuse to boot on known dev defaults or
+ * localhost dependencies so an unsafe configuration can never reach a pilot.
+ */
+const DEV_JWT_SECRET = "local-dev-secret-change-in-production-min-32-chars";
+const DEV_KYC_SECRET = "local-kyc-webhook-secret";
+
+function isLocalhostUrl(url: string): boolean {
+  return /(^|@|\/\/)(localhost|127\.0\.0\.1|::1)(:|\/|$)/i.test(url);
+}
+
+const productionSafeConfigSchema = configSchema.superRefine((cfg, ctx) => {
+  if (cfg.env !== "production" && cfg.env !== "staging") return;
+
+  if (cfg.jwt.secret === DEV_JWT_SECRET) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["jwt", "secret"],
+      message:
+        "JWT_SECRET is the development default; set a unique >=32-char secret in production/staging.",
+    });
+  }
+  if (cfg.kyc.webhookSecret === DEV_KYC_SECRET) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["kyc", "webhookSecret"],
+      message: "KYC_WEBHOOK_SECRET is the development default; set a real secret.",
+    });
+  }
+  if (isLocalhostUrl(cfg.databaseUrl)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["databaseUrl"],
+      message: "DATABASE_URL points at localhost in a non-local environment.",
+    });
+  }
+  if (isLocalhostUrl(cfg.redisUrl)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["redisUrl"],
+      message: "REDIS_URL points at localhost in a non-local environment.",
+    });
+  }
+});
+
 export type AppConfig = z.infer<typeof configSchema>;
 
 const ENV_VAR_BY_CONFIG_PATH: Record<string, string> = {
@@ -186,7 +232,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     loadLocalEnvFile();
   }
 
-  const result = configSchema.safeParse(parseConfig(env));
+  const result = productionSafeConfigSchema.safeParse(parseConfig(env));
   if (!result.success) {
     throw new Error(formatConfigValidationError(result.error));
   }
