@@ -42,6 +42,7 @@ import {
   recordPilotMilestone,
   startPilotTiming,
 } from "./lib/pilot-instrumentation.js";
+import { navigate, usePathname } from "./launch/navigation.js";
 
 type AuthView =
   | "login"
@@ -77,6 +78,30 @@ function AppExperienceRouter() {
   const [authView, setAuthView] = useState<AuthView>("login");
   const [entering, setEntering] = useState(false);
   const hasToken = Boolean(client.auth.getAccessToken()) && !sessionExpired;
+  const pathname = usePathname();
+
+  // Wave 0 — routing honesty. These paths must map to the real, backend-wired
+  // auth/home screens (via RuntimeProvider), not the default "landing" view.
+  // When logged out, /login and /register (and /home) show the real auth pages
+  // that call POST /v1/auth/* on the live backend.
+  if (!hasToken && (pathname === "/register" || pathname === "/register/customer")) {
+    return (
+      <RegisterPage
+        onLogin={() => navigate("/login")}
+        onSuccess={() => setAuthView("register-success")}
+        onBackToLanding={() => navigate("/")}
+      />
+    );
+  }
+  if (!hasToken && (pathname === "/login" || pathname === "/home")) {
+    return (
+      <LoginPage
+        onRegister={() => navigate("/register")}
+        onRegisterProvider={() => setAuthView("register-provider")}
+        onBackToLanding={() => navigate("/")}
+      />
+    );
+  }
 
   function goHome() {
     setExperience(hasPersonalPassport() ? "personal-home" : "landing");

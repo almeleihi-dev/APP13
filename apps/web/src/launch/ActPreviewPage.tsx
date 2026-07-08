@@ -96,6 +96,16 @@ export function ActPreviewPage() {
             {draft?.summary ? <p className="launch-preview__intent">{draft.summary}</p> : null}
           </header>
 
+          <PremiumCard className="launch-preview__inventory-bridge" role="note">
+            <p className="launch-preview__hero-label">Preview · simulated</p>
+            <p>
+              This is a guided preview. The acts, values, and “contract ready”
+              states shown here are illustrative and are <strong>not saved</strong> —
+              no real contract exists yet. Register to create real, persisted
+              actions and contracts backed by your account.
+            </p>
+          </PremiumCard>
+
           {isProfession && draft?.summary ? (
             <ProfessionActionInventoryPanel
               professionText={draft.summary.trim()}
