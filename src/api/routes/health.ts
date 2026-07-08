@@ -6,7 +6,7 @@ export async function registerHealthRoutes(
   db: DbPool
 ): Promise<void> {
   app.get("/health", async (_request, reply) => {
-    await db.query("SELECT 1");
+    await Promise.race([db.query("SELECT 1"), new Promise((_r, rej) => setTimeout(rej, 3000))]);;
     return reply.status(200).send({
       status: "ok",
       service: process.env.APP13_SERVICE_ID ?? "app13-api",
