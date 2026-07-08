@@ -45,10 +45,18 @@ export function ActionContractExperience({
         ← Back
       </button>
 
-      <span className="ds-flow__sample-badge">Action Contract · Public beta</span>
+      <span className="ds-flow__sample-badge" data-variant="preview">
+        Preview · not yet binding
+      </span>
       <h1 className="ds-headline">Trusted Action Contract</h1>
       <p className="ds-body">
-        Contract <strong style={{ fontFamily: "var(--ds-font-mono)" }}>{contract.contractId}</strong>
+        Preview reference{" "}
+        <strong style={{ fontFamily: "var(--ds-font-mono)" }}>{contract.contractId}</strong>
+      </p>
+      <p className="ds-caption" role="note">
+        This is a client-side preview of how a contract looks and behaves. It is not a persisted,
+        binding contract. A real contract is created from a published action with the explicit
+        “Generate contract” step.
       </p>
 
       <section className="an-act-contract-experience__parties ds-card ds-card--premium">

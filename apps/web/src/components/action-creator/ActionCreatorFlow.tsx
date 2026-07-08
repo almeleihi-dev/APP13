@@ -2,6 +2,7 @@ import type { ChangeEvent } from "react";
 import { PremiumButton } from "@an-act/runtime-ui/react";
 import type { ActionTypeOption } from "@an-act/runtime-client";
 import { AnalysisProgress } from "../../launch/AnalysisProgress.js";
+import { LiveContractPanel } from "../contract/LiveContractPanel.js";
 import { ACTION_CREATOR_STEP_LABELS, type ActionBlueprintForm } from "./types.js";
 import { useActionCreatorPresentation } from "./useActionCreatorPresentation.js";
 import type { ActivePersonalIdentity } from "../../passport/personal-identity.js";
@@ -61,6 +62,7 @@ export function ActionCreatorFlow({ identity, onComplete, onCancel, onViewMarket
         <CompleteStep
           actionName={creator.form.name}
           score={creator.quality.score}
+          publishedActionId={creator.publishedActionId}
           published={Boolean(creator.publishedActionId)}
           canPublish={creator.canPublish}
           publishing={creator.publishing}
@@ -516,6 +518,7 @@ function QualityStep({ report }: { report: ReturnType<typeof useActionCreatorPre
 function CompleteStep({
   actionName,
   score,
+  publishedActionId,
   published,
   canPublish,
   publishing,
@@ -529,6 +532,7 @@ function CompleteStep({
 }: {
   actionName: string;
   score: number;
+  publishedActionId: string | null;
   published: boolean;
   canPublish: boolean;
   publishing: boolean;
@@ -540,6 +544,10 @@ function CompleteStep({
   onComplete: () => void;
   onViewMarketplace?: () => void;
 }) {
+  // Only offer the real contract step when we hold a genuine backend action id
+  // (the create call may fall back to the sentinel "created" if the API didn't
+  // echo an id — in that case we can't safely generate a contract).
+  const hasRealActionId = Boolean(publishedActionId && publishedActionId !== "created");
   return (
     <section className="an-act-action-creator__panel an-act-action-creator__panel--center">
       <span
@@ -580,6 +588,10 @@ function CompleteStep({
             </PremiumButton>
           ) : null}
         </div>
+      ) : null}
+
+      {published && hasRealActionId ? (
+        <LiveContractPanel actionId={publishedActionId as string} />
       ) : null}
 
       {published && onViewMarketplace ? (

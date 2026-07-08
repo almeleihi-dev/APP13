@@ -62,6 +62,32 @@ export interface CreateActionInput {
   description?: string;
 }
 
+/**
+ * A persisted contract as returned by the backend contract engine
+ * (GET /v1/contracts/:id and POST /v1/actions/:id/contract/generate).
+ * Snake_case — mirrors toContractResponse() on the server. Read-only here.
+ */
+export interface ContractView {
+  id: string;
+  action_id: string;
+  contract_number: string;
+  status: string;
+  template_id: string | null;
+  document_hash: string | null;
+  customer_id: string | null;
+  provider_id: string | null;
+  activated_at: string | null;
+  complaint_window_ends_at: string | null;
+  tekrr_snapshot: Record<string, unknown> | null;
+}
+
+/** A persisted contract party (GET /v1/contracts/:id/parties). */
+export interface ContractPartyView {
+  party_role: string;
+  accepted_at: string | null;
+  declined_at: string | null;
+}
+
 export class RuntimeClient {
   readonly auth: AuthClient;
   private readonly http: HttpClient;
@@ -248,6 +274,28 @@ export class RuntimeClient {
   /** POST /v1/auth/verify-email/request — 202, no body. Used for the email gate. */
   async requestEmailVerification(): Promise<void> {
     await this.http.post<void>("/v1/auth/verify-email/request", {});
+  }
+
+  // --- Production Candidate Phase 3: real contract transport (read-mostly) ---
+
+  /**
+   * POST /v1/actions/:actionId/contract/generate — generate (or return the
+   * existing) persisted contract for an action. Idempotent server-side: returns
+   * the same contract on repeat. Requires a provider assigned to the action
+   * (server throws 422 otherwise). Returns the persisted contract record.
+   */
+  async generateContract(actionId: string): Promise<ContractView> {
+    return this.http.post<ContractView>(`/v1/actions/${actionId}/contract/generate`, {});
+  }
+
+  /** GET /v1/contracts/:contractId — read a persisted contract. */
+  async getContract(contractId: string): Promise<ContractView> {
+    return this.http.get<ContractView>(`/v1/contracts/${contractId}`);
+  }
+
+  /** GET /v1/contracts/:contractId/parties — read persisted contract parties. */
+  async getContractParties(contractId: string): Promise<ContractPartyView[]> {
+    return this.http.get<ContractPartyView[]>(`/v1/contracts/${contractId}/parties`);
   }
 
   async getOnboardingOverview(): Promise<Record<string, unknown>> {
