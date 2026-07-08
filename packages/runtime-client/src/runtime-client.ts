@@ -88,6 +88,63 @@ export interface ContractPartyView {
   declined_at: string | null;
 }
 
+/** Filters accepted by the discovery endpoints (subset of the backend query). */
+export interface DiscoveryQuery {
+  text?: string;
+  category?: string;
+  actionCode?: string;
+  trustTier?: string;
+  availableNow?: boolean;
+  minRating?: number;
+  minCompleted?: number;
+  limit?: number;
+}
+
+/** A real, ranked provider from GET /discover/providers (snake_case). */
+export interface DiscoverProviderResult {
+  provider_id: string;
+  provider_user_id: string;
+  display_name: string;
+  action_codes: string[];
+  rank_score: number;
+  trust_score: number;
+  trust_tier: string;
+  trust_label: string;
+  available_now: boolean;
+  completed_contracts: number;
+  average_rating: number;
+  active_issues: number;
+  availability: {
+    available_now: boolean;
+    active_contracts: number;
+    capacity_remaining: number;
+    provider_status: string;
+  };
+  ranking: { total_score: number; summary: string };
+}
+
+/** A real action-catalog result from GET /discover/actions. */
+export interface DiscoverActionResult {
+  action_code: string;
+  action_name: string;
+  category: string;
+  provider_count: number;
+  relevance_score: number;
+  summary: string;
+}
+
+export interface DiscoverProvidersResponse {
+  providers: DiscoverProviderResult[];
+  summary: Record<string, unknown>;
+  generated_at: string;
+}
+
+export interface DiscoverActionsResponse {
+  actions: DiscoverActionResult[];
+  summary: Record<string, unknown>;
+  generated_at: string;
+}
+
 export class RuntimeClient {
   readonly auth: AuthClient;
   private readonly http: HttpClient;
@@ -296,6 +353,31 @@ export class RuntimeClient {
   /** GET /v1/contracts/:contractId/parties — read persisted contract parties. */
   async getContractParties(contractId: string): Promise<ContractPartyView[]> {
     return this.http.get<ContractPartyView[]>(`/v1/contracts/${contractId}/parties`);
+  }
+
+  // --- Production Candidate Phase 4: real discovery transport (read-only) ---
+
+  private discoveryParams(query: DiscoveryQuery): Record<string, string | undefined> {
+    return {
+      text: query.text || undefined,
+      category: query.category || undefined,
+      action_code: query.actionCode || undefined,
+      trust_tier: query.trustTier || undefined,
+      available_now: query.availableNow ? "true" : undefined,
+      min_rating: query.minRating != null ? String(query.minRating) : undefined,
+      min_completed: query.minCompleted != null ? String(query.minCompleted) : undefined,
+      limit: query.limit != null ? String(query.limit) : undefined,
+    };
+  }
+
+  /** GET /discover/providers — real, ranked, trust-scored providers. */
+  async discoverProviders(query: DiscoveryQuery = {}): Promise<DiscoverProvidersResponse> {
+    return this.http.get<DiscoverProvidersResponse>("/discover/providers", this.discoveryParams(query));
+  }
+
+  /** GET /discover/actions — real action catalog with live provider counts. */
+  async discoverActions(query: DiscoveryQuery = {}): Promise<DiscoverActionsResponse> {
+    return this.http.get<DiscoverActionsResponse>("/discover/actions", this.discoveryParams(query));
   }
 
   async getOnboardingOverview(): Promise<Record<string, unknown>> {

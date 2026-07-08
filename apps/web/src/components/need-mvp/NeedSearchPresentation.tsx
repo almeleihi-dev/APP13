@@ -7,6 +7,7 @@ import {
   searchPublishedActions,
 } from "../../lib/living-platform/professional-action-store.js";
 import { MarketplaceLocationFiltersBar } from "../marketplace/MarketplaceLocationFiltersBar.js";
+import { LiveDiscoveryPanel } from "../marketplace/LiveDiscoveryPanel.js";
 import type { MarketplaceLocationFilters } from "../../lib/living-platform/types.js";
 import { defaultMarketplaceFilters } from "../../lib/living-platform/intelligence/marketplace-location-filters.js";
 
@@ -60,16 +61,16 @@ export function MarketplaceBrowseHints({ onExampleSearch, onSelectPublished }: M
     <aside className="an-act-marketplace-browse-hints" aria-label="Marketplace guide">
       <MarketplaceLocationFiltersBar onChange={setFilters} initial={filters} />
       <div className="an-act-marketplace-identity">
-        <span className="an-act-marketplace-identity__badge">Public beta · verified catalog</span>
+        <span className="an-act-marketplace-identity__badge">Action Marketplace</span>
         <p className="an-act-marketplace-identity__title">Action Marketplace</p>
         <p className="an-act-marketplace-identity__lead">
-          Search verified professionals with Live Frame monitoring. Every provider shows their passport, trust signals,
-          and what happens when you request service.
+          Live providers ranked by real trust and availability appear above. The catalog below is a
+          sample demo (this device only) to show how listings look.
         </p>
         <div className="an-act-marketplace-identity__stats">
           <div className="an-act-marketplace-identity__stat">
-            <strong>4</strong>
-            <span>Beta providers</span>
+            <strong>Live</strong>
+            <span>Ranked above</span>
           </div>
           <div className="an-act-marketplace-identity__stat">
             <strong>Live</strong>
@@ -89,6 +90,8 @@ export function MarketplaceBrowseHints({ onExampleSearch, onSelectPublished }: M
         <li>Track</li>
       </ol>
 
+      <LiveDiscoveryPanel />
+
       <div className="an-act-marketplace-browse-hints__examples">
         {MARKETPLACE_EXAMPLE_QUERIES.map((query) => (
           <button
@@ -104,7 +107,7 @@ export function MarketplaceBrowseHints({ onExampleSearch, onSelectPublished }: M
 
       {publishedActions.length > 0 ? (
         <div className="an-act-marketplace-providers an-act-living-published-actions">
-          <p className="an-act-marketplace-providers__label">Published by professionals · Public beta</p>
+          <p className="an-act-marketplace-providers__label">Sample published actions · demo (this device only)</p>
           <div className="an-act-marketplace-providers__grid">
             {publishedActions.map((action) => {
               const snapshot = publishedActionToOpportunitySnapshot(action);
@@ -149,7 +152,7 @@ export function MarketplaceBrowseHints({ onExampleSearch, onSelectPublished }: M
       ) : null}
 
       <div className="an-act-marketplace-providers">
-        <p className="an-act-marketplace-providers__label">Featured in beta catalog</p>
+        <p className="an-act-marketplace-providers__label">Demo catalog · sample providers (not live accounts)</p>
         <div className="an-act-marketplace-providers__grid">
           {MARKETPLACE_FEATURED_PROVIDERS.map((provider) => (
             <button
