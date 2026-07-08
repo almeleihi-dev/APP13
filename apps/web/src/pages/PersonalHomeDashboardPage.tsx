@@ -34,6 +34,102 @@ export interface PersonalHomeDashboardPageProps {
   onEnterpriseLanding?: () => void;
 }
 
+/**
+ * CommandCenterStrip — the daily-home clarity layer.
+ *
+ * Sits at the top of Personal Home and answers, at a glance, the five questions
+ * a user should never have to hunt for: what can I do now, what needs my
+ * attention, where are my actions, where are my contracts, and how is my
+ * identity growing. All values come from the already-computed presentation
+ * model (no new data, no backend calls); it summarises the detailed sections
+ * that follow rather than adding new information.
+ */
+function CommandCenterStrip({
+  home,
+  liveFrameTier,
+  trustDisplay,
+  trustFromAccount,
+  onFindAction,
+  onOfferAction,
+  onViewPassport,
+}: {
+  home: ReturnType<typeof buildPersonalHomePresentation>;
+  liveFrameTier: string;
+  trustDisplay: string;
+  trustFromAccount: boolean;
+  onFindAction: () => void;
+  onOfferAction: () => void;
+  onViewPassport: () => void;
+}) {
+  const attentionCount = home.activeRequests.length + home.activeContracts.length;
+  const publishedCount = home.myPublishedActions.length;
+  const draftCount = home.draftActions.length;
+  const activeContractCount = home.activeContracts.length;
+  const recordedContractCount = home.contractHistory.length;
+
+  return (
+    <section className="an-act-personal-home__section an-act-personal-home__command-center" aria-label="Command center">
+      <h2 className="an-act-personal-home__section-title">Your command center</h2>
+      <div className="an-act-personal-home__workspace">
+        <PremiumCard featured interactive className="an-act-personal-home__panel">
+          <p className="an-act-personal-home__label">What can I do now</p>
+          <p className="an-act-personal-home__body an-act-personal-home__body--emphasis">{home.nextRecommendedStep}</p>
+          <PremiumButton variant="primary" onClick={onFindAction}>
+            Open Action Marketplace
+          </PremiumButton>
+        </PremiumCard>
+
+        <PremiumCard className="an-act-personal-home__panel">
+          <p className="an-act-personal-home__label">Needs my attention</p>
+          <p className="an-act-personal-home__metric">{attentionCount}</p>
+          <p className="an-act-personal-home__body">
+            {attentionCount === 0
+              ? "Nothing needs you right now."
+              : `${home.activeRequests.length} request${home.activeRequests.length === 1 ? "" : "s"} · ${activeContractCount} contract${activeContractCount === 1 ? "" : "s"} in progress`}
+          </p>
+        </PremiumCard>
+
+        <PremiumCard className="an-act-personal-home__panel">
+          <p className="an-act-personal-home__label">My actions</p>
+          <p className="an-act-personal-home__metric">{publishedCount}</p>
+          <p className="an-act-personal-home__body">
+            {publishedCount === 0 && draftCount === 0
+              ? "No actions yet."
+              : `${publishedCount} published · ${draftCount} draft${draftCount === 1 ? "" : "s"}`}
+          </p>
+          <PremiumButton variant="secondary" onClick={onOfferAction}>
+            {publishedCount === 0 ? "Create your first action" : "Create action"}
+          </PremiumButton>
+        </PremiumCard>
+
+        <PremiumCard className="an-act-personal-home__panel">
+          <p className="an-act-personal-home__label">My contracts</p>
+          <p className="an-act-personal-home__metric">{activeContractCount}</p>
+          <p className="an-act-personal-home__body">
+            {activeContractCount === 0 && recordedContractCount === 0
+              ? "No contracts yet — request an action to create one."
+              : `${activeContractCount} active · ${recordedContractCount} on your passport`}
+          </p>
+        </PremiumCard>
+
+        <PremiumCard interactive className="an-act-personal-home__panel">
+          <p className="an-act-personal-home__label">How my identity is growing</p>
+          <p className="an-act-personal-home__metric">{trustDisplay}</p>
+          <p className="an-act-personal-home__body">
+            {liveFrameTier} Live Frame · {home.liveFrameProgress.percent}% toward {home.liveFrameProgress.next}
+          </p>
+          <p className="an-act-personal-home__body an-act-personal-home__trust-source">
+            {trustFromAccount ? "Trust loaded from your account." : "Browser-only draft until signed in."}
+          </p>
+          <PremiumButton variant="secondary" onClick={onViewPassport}>
+            Open passport
+          </PremiumButton>
+        </PremiumCard>
+      </div>
+    </section>
+  );
+}
+
 export function PersonalHomeDashboardPage({
   onFindAction,
   onOfferAction,
@@ -160,6 +256,16 @@ export function PersonalHomeDashboardPage({
             </PremiumCard>
           </div>
         </section>
+
+        <CommandCenterStrip
+          home={home}
+          liveFrameTier={identity.liveFrameTier}
+          trustDisplay={backendTrustAuthoritative ? String(Math.round(backendPassport!.trustScore as number)) : home.trustScore}
+          trustFromAccount={backendTrustAuthoritative}
+          onFindAction={onFindAction}
+          onOfferAction={onOfferAction}
+          onViewPassport={onViewPassport}
+        />
 
         {home.isNewUser ? (
           <section className="an-act-personal-home__section an-act-personal-home__get-started" aria-label="Get started">
