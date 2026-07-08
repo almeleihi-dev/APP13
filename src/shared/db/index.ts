@@ -20,6 +20,8 @@ export function createPool(config: AppConfig, logger: Logger): DbPool {
     connectionString: config.databaseUrl,
     max: 20,
     idleTimeoutMillis: 30_000,
+    connectionTimeoutMillis: 5_000,
+    query_timeout: 10_000,
   });
 
   pool.on("error", (error) => {
