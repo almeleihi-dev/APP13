@@ -11,12 +11,20 @@ export interface PersonalPassportDashboardPageProps {
   onBack?: () => void;
 }
 
+/**
+ * AN ACT Passport — a progressive identity ("your passport grows as you act").
+ *
+ * Level 1 · Identity Passport (all users): user-provided profile + early trust
+ *   state. Sourced from the local draft; clearly labeled as "your profile".
+ * Level 2 · Professional Passport (verified providers): verification, trust
+ *   intelligence, licenses, certifications, badges, completed contracts.
+ *   Sourced from the backend (GET /professional-passport) ONLY when
+ *   authoritative; otherwise shown as locked "future growth" — never faked.
+ */
 export function PersonalPassportDashboardPage({ onEnterPlatform, onBack }: PersonalPassportDashboardPageProps) {
   const identity = usePersonalIdentity();
-  // Reality Bridge ET-1: PostgreSQL is the source of truth for the passport.
-  // The local identity below is a draft/cache used only when no authoritative
-  // backend passport is available (guest, customer, or offline).
-  const { status: passportStatus, passport: backendPassport } = useBackendPassport();
+  const { status: passportStatus, passport: backend } = useBackendPassport();
+  const isVerified = passportStatus === "authoritative" && backend !== null;
 
   if (!identity) {
     return (
@@ -41,142 +49,230 @@ export function PersonalPassportDashboardPage({ onEnterPlatform, onBack }: Perso
             </PremiumButton>
           </div>
         ) : null}
+
         <header className="an-act-passport-flow__header">
           <div className="an-act-passport-flow__header-row">
             <div>
-              <p className="an-act-passport-flow__eyebrow">Professional Passport</p>
+              <p className="an-act-passport-flow__eyebrow">AN ACT Passport</p>
               <h1 className="an-act-passport-flow__title">{personalDashboardGreeting(identity)}</h1>
               <p className="an-act-passport-flow__lead">
-                Your passport, Live Frame enrollment, trust indicators, and Personal Home stay synchronized to
-                your active identity.
+                Your passport grows as you act. Identity comes first; verified
+                professional standing builds as you complete real actions and contracts.
               </p>
             </div>
             <PlatformIdentityNavChip identity={identity} />
           </div>
         </header>
 
+        {/* Data-source authority banner */}
         <section className="an-act-passport-dashboard__authority" aria-label="Passport data source">
-          {passportStatus === "authoritative" ? (
+          {passportStatus === "loading" ? (
+            <p className="an-act-passport-dashboard__body">Syncing your verified passport…</p>
+          ) : isVerified ? (
             <PremiumCard className="an-act-passport-dashboard__panel">
-              <p className="an-act-passport-dashboard__label">Verified by AN ACT</p>
+              <p className="an-act-passport-dashboard__label">Verified by AN ACT · live record</p>
               <h2 className="an-act-passport-dashboard__value">
-                {backendPassport?.passportLevel
-                  ? `${backendPassport.passportLevel} passport`
-                  : "Backend-verified passport"}
+                {backend?.passportLevel ? `${backend.passportLevel} passport` : "Backend-verified passport"}
               </h2>
               <p className="an-act-passport-dashboard__body">
-                Trust score
-                {typeof backendPassport?.trustScore === "number"
-                  ? ` ${Math.round(backendPassport.trustScore)}`
-                  : " on file"}
-                {backendPassport?.trustTier ? ` · ${backendPassport.trustTier} tier` : ""}
-                {typeof backendPassport?.completedActions === "number"
-                  ? ` · ${backendPassport.completedActions} completed actions`
-                  : ""}
-                . Sourced live from your accountable record.
+                Sourced live from your accountable record. Level 2 fields below are real.
               </p>
-              {backendPassport && backendPassport.trustIndicators.length > 0 ? (
-                <ul className="an-act-passport-dashboard__list">
-                  {backendPassport.trustIndicators.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              ) : null}
             </PremiumCard>
-          ) : passportStatus === "loading" ? (
-            <p className="an-act-passport-dashboard__body">Syncing your verified passport…</p>
           ) : (
             <p className="an-act-passport-dashboard__body">
-              Local draft — not yet synced to your verified AN ACT record. Sign in as a
-              verified provider to load your authoritative passport.
+              <strong>Identity Passport (Level 1).</strong> Profile fields below are your own
+              draft, saved to this browser. Level 2 (verification, licenses, trust history)
+              unlocks from your verified provider record once you verify and complete actions.
             </p>
           )}
         </section>
 
-        <section className="an-act-passport-dashboard__hero an-act-sig-crafted" aria-label="Professional Passport">
-          <ProfessionalPassportMiniPreview
-            className="an-act-rc-passport an-act-passport-dashboard__passport an-act-sig-passport-credential"
-            profile={identity.passportPreview}
-          />
-        </section>
+        {/* ---------------- LEVEL 1 — Identity Passport (all users) ---------------- */}
+        <section className="an-act-passport-dashboard__section" aria-label="Level 1 Identity Passport">
+          <h2 className="an-act-passport-dashboard__section-title">Level 1 · Identity Passport</h2>
 
-        <section className="an-act-identity-dashboard-grid" aria-label="Active identity profile">
-          <ActiveIdentityProfileCard identity={identity} />
-        </section>
+          <section className="an-act-passport-dashboard__hero an-act-sig-crafted" aria-label="Identity">
+            <ProfessionalPassportMiniPreview
+              className="an-act-rc-passport an-act-passport-dashboard__passport an-act-sig-passport-credential"
+              profile={identity.passportPreview}
+            />
+          </section>
 
-        <section className="an-act-passport-dashboard__grid" aria-label="Passport operating surface">
-          <PremiumCard featured className="an-act-passport-dashboard__panel">
-            <p className="an-act-passport-dashboard__label">Live Frame status</p>
-            <h2 className="an-act-passport-dashboard__value">{identity.liveFrameTier} tier active</h2>
-            <p className="an-act-passport-dashboard__body">
-              Live Frame verifies and monitors your professional actions on the platform.
-            </p>
-            <ul className="an-act-passport-dashboard__tier-legend" aria-label="Live Frame tier guide">
-              <li>
-                <span className="an-act-passport-dashboard__tier-dot an-act-passport-dashboard__tier-dot--silver" aria-hidden="true" />
-                <span><strong>Silver</strong> — Identity established, platform enrolled</span>
-              </li>
-              <li>
-                <span className="an-act-passport-dashboard__tier-dot an-act-passport-dashboard__tier-dot--gold" aria-hidden="true" />
-                <span><strong>Gold</strong> — Verified actions completed, strong trust signals</span>
-              </li>
-              <li>
-                <span className="an-act-passport-dashboard__tier-dot an-act-passport-dashboard__tier-dot--platinum" aria-hidden="true" />
-                <span><strong>Platinum</strong> — Sustained reputation, highest assurance tier</span>
-              </li>
-            </ul>
-          </PremiumCard>
+          <section className="an-act-identity-dashboard-grid" aria-label="Active identity profile">
+            <ActiveIdentityProfileCard identity={identity} />
+          </section>
 
-          <PremiumCard className="an-act-passport-dashboard__panel">
-            <p className="an-act-passport-dashboard__label">Classification</p>
-            <h2 className="an-act-passport-dashboard__value">{identity.classification}</h2>
-            <p className="an-act-passport-dashboard__body">
-              Domain: {identity.mainSkill || "General professional services"}
-            </p>
-          </PremiumCard>
+          <div className="an-act-passport-dashboard__grid">
+            <PremiumCard className="an-act-passport-dashboard__panel">
+              <p className="an-act-passport-dashboard__label">Your profile · draft</p>
+              <h2 className="an-act-passport-dashboard__value">{identity.classification}</h2>
+              <p className="an-act-passport-dashboard__body">
+                Domain: {identity.mainSkill || "General professional services"}
+                {identity.location ? ` · ${identity.location}` : ""}
+              </p>
+            </PremiumCard>
 
-          <PremiumCard className="an-act-passport-dashboard__panel">
-            <p className="an-act-passport-dashboard__label">Trust indicators</p>
-            <ul className="an-act-passport-dashboard__list">
-              {identity.trustIndicators.map((item) => (
-                <li key={item}>{item}</li>
+            <PremiumCard className="an-act-passport-dashboard__panel">
+              <p className="an-act-passport-dashboard__label">Early trust state</p>
+              <h2 className="an-act-passport-dashboard__value">
+                {isVerified && typeof backend?.trustScore === "number"
+                  ? Math.round(backend.trustScore)
+                  : "0"}
+              </h2>
+              <p className="an-act-passport-dashboard__body">
+                {isVerified && typeof backend?.trustScore === "number"
+                  ? `Live trust score${backend?.trustTier ? ` · ${backend.trustTier} band` : ""}, from your account.`
+                  : "Your trust score starts at zero and grows as you complete verified actions."}
+              </p>
+            </PremiumCard>
+
+            <PremiumCard className="an-act-passport-dashboard__panel">
+              <p className="an-act-passport-dashboard__label">Live Frame · profile draft</p>
+              <h2 className="an-act-passport-dashboard__value">{identity.liveFrameTier} tier</h2>
+              <p className="an-act-passport-dashboard__body">
+                Live Frame verifies and monitors your professional actions. Enrollment
+                strengthens as your verified activity grows.
+              </p>
+            </PremiumCard>
+          </div>
+
+          <section className="an-act-passport-dashboard__section" aria-label="Action intentions">
+            <h3 className="an-act-passport-dashboard__section-title">Interests &amp; action intentions</h3>
+            <div className="an-act-passport-dashboard__action-groups">
+              {identity.actionGroups.map((group) => (
+                <PremiumCard key={group} interactive className="an-act-passport-dashboard__action-card">
+                  <p className="an-act-passport-dashboard__action-title">{group}</p>
+                  <p className="an-act-passport-dashboard__body">
+                    {identity.completedActions === 0
+                      ? "Draft intention — complete your first action to activate this group."
+                      : "Active area for Live Frame–monitored action."}
+                  </p>
+                </PremiumCard>
               ))}
-            </ul>
-          </PremiumCard>
+            </div>
+          </section>
         </section>
 
-        <section className="an-act-passport-dashboard__section" aria-label="Action Groups">
-          <h2 className="an-act-passport-dashboard__section-title">Action Groups</h2>
-          <div className="an-act-passport-dashboard__action-groups">
-            {identity.actionGroups.map((group) => (
-              <PremiumCard key={group} interactive className="an-act-passport-dashboard__action-card">
-                <p className="an-act-passport-dashboard__action-title">{group}</p>
+        {/* ---------------- LEVEL 2 — Professional Passport (verified) ---------------- */}
+        <section className="an-act-passport-dashboard__section" aria-label="Level 2 Professional Passport">
+          <h2 className="an-act-passport-dashboard__section-title">
+            Level 2 · Professional Passport {isVerified ? "" : "· grows as you act"}
+          </h2>
+
+          {isVerified ? (
+            <>
+              <div className="an-act-passport-dashboard__stats">
+                <PremiumStat
+                  value={backend?.verificationTierLabel ?? backend?.verificationTier ?? "—"}
+                  label="Verification level"
+                  live
+                />
+                <PremiumStat
+                  value={typeof backend?.trustScore === "number" ? String(Math.round(backend.trustScore)) : "—"}
+                  label="Trust score"
+                  live
+                />
+                <PremiumStat
+                  value={typeof backend?.completedActions === "number" ? String(backend.completedActions) : "0"}
+                  label="Completed contracts"
+                  live
+                />
+                <PremiumStat
+                  value={typeof backend?.averageRating === "number" ? backend.averageRating.toFixed(1) : "—"}
+                  label="Average rating"
+                />
+              </div>
+
+              <div className="an-act-passport-dashboard__grid">
+                <PremiumCard className="an-act-passport-dashboard__panel">
+                  <p className="an-act-passport-dashboard__label">Passport level · verified</p>
+                  <h2 className="an-act-passport-dashboard__value">{backend?.passportLevel ?? "—"}</h2>
+                  <p className="an-act-passport-dashboard__body">
+                    {typeof backend?.passportProgressPercent === "number"
+                      ? `${Math.round(backend.passportProgressPercent)}% toward ${backend?.nextLevelLabel ?? "next level"}.`
+                      : "Verified passport level from your accountable record."}
+                  </p>
+                </PremiumCard>
+
+                <PremiumCard className="an-act-passport-dashboard__panel">
+                  <p className="an-act-passport-dashboard__label">Licenses · verified</p>
+                  {backend && backend.licenses.length > 0 ? (
+                    <ul className="an-act-passport-dashboard__list">
+                      {backend.licenses.map((lic) => (
+                        <li key={lic.id}>
+                          {lic.name}
+                          {lic.issuingAuthority ? ` — ${lic.issuingAuthority}` : ""}
+                          {lic.status ? ` (${lic.status})` : ""}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="an-act-passport-dashboard__body">No licenses on file yet.</p>
+                  )}
+                </PremiumCard>
+
+                <PremiumCard className="an-act-passport-dashboard__panel">
+                  <p className="an-act-passport-dashboard__label">Certifications · verified</p>
+                  {backend && backend.certifications.length > 0 ? (
+                    <ul className="an-act-passport-dashboard__list">
+                      {backend.certifications.map((cert) => (
+                        <li key={cert.id}>
+                          {cert.name}
+                          {cert.issuingAuthority ? ` — ${cert.issuingAuthority}` : ""}
+                          {cert.status ? ` (${cert.status})` : ""}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="an-act-passport-dashboard__body">No certifications on file yet.</p>
+                  )}
+                </PremiumCard>
+
+                <PremiumCard className="an-act-passport-dashboard__panel">
+                  <p className="an-act-passport-dashboard__label">Professional badges · verified</p>
+                  {backend && backend.badges.filter((b) => b.earned).length > 0 ? (
+                    <ul className="an-act-passport-dashboard__list">
+                      {backend.badges
+                        .filter((b) => b.earned)
+                        .map((badge) => (
+                          <li key={badge.id}>{badge.label}</li>
+                        ))}
+                    </ul>
+                  ) : (
+                    <p className="an-act-passport-dashboard__body">
+                      Badges unlock as you complete verified actions and build trust.
+                    </p>
+                  )}
+                </PremiumCard>
+              </div>
+            </>
+          ) : (
+            <div className="an-act-passport-dashboard__grid">
+              <PremiumCard className="an-act-passport-dashboard__panel">
+                <p className="an-act-passport-dashboard__label">Verification &amp; licenses · locked</p>
+                <h2 className="an-act-passport-dashboard__value">Not verified yet</h2>
                 <p className="an-act-passport-dashboard__body">
-                  {identity.completedActions === 0
-                    ? "Complete your first marketplace action to activate this group."
-                    : "Ready for Live Frame–monitored action."}
+                  Verification tier, licenses, certifications, ratings, trust history, and
+                  professional badges appear here once you verify as a provider and complete
+                  real actions. Nothing is shown as verified until it truly is.
                 </p>
               </PremiumCard>
-            ))}
-          </div>
-        </section>
-
-        <section className="an-act-passport-dashboard__section" aria-label="Operating summary">
-          <h2 className="an-act-passport-dashboard__section-title">Operating summary</h2>
-          <div className="an-act-passport-dashboard__stats">
-            <PremiumStat value={identity.location || "On file"} label="Operating location" live />
-            <PremiumStat value={identity.mainSkill || "General"} label="Primary domain" />
-            <PremiumStat value={String(identity.completedActions)} label="Completed actions" live />
-          </div>
-          <PremiumCard className="an-act-passport-dashboard__summary-card">
-            <p className="an-act-passport-dashboard__label">Experience summary</p>
-            <p className="an-act-passport-dashboard__body">{identity.experienceSummary || "—"}</p>
-          </PremiumCard>
+              <PremiumCard className="an-act-passport-dashboard__panel">
+                <p className="an-act-passport-dashboard__label">How it grows</p>
+                <ul className="an-act-passport-dashboard__list">
+                  <li>Complete your profile</li>
+                  <li>Create and offer real actions</li>
+                  <li>Complete a contract with evidence</li>
+                  <li>Earn ratings, trust, and badges</li>
+                </ul>
+              </PremiumCard>
+            </div>
+          )}
         </section>
 
         <div className="an-act-passport-dashboard__actions">
           <PremiumButton variant="primary" size="lg" onClick={onEnterPlatform}>
-            Return to Personal Home
+            {isVerified ? "Return to Personal Home" : "Grow your passport — enter the platform"}
           </PremiumButton>
         </div>
       </div>
