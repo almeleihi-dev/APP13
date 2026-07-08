@@ -21,6 +21,7 @@ export function createPool(config: AppConfig, logger: Logger): DbPool {
     max: 20,
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 5_000,
+    query_timeout: 10_000,
   });
 
   pool.on("error", (error) => {
