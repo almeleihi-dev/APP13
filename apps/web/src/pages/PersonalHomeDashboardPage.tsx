@@ -15,6 +15,7 @@ import {
 import { personalIdentityGreeting } from "../passport/personal-identity.js";
 import { PlatformIdentityNavChip } from "../passport/PlatformIdentityNavChip.js";
 import { usePersonalIdentity } from "../passport/usePersonalIdentity.js";
+import { useBackendPassport } from "../passport/useBackendPassport.js";
 import { useLivingPlatformState } from "../lib/living-platform/useLivingPlatform.js";
 import { createTeam } from "../lib/living-platform/team-passport-store.js";
 import { TeamPassportSection } from "../components/project-living/BuildProjectExperience.js";
@@ -47,6 +48,7 @@ export function PersonalHomeDashboardPage({
 }: PersonalHomeDashboardPageProps) {
   const identity = usePersonalIdentity();
   const livingState = useLivingPlatformState();
+  const { status: passportStatus, passport: backendPassport } = useBackendPassport();
 
   if (!identity) {
     return (
@@ -62,6 +64,19 @@ export function PersonalHomeDashboardPage({
   }
 
   const home = buildPersonalHomePresentation(identity, livingState);
+
+  // Wave 0 — prefer backend-authoritative trust/passport when available.
+  // useBackendPassport reads GET /professional-passport (identity+trust+credentials).
+  // When 'authoritative', surface the real score; otherwise the local preview
+  // below stays clearly labeled as a browser-only draft.
+  const backendTrustAuthoritative =
+    passportStatus === "authoritative" &&
+    typeof backendPassport?.trustScore === "number";
+  const backendTrustLine = backendTrustAuthoritative
+    ? `Trust ${Math.round(backendPassport!.trustScore as number)}${
+        backendPassport!.trustTier ? ` · ${backendPassport!.trustTier} tier` : ""
+      } — from your account`
+    : null;
 
   return (
     <LaunchScene className={`an-act-personal-home an-act-platform-continuity an-act-sig-os an-act-emotion-home-arrival${home.isNewUser ? " an-act-personal-home--new-user" : ""}`}>
@@ -81,9 +96,14 @@ export function PersonalHomeDashboardPage({
           </p>
         ) : null}
 
-        {home.isNewUser ? (
+        {backendTrustAuthoritative ? (
           <p className="an-act-personal-home__preview-bridge" role="note">
-            Preview stats during launch were examples. Your trust score grows as you complete verified actions.
+            Your trust score and passport are loaded from your account.
+          </p>
+        ) : home.isNewUser ? (
+          <p className="an-act-personal-home__preview-bridge" role="note">
+            Preview stats shown here are a browser-only draft. Your real trust
+            score grows as you complete verified actions once signed in.
           </p>
         ) : null}
 
@@ -107,7 +127,7 @@ export function PersonalHomeDashboardPage({
             <div className="an-act-personal-home__trust-visual">
               <span className="an-act-trust-signal an-act-trust-signal--derived">
                 <span className="an-act-trust-signal__dot" aria-hidden="true" />
-                Derived from passport
+                {backendTrustLine ?? "Derived from passport (browser draft)"}
               </span>
             </div>
             {home.isNewUser ? (
