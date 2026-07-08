@@ -5,6 +5,9 @@ export type MessageKey =
   | "entry.startFirstAct"
   | "entry.continueGuest"
   | "entry.whatCanActDo"
+  | "entry.logIn"
+  | "entry.createIdentity"
+  | "entry.guestExplainer"
   | "guest.banner"
   | "guest.tryGoal"
   | "guest.tryProfession"
@@ -57,6 +60,9 @@ const EN: Record<MessageKey, string> = {
   "entry.startFirstAct": "Start your first act",
   "entry.continueGuest": "Continue as Guest",
   "entry.whatCanActDo": "What can an act do for me?",
+  "entry.logIn": "Log in",
+  "entry.createIdentity": "Create Identity Passport",
+  "entry.guestExplainer": "Guest = explore only. Nothing is saved, no trust is built, and you can’t sign contracts.",
   "guest.banner": "Guest Preview — explore before registration",
   "guest.tryGoal": "Try a goal",
   "guest.tryProfession": "Try a profession",
@@ -111,6 +117,9 @@ const DE: Record<MessageKey, string> = {
   "entry.startFirstAct": "Starte deinen ersten Act",
   "entry.continueGuest": "Als Gast fortfahren",
   "entry.whatCanActDo": "Was kann an act für mich tun?",
+  "entry.logIn": "Anmelden",
+  "entry.createIdentity": "Identity Passport erstellen",
+  "entry.guestExplainer": "Gast = nur erkunden. Nichts wird gespeichert, kein Vertrauen wird aufgebaut, und du kannst keine Verträge abschließen.",
   "guest.banner": "Gastvorschau — erkunden vor der Registrierung",
   "guest.tryGoal": "Ziel ausprobieren",
   "guest.tryProfession": "Beruf ausprobieren",
@@ -161,6 +170,9 @@ const AR: Record<MessageKey, string> = {
   "entry.startFirstAct": "ابدأ أول act",
   "entry.continueGuest": "المتابعة كضيف",
   "entry.whatCanActDo": "ماذا يمكن أن يفعل an act من أجلي؟",
+  "entry.logIn": "تسجيل الدخول",
+  "entry.createIdentity": "إنشاء Identity Passport",
+  "entry.guestExplainer": "الضيف = استكشاف فقط. لا يُحفظ أي شيء، ولا يُبنى أي رصيد ثقة، ولا يمكنك توقيع العقود.",
   "guest.banner": "معاينة الضيف — استكشف قبل التسجيل",
   "guest.tryGoal": "جرّب هدفًا",
   "guest.tryProfession": "جرّب مهنة",

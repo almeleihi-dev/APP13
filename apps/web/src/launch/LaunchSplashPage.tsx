@@ -10,6 +10,7 @@ import {
   shouldShowSkipIntro,
 } from "./launch-persistence.js";
 import { scheduleSplashNavigate } from "./launch-navigate.js";
+import { navigate } from "./navigation.js";
 import { playKeyClick } from "./launch-sound.js";
 import { enableGuestMode } from "../guest/guest-session.js";
 
@@ -45,6 +46,13 @@ export function LaunchSplashPage() {
     activatedRef.current = true;
     playKeyClick();
     setExiting(true);
+  }, []);
+
+  const goToLogin = useCallback(() => {
+    if (activatedRef.current) return;
+    activatedRef.current = true;
+    playKeyClick();
+    navigate("/login");
   }, []);
 
   useEffect(() => {
@@ -109,6 +117,10 @@ export function LaunchSplashPage() {
                   {t("entry.continueGuest")}
                 </PremiumButton>
               </div>
+              <p className="launch-splash__guest-explainer">{t("entry.guestExplainer")}</p>
+              <button type="button" className="launch-splash__login-link" onClick={goToLogin}>
+                {t("entry.logIn")}
+              </button>
             </>
           ) : null}
         </div>

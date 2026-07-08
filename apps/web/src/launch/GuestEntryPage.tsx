@@ -35,6 +35,16 @@ export function GuestEntryPage() {
     navigate("/");
   }
 
+  function createIdentity() {
+    playKeyClick();
+    navigate("/register");
+  }
+
+  function logIn() {
+    playKeyClick();
+    navigate("/login");
+  }
+
   return (
     <LaunchScene className="an-act-guest-entry an-act-excellence-s1">
       <div className="an-act-guest-entry__shell">
@@ -72,7 +82,16 @@ export function GuestEntryPage() {
 
         <PremiumCard className="an-act-guest-entry__conversion">
           <p className="an-act-guest-entry__label">Ready to make it real?</p>
+          <p>{t("entry.guestExplainer")}</p>
           <p>{t("preview.passportStores")}</p>
+          <div className="an-act-guest-entry__conversion-actions">
+            <PremiumButton variant="primary" onClick={createIdentity}>
+              {t("entry.createIdentity")}
+            </PremiumButton>
+            <PremiumButton variant="secondary" onClick={logIn}>
+              {t("entry.logIn")}
+            </PremiumButton>
+          </div>
         </PremiumCard>
 
         <PremiumButton variant="ghost" onClick={backToSplash}>

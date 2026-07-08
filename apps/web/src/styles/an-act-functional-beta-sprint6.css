@@ -11,6 +11,41 @@
   margin: 16px auto 0;
 }
 
+.launch-splash__guest-explainer {
+  width: min(100%, 340px);
+  margin: 10px auto 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  text-align: center;
+  opacity: 0.72;
+}
+
+.launch-splash__login-link {
+  display: inline-block;
+  margin: 10px auto 0;
+  padding: 6px 10px;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.launch-splash__login-link:hover {
+  opacity: 1;
+}
+
+.an-act-guest-entry__conversion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
 .an-act-guest-banner {
   display: flex;
   flex-wrap: wrap;
