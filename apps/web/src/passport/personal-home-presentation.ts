@@ -84,13 +84,25 @@ function nextLiveFrameTier(current: PersonalProfessionalPassport["liveFrameTier"
   return { next, percent };
 }
 
+/**
+ * Local/browser-draft trust estimate.
+ *
+ * Trust is EARNED, not granted: this preview starts near zero and is driven
+ * mainly by real completed actions. Identity setup (photo, summary, indicators)
+ * contributes only a small "profile ready" amount — it never buys reputation.
+ * A brand-new user therefore sees a low starting number that grows as they
+ * complete verified, contracted actions. When signed in, the authoritative
+ * backend trust score from /professional-passport overrides this entirely.
+ */
 function deriveTrustScore(identity: ActivePersonalIdentity): { label: string; value: number } {
-  const base = 72;
-  const indicatorBoost = identity.trustIndicators.length * 4;
-  const actionBoost = Math.min(identity.completedActions * 2, 12);
-  const photoBoost = identity.photoUrl ? 6 : 0;
-  const summaryBoost = identity.experienceSummary.trim().length > 80 ? 6 : 0;
-  const value = Math.min(98, base + indicatorBoost + actionBoost + photoBoost + summaryBoost);
+  // Earned component dominates — the only real reputation signal we have locally.
+  const earned = Math.min(identity.completedActions * 6, 70);
+  // Small identity-setup component (max ~16); this is readiness, not reputation.
+  const setup =
+    Math.min(identity.trustIndicators.length * 2, 8) +
+    (identity.photoUrl ? 4 : 0) +
+    (identity.experienceSummary.trim().length > 80 ? 4 : 0);
+  const value = Math.min(96, earned + setup);
   return { label: `${value}%`, value };
 }
 

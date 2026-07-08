@@ -610,11 +610,10 @@ export function PersonalHomeDashboardPage({
               </div>
               <p className="an-act-personal-home__body">{home.trustProgressDetail}</p>
               <p className="an-act-personal-home__body an-act-personal-home__body--emphasis">{home.nextRecommendedStep}</p>
-              {PUBLIC_BETA_MODE ? (
-                <p className="an-act-personal-home__trust-source">
-                  Trust score is based on your passport completeness and platform enrollment.
-                </p>
-              ) : null}
+              <p className="an-act-personal-home__trust-source">
+                Trust is earned, not granted. It grows when you complete verified, contracted
+                actions — Live Frame monitors those actions so every point reflects real work.
+              </p>
             </PremiumCard>
           </div>
         </section>
