@@ -8,6 +8,8 @@ import { useState, type FormEvent } from "react";
 import { useRuntime } from "../providers/RuntimeProvider.js";
 import { AN_ACT_BRAND } from "../brand/config.js";
 import { PresentationError } from "../components/PresentationError.js";
+import { enableGuestMode } from "../guest/guest-session.js";
+import { navigate } from "../launch/navigation.js";
 
 export interface LoginPageProps {
   onRegister?: () => void;
@@ -26,6 +28,13 @@ export function LoginPage({ onRegister, onRegisterProvider, onBackToLanding }: L
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
     await login(email, password);
+  }
+
+  function continueAsGuest() {
+    // Never trap a first user at auth. Guest = explore only; enable guest mode
+    // and route to the guest experience. No fake identity, no demo login.
+    enableGuestMode();
+    navigate("/guest");
   }
 
   async function onRequestReset() {
@@ -47,11 +56,6 @@ export function LoginPage({ onRegister, onRegisterProvider, onBackToLanding }: L
       <div className="p12-auth">
         <div className="p12-auth__ambient" aria-hidden="true" />
         <PremiumGlassPanel className="p12-auth__card p12-lift-in">
-          {onBackToLanding ? (
-            <PremiumButton variant="ghost" block onClick={onBackToLanding}>
-              Back to landing
-            </PremiumButton>
-          ) : null}
           <div style={{ display: "grid", gap: 12, justifyItems: "center", textAlign: "center" }}>
             <AnActLogoKey size="sm" />
             <h1 className="p12-landing__section-title" style={{ margin: 0, fontSize: "1.5rem" }}>
@@ -124,6 +128,19 @@ export function LoginPage({ onRegister, onRegisterProvider, onBackToLanding }: L
           {onRegisterProvider ? (
             <PremiumButton variant="ghost" block onClick={onRegisterProvider}>
               Register as a provider
+            </PremiumButton>
+          ) : null}
+
+          <div className="p12-auth__divider">no account?</div>
+          <PremiumButton variant="secondary" block onClick={continueAsGuest}>
+            Continue as guest
+          </PremiumButton>
+          <p style={{ margin: "8px 0 0", textAlign: "center", color: "var(--an-act-p12-ink-muted)", fontSize: "0.85rem" }} role="note">
+            Guest = explore only. Nothing is saved, no trust is built, and you can’t sign contracts.
+          </p>
+          {onBackToLanding ? (
+            <PremiumButton variant="ghost" block onClick={onBackToLanding}>
+              ← Back to exploration
             </PremiumButton>
           ) : null}
         </PremiumGlassPanel>

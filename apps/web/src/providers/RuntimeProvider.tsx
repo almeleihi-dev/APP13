@@ -521,10 +521,21 @@ export function RuntimeProvider({
       title = err.problem?.title ?? "Something went wrong";
       detail = err.problem?.detail ?? err.message;
       code = err.problem?.code;
+      // User-facing auth clarity — never surface raw "Internal Server Error".
       if (err.status === 401) {
         category = "auth";
+        title = "Email or password is incorrect";
+        detail = "Double-check your details, or create an account if you don't have one yet.";
+      } else if (err.status === 403) {
+        category = "auth";
+        title = "Can't sign in yet";
+        detail = err.problem?.detail && !/internal/i.test(err.problem.detail)
+          ? err.problem.detail
+          : "Your account isn't active or verified yet. Verify your email, or create a new account.";
       } else if (err.status && err.status >= 500) {
         category = "server";
+        title = "Something went wrong on our side";
+        detail = "We hit a problem completing that. Please try again in a moment — if it keeps happening, create a new account for the lab.";
       }
     } else if (err instanceof Error) {
       const message = err.message.toLowerCase();
