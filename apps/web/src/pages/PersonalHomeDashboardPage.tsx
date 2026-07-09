@@ -189,8 +189,9 @@ export function PersonalHomeDashboardPage({
 
         {PUBLIC_BETA_MODE ? (
           <p className="an-act-public-beta-notice" role="status">
-            <strong>{PUBLIC_BETA_LABEL}.</strong> Your passport, published actions, and request lifecycle persist in
-            this browser during the functional beta.
+            <strong>{PUBLIC_BETA_LABEL} · controlled real-world test.</strong> This is a supervised
+            beta lab, not a full launch. Trust is earned only through completed contracts, real
+            accounts and contracts are traceable, and areas marked “sample” or “demo” are not live.
           </p>
         ) : null}
 

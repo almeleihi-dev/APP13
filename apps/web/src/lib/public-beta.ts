@@ -8,4 +8,4 @@ export const SHOW_DEVELOPER_SURFACES =
 /** True on production anact.app unless developer surfaces are forced on. */
 export const PUBLIC_BETA_MODE = import.meta.env.PROD && !SHOW_DEVELOPER_SURFACES;
 
-export const PUBLIC_BETA_LABEL = "Public beta";
+export const PUBLIC_BETA_LABEL = "Beta Lab";
