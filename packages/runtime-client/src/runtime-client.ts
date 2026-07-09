@@ -363,6 +363,15 @@ export class RuntimeClient {
     await this.http.post<void>("/v1/auth/verify-email/request", {});
   }
 
+  /**
+   * POST /v1/auth/password-reset/request — 202, no body. Unauthenticated
+   * account recovery: the backend emails a reset link (confirmation happens via
+   * that link's token). Always resolves so we never leak whether an email exists.
+   */
+  async requestPasswordReset(email: string): Promise<void> {
+    await this.http.post<void>("/v1/auth/password-reset/request", { email });
+  }
+
   // --- Production Candidate Phase 3: real contract transport (read-mostly) ---
 
   /**

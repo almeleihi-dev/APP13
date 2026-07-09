@@ -7,6 +7,7 @@ import {
   ProfessionalPassportMiniPreview,
 } from "@an-act/runtime-ui/react";
 import { LaunchScene } from "../launch/LaunchScene.js";
+import { LanguageSelector } from "../components/i18n/LanguageSelector.js";
 import { ActiveIdentityProfileCard } from "../passport/ActiveIdentityProfileCard.js";
 import {
   buildPersonalHomePresentation,
@@ -180,6 +181,7 @@ export function PersonalHomeDashboardPage({
         <header className="an-act-personal-home__topbar">
           <AnActLogoKey size="sm" />
           <div className="an-act-personal-home__topbar-status">
+            <LanguageSelector />
             <PlatformIdentityNavChip identity={identity} />
             <PremiumLiveIndicator label={PUBLIC_BETA_MODE ? PUBLIC_BETA_LABEL : "Personal Home active"} />
           </div>

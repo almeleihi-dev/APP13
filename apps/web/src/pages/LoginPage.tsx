@@ -16,14 +16,30 @@ export interface LoginPageProps {
 }
 
 export function LoginPage({ onRegister, onRegisterProvider, onBackToLanding }: LoginPageProps) {
-  const { login, loading, error, sessionExpired } = useRuntime();
+  const { login, loading, error, sessionExpired, client } = useRuntime();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
+  const [recovering, setRecovering] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
     await login(email, password);
+  }
+
+  async function onRequestReset() {
+    if (!email.trim()) {
+      setRecovering(true);
+      return;
+    }
+    try {
+      await client.requestPasswordReset(email.trim());
+    } catch {
+      // Intentionally ignored — the endpoint always succeeds so we never reveal
+      // whether an account exists. The confirmation message is shown regardless.
+    }
+    setResetSent(true);
   }
 
   return (
@@ -70,13 +86,32 @@ export function LoginPage({ onRegister, onRegisterProvider, onBackToLanding }: L
                 autoComplete="current-password"
               />
             </label>
-            <label className="p12-auth__remember">
-              <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-              Remember me
-            </label>
+            <div className="p12-auth__row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+              <label className="p12-auth__remember">
+                <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+                Remember me
+              </label>
+              <button
+                type="button"
+                className="launch-splash__login-link"
+                style={{ margin: 0 }}
+                onClick={() => void onRequestReset()}
+              >
+                Forgot password?
+              </button>
+            </div>
             <PremiumButton type="submit" variant="primary" block disabled={loading} aria-busy={loading}>
               {loading ? "Signing in..." : "Sign in"}
             </PremiumButton>
+            {resetSent ? (
+              <p style={{ margin: 0, textAlign: "center", color: "var(--an-act-p12-ink-muted)", fontSize: "0.9rem" }} role="status">
+                If an account exists for that email, a password reset link is on its way.
+              </p>
+            ) : recovering ? (
+              <p style={{ margin: 0, textAlign: "center", color: "var(--an-act-p12-ink-muted)", fontSize: "0.9rem" }} role="note">
+                Enter your email above, then tap “Forgot password?” to receive a reset link.
+              </p>
+            ) : null}
             {error ? (
               <PresentationError title={error.title} detail={error.detail} code={error.code} />
             ) : null}
