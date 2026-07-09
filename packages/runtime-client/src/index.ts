@@ -26,7 +26,10 @@ export type { HttpRequestOptions } from "./http-client.js";
 export { RuntimeClient, createRuntimeClient } from "./runtime-client.js";
 export type {
   ActionTypeOption,
+  ContractAttestationView,
+  ContractMilestoneView,
   ContractPartyView,
+  ContractTransitionInput,
   ContractView,
   CreateActionInput,
   DiscoverActionResult,

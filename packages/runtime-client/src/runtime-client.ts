@@ -88,6 +88,36 @@ export interface ContractPartyView {
   declined_at: string | null;
 }
 
+/** Body for POST /v1/contracts/:id/transitions (accept / decline / cancel). */
+export interface ContractTransitionInput {
+  transition: string;
+  party_role?: string;
+  document_hash_ack?: string;
+  reason?: string;
+}
+
+/** A real execution milestone (GET /v1/contracts/:id/milestones → data[]). */
+export interface ContractMilestoneView {
+  id: string;
+  milestone_code: string;
+  name: string;
+  status: string;
+  sequence_order: number;
+  tekrr_dimension: string;
+}
+
+/** A real execution attestation (GET /v1/contracts/:id/attestations → data[]). */
+export interface ContractAttestationView {
+  id: string;
+  tekrr_dimension: string;
+  fulfillment_rating: string | null;
+}
+
+interface ListEnvelope<T> {
+  data: T[];
+  meta?: { has_more?: boolean };
+}
+
 /** Filters accepted by the discovery endpoints (subset of the backend query). */
 export interface DiscoveryQuery {
   text?: string;
@@ -353,6 +383,31 @@ export class RuntimeClient {
   /** GET /v1/contracts/:contractId/parties — read persisted contract parties. */
   async getContractParties(contractId: string): Promise<ContractPartyView[]> {
     return this.http.get<ContractPartyView[]>(`/v1/contracts/${contractId}/parties`);
+  }
+
+  /**
+   * POST /v1/contracts/:contractId/transitions — drive a real state change
+   * (accept / decline / cancel). The backend fully guards preconditions
+   * (party membership, document-hash acknowledgement, two-party acceptance),
+   * so this only initiates; the response reflects the true resulting state.
+   */
+  async transitionContract(
+    contractId: string,
+    input: ContractTransitionInput
+  ): Promise<Record<string, unknown>> {
+    return this.http.post<Record<string, unknown>>(`/v1/contracts/${contractId}/transitions`, { ...input });
+  }
+
+  /** GET /v1/contracts/:contractId/milestones — real execution milestones (executable contracts only). */
+  async listContractMilestones(contractId: string): Promise<ContractMilestoneView[]> {
+    const res = await this.http.get<ListEnvelope<ContractMilestoneView>>(`/v1/contracts/${contractId}/milestones`);
+    return res.data ?? [];
+  }
+
+  /** GET /v1/contracts/:contractId/attestations — real execution attestations (executable contracts only). */
+  async listContractAttestations(contractId: string): Promise<ContractAttestationView[]> {
+    const res = await this.http.get<ListEnvelope<ContractAttestationView>>(`/v1/contracts/${contractId}/attestations`);
+    return res.data ?? [];
   }
 
   // --- Production Candidate Phase 4: real discovery transport (read-only) ---

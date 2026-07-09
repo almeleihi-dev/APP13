@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   RuntimeClientError,
+  type ContractAttestationView,
+  type ContractMilestoneView,
   type ContractPartyView,
   type ContractView,
 } from "@an-act/runtime-client";
@@ -9,14 +11,17 @@ import { useRuntime } from "../../providers/RuntimeProvider.js";
 /**
  * LiveContractPanel — the real, backend-backed "living contract" view.
  *
- * This is a READ-MOSTLY surface (Production Candidate Phase 3):
- *  - the one write it performs is the explicit, user-initiated
- *    "Generate contract" step (POST /v1/actions/:id/contract/generate);
- *  - everything else is read-only (GET /v1/contracts/:id and .../parties).
+ * Closure Phase 1 — the contract is now DRIVABLE against the real backend:
+ *  - Generate:  POST /v1/actions/:id/contract/generate (explicit user step)
+ *  - Read:      GET /v1/contracts/:id (+ /parties, /milestones, /attestations)
+ *  - Accept:    POST /v1/contracts/:id/transitions { transition: "accept" }
  *
- * State transitions (accept / activate / complete) are intentionally NOT wired
- * here yet — the completion path is shown read-only. A persisted contract is
- * labelled "Live contract · persisted"; nothing here is simulated.
+ * The backend remains the sole source of truth for every precondition (party
+ * membership, document-hash acknowledgement, two-party acceptance) and for the
+ * trust update that follows a real completion. Nothing here is simulated: the
+ * completion path is rendered from the real milestone/attestation records, and
+ * final completion + trust growth happen through the verified two-party
+ * execution flow, not a client-side button.
  */
 export interface LiveContractPanelProps {
   /** A REAL backend action id (e.g. the id returned by POST /v1/actions). */
@@ -57,6 +62,10 @@ export function LiveContractPanel({ actionId }: LiveContractPanelProps) {
   const [loadingParties, setLoadingParties] = useState(false);
   const [needsProvider, setNeedsProvider] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [milestones, setMilestones] = useState<ContractMilestoneView[]>([]);
+  const [attestations, setAttestations] = useState<ContractAttestationView[]>([]);
+  const [accepting, setAccepting] = useState(false);
+  const [actionNote, setActionNote] = useState<string | null>(null);
 
   const loadParties = useCallback(
     async (contractId: string) => {
@@ -73,12 +82,70 @@ export function LiveContractPanel({ actionId }: LiveContractPanelProps) {
     [client]
   );
 
-  // Whenever we have a persisted contract, pull its parties.
+  // Execution records (milestones/attestations) only exist once the contract is
+  // executable (accepted/active). Fetch best-effort and tolerate the backend's
+  // "not executable yet" (409) / not-found responses without surfacing an error.
+  const loadExecution = useCallback(
+    async (contract: ContractView) => {
+      const executable = contract.status === "accepted" || contract.status === "active" || contract.status === "completed";
+      if (!executable) {
+        setMilestones([]);
+        setAttestations([]);
+        return;
+      }
+      try {
+        const [m, a] = await Promise.all([
+          client.listContractMilestones(contract.id),
+          client.listContractAttestations(contract.id),
+        ]);
+        setMilestones(m);
+        setAttestations(a);
+      } catch {
+        setMilestones([]);
+        setAttestations([]);
+      }
+    },
+    [client]
+  );
+
+  // Whenever we have a persisted contract, pull its parties + execution state.
   useEffect(() => {
     if (contract?.id) {
       void loadParties(contract.id);
+      void loadExecution(contract);
     }
-  }, [contract?.id, loadParties]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contract?.id, contract?.status, loadParties, loadExecution]);
+
+  const acceptContract = useCallback(async () => {
+    if (!contract || accepting) return;
+    setAccepting(true);
+    setError(null);
+    setActionNote(null);
+    try {
+      // The backend guards everything (party membership, hash ack, two-party
+      // acceptance). We pass the document hash we already hold as the ack.
+      await client.transitionContract(contract.id, {
+        transition: "accept",
+        document_hash_ack: contract.document_hash ?? undefined,
+      });
+      // Re-read the authoritative state — it may now be accepted, or may still
+      // be proposed while the other party's acceptance is pending.
+      const refreshed = await client.getContract(contract.id);
+      setContract(refreshed);
+      if (refreshed.status === "proposed") {
+        setActionNote("Your acceptance is recorded. The contract activates once the other party also accepts.");
+      }
+    } catch (err) {
+      if (err instanceof RuntimeClientError) {
+        setError(err.problem?.detail ?? err.message);
+      } else {
+        setError("Could not accept the contract. Please try again.");
+      }
+    } finally {
+      setAccepting(false);
+    }
+  }, [contract, accepting, client]);
 
   const generate = useCallback(async () => {
     if (generating) return;
@@ -236,20 +303,83 @@ export function LiveContractPanel({ actionId }: LiveContractPanelProps) {
             );
           })}
         </ol>
-        <p className="an-act-action-blueprint__footnote" role="note">
-          Completion path shown read-only. Accepting, activating and completing this contract will
-          be enabled in a later step.
-        </p>
+        {contract.status === "proposed" ? (
+          <div className="an-act-contract-experience__action-bar">
+            <button
+              type="button"
+              className="ds-btn ds-btn--primary ds-btn--block"
+              onClick={acceptContract}
+              disabled={accepting}
+            >
+              {accepting ? "Submitting acceptance…" : "Accept contract"}
+            </button>
+            <p className="an-act-action-blueprint__footnote" role="note">
+              Accepting records your agreement to this document. The contract activates only when
+              both parties accept — then activation, execution and completion are driven by the
+              real backend, and trust grows only on verified completion.
+            </p>
+          </div>
+        ) : (
+          <p className="an-act-action-blueprint__footnote" role="note">
+            State changes are driven by the real backend. Activation, execution and completion —
+            and the trust update that follows — happen through the verified two-party flow; nothing
+            here is simulated.
+          </p>
+        )}
+        {actionNote ? (
+          <p className="ds-caption" role="status">
+            {actionNote}
+          </p>
+        ) : null}
+        {error ? (
+          <p className="an-act-action-blueprint__footnote" role="alert">
+            {error}
+          </p>
+        ) : null}
       </section>
 
       <section className="ds-card ds-card--glass">
-        <h2 className="ds-title">Evidence readiness</h2>
-        <p className="ds-caption">
-          {contract.status === "proposed"
-            ? "Evidence and milestones open once the contract is accepted and activated."
-            : contract.status === "completed"
-              ? "Contract completed — evidence of record is sealed."
-              : "Contract active — evidence and milestone attestations can be captured in execution."}
+        <h2 className="ds-title">Execution &amp; completion path</h2>
+        {contract.status === "proposed" ? (
+          <p className="ds-caption">
+            Milestones and evidence open once the contract is accepted and activated by both parties.
+          </p>
+        ) : milestones.length === 0 && attestations.length === 0 ? (
+          <p className="ds-caption">
+            No execution records yet. Milestones and attestations appear here as work is delivered and verified.
+          </p>
+        ) : (
+          <>
+            {milestones.length > 0 ? (
+              <ul className="an-act-contract-experience__evidence-list">
+                {milestones.map((m) => (
+                  <li key={m.id}>
+                    <strong>
+                      {m.sequence_order}. {m.name}
+                    </strong>
+                    <span>
+                      {m.tekrr_dimension} · {statusLabel(m.status)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            {attestations.length > 0 ? (
+              <dl className="an-act-contract-experience__details">
+                {attestations.map((a) => (
+                  <div key={a.id}>
+                    <dt>{a.tekrr_dimension.toUpperCase()} attestation</dt>
+                    <dd>{a.fulfillment_rating ?? "Awaiting rating"}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : null}
+          </>
+        )}
+        <p className="ds-caption" role="note">
+          {contract.status === "completed"
+            ? "Contract completed — evidence of record is sealed and trust has been updated from real work."
+            : "Evidence and milestone attestations are captured during execution by the contract parties."}
         </p>
       </section>
 
