@@ -219,7 +219,7 @@ function OpportunityDetailScreen({
       <section className="ds-flow__hero ds-card ds-card--runtime">
         <ProviderAvatar name={detail.providerName} />
         <div>
-          <span className="ds-flow__verified-badge">Verified provider</span>
+          <span className="ds-flow__verified-badge">Sample provider profile</span>
           <h1 className="ds-headline">{detail.providerName}</h1>
           <p className="ds-body">{detail.serviceName}</p>
           {detail.liveFrameTier ? <LiveFrameBadge tier={detail.liveFrameTier} /> : null}
@@ -234,8 +234,8 @@ function OpportunityDetailScreen({
 
       <div className="ds-flow__confidence-row" aria-label="Provider confidence signals">
         <div className="ds-flow__confidence-item">
-          <strong>{detail.rating?.toFixed(1) ?? "4.8"}</strong>
-          <span>Trust rating</span>
+          <strong>{detail.rating != null ? detail.rating.toFixed(1) : "New"}</strong>
+          <span>Rating (sample)</span>
         </div>
         <div className="ds-flow__confidence-item">
           <strong>{detail.professionalLevel}</strong>
@@ -303,7 +303,7 @@ function OpportunityDetailScreen({
         </VisualSection>
       ) : null}
 
-      <VisualSection icon="★" title="Reviews & experience" variant="default">
+      <VisualSection icon="★" title="Reviews & experience (sample data)" variant="default">
         <div className="ds-flow__reviews">
           {detail.reviews.map((review) => (
             <article key={`${review.author}-${review.excerpt}`} className="ds-flow__review ds-card ds-card--runtime">
