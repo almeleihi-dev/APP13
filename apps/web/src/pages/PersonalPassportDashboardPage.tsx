@@ -26,6 +26,32 @@ export function PersonalPassportDashboardPage({ onEnterPlatform, onBack }: Perso
   const { status: passportStatus, passport: backend } = useBackendPassport();
   const isVerified = passportStatus === "authoritative" && backend !== null;
 
+  // Trust explainer — computed from REAL fields only (backend when verified).
+  // Answers the three questions the passport must answer: why this level exists,
+  // what increases it, and what is missing. No fabricated reputation.
+  const verifiedCompleted =
+    isVerified && typeof backend?.completedActions === "number" ? backend.completedActions : 0;
+  const verifiedRating =
+    isVerified && typeof backend?.averageRating === "number" ? backend.averageRating : null;
+  const progressPercent =
+    isVerified && typeof backend?.passportProgressPercent === "number"
+      ? Math.round(backend.passportProgressPercent)
+      : null;
+  const trustWhy = !isVerified
+    ? "Trust is 0 because you haven't completed any verified actions yet. Trust is earned, never granted."
+    : verifiedCompleted > 0
+      ? `Your standing reflects ${verifiedCompleted} completed contract${verifiedCompleted === 1 ? "" : "s"}${
+          verifiedRating !== null ? ` and a ${verifiedRating.toFixed(1)} average rating` : ""
+        }, verified by AN ACT.`
+      : "You're verified, but trust stays low until you complete real contracts.";
+  const trustMissing = !isVerified
+    ? "Verify as a provider, then complete your first contract with evidence."
+    : verifiedCompleted === 0
+      ? "Complete your first contract to start earning trust."
+      : progressPercent !== null && progressPercent < 100
+        ? `${100 - progressPercent}% more toward ${backend?.nextLevelLabel ?? "the next level"} — complete more contracts and keep your rating high.`
+        : "You're at the top level — maintain it by completing contracts and keeping ratings strong.";
+
   if (!identity) {
     return (
       <LaunchScene className="an-act-passport-flow">
@@ -151,6 +177,28 @@ export function PersonalPassportDashboardPage({ onEnterPlatform, onBack }: Perso
               ))}
             </div>
           </section>
+        </section>
+
+        {/* ---------------- Trust, explained (why / what increases / what's missing) ---------------- */}
+        <section className="an-act-passport-dashboard__section" aria-label="Your trust explained">
+          <h2 className="an-act-passport-dashboard__section-title">Your trust, explained</h2>
+          <div className="an-act-passport-dashboard__grid">
+            <PremiumCard className="an-act-passport-dashboard__panel">
+              <p className="an-act-passport-dashboard__label">Why this level</p>
+              <p className="an-act-passport-dashboard__body">{trustWhy}</p>
+            </PremiumCard>
+            <PremiumCard className="an-act-passport-dashboard__panel">
+              <p className="an-act-passport-dashboard__label">What increases it</p>
+              <p className="an-act-passport-dashboard__body">
+                Complete contracts with evidence, earn ratings from the other party, and keep
+                licenses and certifications verified. Every increase is tied to real, completed work.
+              </p>
+            </PremiumCard>
+            <PremiumCard className="an-act-passport-dashboard__panel">
+              <p className="an-act-passport-dashboard__label">What is missing</p>
+              <p className="an-act-passport-dashboard__body">{trustMissing}</p>
+            </PremiumCard>
+          </div>
         </section>
 
         {/* ---------------- LEVEL 2 — Professional Passport (verified) ---------------- */}
