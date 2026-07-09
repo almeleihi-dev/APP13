@@ -648,7 +648,9 @@ function AppExperienceRouter() {
       <RegistrationSuccessPage
         onContinue={() => {
           setAuthView("complete");
-          setExperience(hasPersonalPassport() ? "personal-home" : "platform");
+          // Identity first: a newly-registered user with no passport is guided to
+          // create their Identity Passport, not dropped into the marketplace.
+          setExperience(hasPersonalPassport() ? "personal-home" : "passport-setup");
           void finishRegistration();
         }}
       />
