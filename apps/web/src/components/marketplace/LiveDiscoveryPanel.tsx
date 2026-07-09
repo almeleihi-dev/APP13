@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type {
   DiscoverActionResult,
   DiscoverProviderResult,
@@ -21,16 +21,6 @@ export interface LiveDiscoveryPanelProps {
   text?: string;
 }
 
-type LocationMode = "near_me" | "same_city" | "country" | "worldwide" | "remote";
-
-const LOCATION_MODES: Array<{ value: LocationMode; label: string }> = [
-  { value: "near_me", label: "Near me" },
-  { value: "same_city", label: "Same city" },
-  { value: "country", label: "Country-wide" },
-  { value: "worldwide", label: "Worldwide" },
-  { value: "remote", label: "Remote" },
-];
-
 function initials(name: string): string {
   return name
     .split(/\s+/)
@@ -45,9 +35,6 @@ export function LiveDiscoveryPanel({ text }: LiveDiscoveryPanelProps) {
   const [actions, setActions] = useState<DiscoverActionResult[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "unauthenticated" | "error">("idle");
   const [availableOnly, setAvailableOnly] = useState(false);
-  const [locationMode, setLocationMode] = useState<LocationMode>("worldwide");
-
-  const hasSession = client.auth.hasSession();
 
   const load = useCallback(async () => {
     if (!client.auth.hasSession()) {
@@ -72,15 +59,6 @@ export function LiveDiscoveryPanel({ text }: LiveDiscoveryPanelProps) {
     void load();
   }, [load]);
 
-  // Location mode is a client-side display preference only (no backend field).
-  const visibleProviders = useMemo(() => {
-    if (locationMode === "remote") {
-      // Best-effort: surface available providers first for a remote intent.
-      return [...providers].sort((a, b) => Number(b.available_now) - Number(a.available_now));
-    }
-    return providers;
-  }, [providers, locationMode]);
-
   return (
     <section className="an-act-marketplace-providers" aria-label="Live providers from AN ACT">
       <div className="an-act-contract-experience__status-row">
@@ -100,22 +78,10 @@ export function LiveDiscoveryPanel({ text }: LiveDiscoveryPanelProps) {
         >
           {availableOnly ? "✓ " : ""}Available now
         </button>
-        {LOCATION_MODES.map((mode) => (
-          <button
-            key={mode.value}
-            type="button"
-            className="an-act-marketplace-browse-hints__chip"
-            aria-pressed={locationMode === mode.value}
-            data-active={locationMode === mode.value ? "true" : undefined}
-            onClick={() => setLocationMode(mode.value)}
-          >
-            {mode.label}
-          </button>
-        ))}
       </div>
       <p className="ds-caption" role="note">
-        Location modes are display preferences. Live ranking uses real trust,
-        availability, completion and rating signals from the backend.
+        Providers are ranked by real trust, availability, completion and rating signals.
+        Location-based filtering activates once providers add verified location data.
       </p>
 
       {status === "loading" ? (
@@ -140,7 +106,7 @@ export function LiveDiscoveryPanel({ text }: LiveDiscoveryPanelProps) {
         </div>
       ) : null}
 
-      {status === "ready" && visibleProviders.length === 0 ? (
+      {status === "ready" && providers.length === 0 ? (
         <div className="ds-empty" role="status">
           <span className="ds-empty__icon" aria-hidden="true">
             ⌕
@@ -153,9 +119,9 @@ export function LiveDiscoveryPanel({ text }: LiveDiscoveryPanelProps) {
         </div>
       ) : null}
 
-      {status === "ready" && visibleProviders.length > 0 ? (
+      {status === "ready" && providers.length > 0 ? (
         <div className="an-act-marketplace-providers__grid">
-          {visibleProviders.map((provider) => (
+          {providers.map((provider) => (
             <article
               key={provider.provider_id}
               className="an-act-marketplace-provider-card an-act-marketplace-provider-card--published"
